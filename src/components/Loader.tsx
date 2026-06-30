@@ -90,10 +90,6 @@ export default function Loader({ onComplete }: LoaderProps) {
         {/* Text Details */}
         <div className="text-center select-none">
           <div className="mt-8 flex flex-col items-center">
-            <span className="font-mono text-xl font-medium text-slate-800 tabular-nums">
-              {progress}%
-            </span>
-            
             {/* Custom high tech progress track */}
             <div className="w-48 h-[2px] bg-slate-100 rounded-full mt-3 overflow-hidden relative">
               <motion.div 
@@ -111,8 +107,8 @@ export default function Loader({ onComplete }: LoaderProps) {
             animate={{ opacity: 0.6 }}
             transition={{ delay: 0.4 }}
           >
-            <p className="text-[11px] text-slate-400 font-sans tracking-wide uppercase">
-              organized by <span className="text-slate-700 font-bold font-['Jura'] text-[14px]">msf TechFed</span>
+            <p className="text-[10px] text-slate-400 font-sans tracking-wide uppercase">
+              organized by <span className="text-slate-700 font-bold font-['Jura'] text-[11px] lowercase">msf techfed</span>
             </p>
           </motion.div>
         </div>

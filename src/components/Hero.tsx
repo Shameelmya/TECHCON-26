@@ -69,9 +69,9 @@ export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="flex flex-col mb-6 items-center lg:items-start"
+            className="flex flex-col mb-6 items-center w-full"
           >
-            <div className="flex justify-center lg:justify-start w-full max-w-[400px]">
+            <div className="flex justify-center w-full max-w-[280px] sm:max-w-[400px]">
               <img 
                 src="/hero-typography.png" 
                 alt="TECHCON 26" 

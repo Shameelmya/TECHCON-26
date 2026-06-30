@@ -16,3 +16,18 @@
   --color-brand-dark: #070B13;
   --color-brand-black: #010409;
 }
+
+button, a, [role="button"], input[type="submit"] {
+  cursor: pointer !important;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-33.33%); }
+}
+
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}

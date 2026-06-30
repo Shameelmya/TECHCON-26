@@ -106,13 +106,6 @@ export default function Navbar({ onNavigate, activeSection, onOpenAdmin, onOpenR
 
         {/* Action Buttons */}
         <div className="hidden md:flex items-center gap-3">
-          {/* Console Link */}
-          <button
-            onClick={onOpenAdmin}
-            className="px-4 py-2 text-[13px] font-mono tracking-wider font-semibold text-slate-500 hover:text-purple-600 transition-colors"
-          >
-            Console
-          </button>
           
           {/* Primary CTA */}
           <button
@@ -159,16 +152,6 @@ export default function Navbar({ onNavigate, activeSection, onOpenAdmin, onOpenR
               ))}
               
               <hr className="border-slate-100 my-1" />
-              
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  onOpenAdmin();
-                }}
-                className="w-full py-2 text-center text-xs font-mono tracking-wider font-bold border border-slate-200 text-slate-600 hover:text-purple-600 rounded-xl"
-              >
-                Console
-              </button>
               
               <button
                 onClick={() => {

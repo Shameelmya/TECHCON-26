@@ -37,33 +37,19 @@ export default function About() {
       id="about" 
       className="py-20 sm:py-28 bg-white px-6 md:px-12 relative overflow-hidden"
     >
-      {/* Subtle background light blob */}
-      <div className="absolute w-[500px] h-[500px] rounded-full bg-slate-50 blur-[100px] top-1/3 -left-48 pointer-events-none" />
-
       <div className="max-w-7xl mx-auto">
         
         {/* Editorial Title Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start mb-20">
-          <div className="lg:col-span-5">
-            <span className="text-[11px] font-mono font-bold tracking-[0.25em] text-brand-purple uppercase block mb-3.5">
-              // ABOUT THE CONVENTION
-            </span>
-            <h2 className="text-4xl sm:text-5xl font-orbitron font-bold tracking-[0.05em] text-slate-950 uppercase leading-[1.05] mb-6">
-              Empowering the Next Generation.
-            </h2>
-            <p className="text-sm font-sans text-slate-500 leading-relaxed max-w-md">
-              Organized by <span className="font-bold text-slate-900 font-sans">msf TechFed</span>, TECHCON '26 is the flag-bearer of next-generation technical assemblies in Kerala. Held at the historic CUSAT campus in Kochi, this physical conclave is where vision morphs into robust skill.
-            </p>
-          </div>
-
-          <div className="lg:col-span-7 space-y-6 lg:pt-2">
-            <p className="text-xl sm:text-2xl font-display font-light text-slate-700 leading-relaxed">
-              TECHCON '26 is the premier platform bridging student innovators and cutting-edge digital growth, fostering a vibrant technological ecosystem.
-            </p>
-            <div className="border-l-[3px] border-brand-pink pl-6 my-6 text-slate-500 text-sm font-sans font-medium">
-              Proudly presented as a signature youth initiative of msf Kerala State Committee.
-            </div>
-          </div>
+        <div className="flex flex-col mb-20 max-w-2xl mx-auto text-center items-center justify-center">
+          <span className="text-[11px] font-mono font-bold tracking-[0.25em] text-brand-purple uppercase block mb-3.5">
+            // ABOUT THE CONVENTION
+          </span>
+          <h2 className="text-4xl sm:text-5xl font-orbitron font-bold tracking-[0.05em] text-slate-950 uppercase leading-[1.05] mb-6">
+            Empowering the Next Generation.
+          </h2>
+          <p className="text-sm font-sans text-slate-500 leading-relaxed max-w-md">
+            Organized by <span className="font-bold text-slate-900 font-sans">msf TechFed</span>, TECHCON '26 is the flag-bearer of next-generation technical assemblies in Kerala. Held at the historic CUSAT campus in Kochi, this physical conclave is where vision morphs into robust skill.
+          </p>
         </div>
 
         {/* Pillars Cards Grid */}
@@ -122,13 +108,6 @@ export default function About() {
                   <div>
                     <h5 className="text-xs font-orbitron font-bold text-slate-900 uppercase">Youth & Students Tech Ecosystem</h5>
                     <p className="text-xs text-slate-500 mt-1 leading-normal">The specialised technology and student empowerment cell of msf Kerala State Committee.</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3 bg-white p-4 rounded-2xl border border-slate-100/60 shadow-sm">
-                  <Award className="text-brand-blue shrink-0 mt-0.5" size={16} />
-                  <div>
-                    <h5 className="text-xs font-orbitron font-bold text-slate-900 uppercase">msf Kerala State Committee</h5>
-                    <p className="text-xs text-slate-500 mt-1 leading-normal">Fostering standard excellence in student leadership, professional mentorship, and scientific drive.</p>
                   </div>
                 </div>
               </div>

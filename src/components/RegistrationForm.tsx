@@ -277,7 +277,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
                 <label className="text-[11px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Mobile Number</label>
                 <input
                   type="tel"
-                  placeholder="e.g. +91 9845010203"
+                  placeholder=""
                   value={mobileNumber}
                   onChange={(e) => setMobileNumber(e.target.value)}
                   className="w-full px-4 py-3 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-sm text-slate-800 transition-colors"
@@ -290,7 +290,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
                 <label className="text-[11px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Full Name</label>
                 <input
                   type="text"
-                  placeholder="e.g. Anand Krishna"
+                  placeholder=""
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   className="w-full px-4 py-3 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-sm text-slate-800 transition-colors"
@@ -304,7 +304,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
                 <label className="text-[11px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Email Address</label>
                 <input
                   type="email"
-                  placeholder="e.g. anand@outlook.com"
+                  placeholder=""
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-4 py-3 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-sm text-slate-800 transition-colors"
@@ -329,7 +329,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
                 </div>
                 <input
                   type="tel"
-                  placeholder="e.g. +91 9845010203"
+                  placeholder=""
                   value={whatsAppNumber}
                   onChange={(e) => setWhatsAppNumber(e.target.value)}
                   className="w-full px-4 py-3 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-sm text-slate-800 transition-colors"
@@ -343,7 +343,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
                 <label className="text-[11px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Place of Residence</label>
                 <input
                   type="text"
-                  placeholder="e.g. Kalamassery, Kochi"
+                  placeholder=""
                   value={place}
                   onChange={(e) => setPlace(e.target.value)}
                   className="w-full px-4 py-3 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-sm text-slate-800 transition-colors"
@@ -453,7 +453,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
                     <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Institution Name *</label>
                     <input
                       type="text"
-                      placeholder="e.g. Cochin University of Science and Technology"
+                      placeholder=""
                       value={institution}
                       onChange={(e) => setInstitution(e.target.value)}
                       className="w-full px-4 py-2.5 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-xs text-slate-800 bg-white"
@@ -487,7 +487,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
                         <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Which Course? *</label>
                         <input
                           type="text"
-                          placeholder="e.g. B.Tech Computer Science / MCA"
+                          placeholder=""
                           value={customCourse}
                           onChange={(e) => setCustomCourse(e.target.value)}
                           className="w-full px-4 py-2.5 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-xs text-slate-800 bg-white"
@@ -507,7 +507,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
                     <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Job Title (Optional)</label>
                     <input
                       type="text"
-                      placeholder="e.g. Senior Software Engineer"
+                      placeholder=""
                       value={jobTitle}
                       onChange={(e) => setJobTitle(e.target.value)}
                       className="w-full px-4 py-2.5 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-xs text-slate-800 bg-white"
@@ -518,7 +518,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
                     <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Institution Name / Employer (Optional)</label>
                     <input
                       type="text"
-                      placeholder="e.g. UST Global / TCS"
+                      placeholder=""
                       value={profInstitution}
                       onChange={(e) => setProfInstitution(e.target.value)}
                       className="w-full px-4 py-2.5 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-xs text-slate-800 bg-white"
@@ -535,7 +535,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
                     <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Company Name (Optional)</label>
                     <input
                       type="text"
-                      placeholder="e.g. AgriTech Solutions Pvt Ltd"
+                      placeholder=""
                       value={companyName}
                       onChange={(e) => setCompanyName(e.target.value)}
                       className="w-full px-4 py-2.5 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-xs text-slate-800 bg-white"
@@ -546,7 +546,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
                     <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Sector / Industry (Optional)</label>
                     <input
                       type="text"
-                      placeholder="e.g. Artificial Intelligence, FinTech, Robotics"
+                      placeholder=""
                       value={sector}
                       onChange={(e) => setSector(e.target.value)}
                       className="w-full px-4 py-2.5 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-xs text-slate-800 bg-white"
@@ -563,7 +563,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
                     <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">University / Institution *</label>
                     <input
                       type="text"
-                      placeholder="e.g. CUSAT / NIT Calicut"
+                      placeholder=""
                       value={university}
                       onChange={(e) => setUniversity(e.target.value)}
                       className="w-full px-4 py-2.5 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-xs text-slate-800 bg-white"
@@ -575,7 +575,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
                     <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Department / Branch *</label>
                     <input
                       type="text"
-                      placeholder="e.g. Electronics & Communication / Artificial Intelligence"
+                      placeholder=""
                       value={department}
                       onChange={(e) => setDepartment(e.target.value)}
                       className="w-full px-4 py-2.5 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-xs text-slate-800 bg-white"

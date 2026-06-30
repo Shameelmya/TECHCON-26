@@ -86,10 +86,10 @@ export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
             className="flex flex-col mb-6 items-center lg:items-start"
           >
             <div className="flex items-baseline gap-1.5 sm:gap-2 flex-wrap justify-center lg:justify-start">
-              <h1 className="text-4xl sm:text-6xl lg:text-8xl font-orbitron font-bold tracking-[0.08em] leading-none text-slate-950 uppercase">
+              <h1 className="text-5xl sm:text-7xl lg:text-8xl font-orbitron font-bold tracking-[0.08em] leading-none text-slate-950 uppercase">
                 techcon
               </h1>
-              <span className="font-orbitron font-extrabold text-3.5xl sm:text-5xl lg:text-7xl text-brand-pink tracking-[0.05em] leading-none">
+              <span className="font-orbitron font-extrabold text-5xl sm:text-7xl lg:text-8xl text-brand-pink tracking-[0.05em] leading-none">
                 26
               </span>
             </div>
@@ -118,58 +118,97 @@ export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="grid grid-cols-2 sm:grid-cols-3 gap-4 border-t border-slate-100 pt-6 mb-8 max-w-lg w-full"
+            className="grid grid-cols-2 sm:grid-cols-3 gap-6 border-t border-slate-100 pt-6 mb-10 max-w-lg w-full"
           >
-            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-1.5 sm:gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-purple-50 flex items-center justify-center text-brand-purple shrink-0 border border-purple-100/50">
-                <Calendar size={15} />
+            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-2 sm:gap-3">
+              <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-brand-purple shrink-0 border border-purple-100/50">
+                <Calendar size={18} />
               </div>
               <div className="flex flex-col">
-                <span className="text-[9px] font-mono tracking-widest text-slate-400 uppercase">DATE</span>
-                <span className="text-xs font-sans font-bold text-slate-800">15 July 2026</span>
+                <span className="text-[10px] font-mono tracking-widest text-slate-400 uppercase">DATE</span>
+                <span className="text-sm font-sans font-bold text-slate-800">15 July 2026</span>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-1.5 sm:gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-pink-50 flex items-center justify-center text-brand-pink shrink-0 border border-pink-100/50">
-                <MapPin size={15} />
+            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-2 sm:gap-3">
+              <div className="w-10 h-10 rounded-xl bg-pink-50 flex items-center justify-center text-brand-pink shrink-0 border border-pink-100/50">
+                <MapPin size={18} />
               </div>
               <div className="flex flex-col">
-                <span className="text-[9px] font-mono tracking-widest text-slate-400 uppercase">VENUE</span>
-                <span className="text-xs font-sans font-bold text-slate-800">CUSAT, Kochi</span>
+                <span className="text-[10px] font-mono tracking-widest text-slate-400 uppercase">VENUE</span>
+                <span className="text-sm font-sans font-bold text-slate-800">CUSAT, Kochi</span>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-1.5 sm:gap-2.5 col-span-2 sm:col-span-1">
-              <div className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center text-brand-blue shrink-0 border border-blue-100/50">
-                <User size={15} />
+            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-2 sm:gap-3 col-span-2 sm:col-span-1">
+              <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-brand-blue shrink-0 border border-blue-100/50">
+                <User size={18} />
               </div>
               <div className="flex flex-col">
-                <span className="text-[9px] font-mono tracking-widest text-slate-400 uppercase">ORGANIZER</span>
-                <span className="text-xs font-sans font-bold text-slate-800">msf TechFed</span>
+                <span className="text-[10px] font-mono tracking-widest text-slate-400 uppercase">ORGANIZER</span>
+                <span className="text-sm font-sans font-bold text-slate-800">msf TechFed</span>
               </div>
             </div>
           </motion.div>
 
-          {/* Action buttons */}
+          {/* Action banner */}
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
+            className="w-full max-w-xl mb-6 relative group"
+          >
+            {/* Animated Gradient Background */}
+            <div className="absolute inset-0 bg-gradient-to-r from-brand-pink via-brand-purple to-brand-blue rounded-3xl opacity-90 blur-sm group-hover:opacity-100 transition-opacity duration-500 bg-[length:200%_auto] animate-[pulse_4s_ease-in-out_infinite]" />
+            <div className="relative p-1 bg-gradient-to-r from-brand-pink via-brand-purple to-brand-blue rounded-3xl bg-[length:200%_auto] animate-[pulse_4s_ease-in-out_infinite]">
+              <div className="bg-slate-950 rounded-[22px] p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 relative overflow-hidden">
+                {/* Circuit lines in banner */}
+                <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 50% 50%, #ffffff 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
+                <div className="absolute top-0 right-0 w-32 h-32 bg-brand-pink/20 blur-[40px] pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-32 h-32 bg-brand-blue/20 blur-[40px] pointer-events-none" />
+                
+                <div className="text-center sm:text-left z-10">
+                  <h4 className="text-white font-orbitron font-bold text-lg mb-1">Secure Your Pass</h4>
+                  <p className="text-slate-400 font-sans text-xs max-w-[200px] mx-auto sm:mx-0">Limited seats available for the premier tech assembly.</p>
+                </div>
+                
+                <button
+                  onClick={onOpenRegister}
+                  className="z-10 px-8 py-3.5 bg-white text-slate-900 font-sans font-bold text-sm rounded-full shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:scale-105 hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] transition-all duration-300 w-full sm:w-auto shrink-0"
+                >
+                  REGISTER NOW
+                </button>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Under banner buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
             className="flex flex-wrap items-center justify-center lg:justify-start gap-4 mb-10"
           >
-            <button
-              onClick={onOpenRegister}
-              className="px-8 py-3.5 bg-gradient-to-r from-brand-purple via-brand-purple to-brand-pink text-white font-sans font-medium text-sm rounded-full shadow-[0_8px_30px_rgba(120,45,255,0.2)] hover:shadow-[0_12px_40px_rgba(120,45,255,0.3)] transition-all duration-300 hover:-translate-y-0.5"
+            <a
+              href="#venue"
+              className="px-5 py-2.5 bg-slate-50 border border-slate-200 text-slate-700 font-sans font-medium text-xs rounded-full hover:bg-slate-100 transition-colors flex items-center gap-2"
             >
-              REGISTER NOW
-            </button>
+              <MapPin size={14} className="text-brand-pink" />
+              <span>Location</span>
+            </a>
+            <a
+              href="#calendar"
+              className="px-5 py-2.5 bg-slate-50 border border-slate-200 text-slate-700 font-sans font-medium text-xs rounded-full hover:bg-slate-100 transition-colors flex items-center gap-2"
+            >
+              <Calendar size={14} className="text-brand-purple" />
+              <span>Add to Calendar</span>
+            </a>
             <button
               onClick={onExploreEvent}
-              className="group px-7 py-3.5 bg-white border border-slate-200 text-slate-800 font-sans font-medium text-sm rounded-full hover:bg-slate-50 transition-all duration-300 flex items-center gap-1.5"
+              className="group px-5 py-2.5 bg-transparent border border-slate-300 text-slate-700 font-sans font-medium text-xs rounded-full hover:bg-slate-50 transition-colors flex items-center gap-1.5"
             >
-              <span>EXPLORE EVENT</span>
-              <ChevronRight size={15} className="group-hover:translate-x-1 transition-transform" />
+              <span>Explore Event</span>
+              <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
             </button>
           </motion.div>
 

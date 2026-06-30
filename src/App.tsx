@@ -14,6 +14,7 @@ import CircuitBackground from './components/CircuitBackground';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
+import Collaborators from './components/Collaborators';
 import WhyAttend from './components/WhyAttend';
 import Timeline from './components/Timeline';
 import Venue from './components/Venue';
@@ -92,6 +93,9 @@ export default function App() {
 
               {/* About text fold */}
               <About />
+
+              {/* Collaborators logo marquee */}
+              <Collaborators />
 
               {/* Grid cards fold */}
               <WhyAttend />
@@ -201,10 +205,10 @@ export default function App() {
               <div className="flex items-center gap-2.5">
                 <button
                   onClick={() => setIsAdminOpen(true)}
-                  className="hover:text-white transition-colors flex items-center gap-1 cursor-pointer"
+                  className="text-slate-700 hover:text-slate-500 opacity-50 transition-colors flex items-center gap-1 cursor-pointer"
                 >
                   <Shield size={10} />
-                  <span>Admin Gatekeeper Portal</span>
+                  <span>Admin Console</span>
                 </button>
                 <span>•</span>
                 <span className="flex items-center gap-1">

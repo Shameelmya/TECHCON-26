@@ -64,20 +64,6 @@ export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
         {/* Left column: Headings and copy */}
         <div className="lg:col-span-7 flex flex-col justify-center items-center lg:items-start text-center lg:text-left order-2 lg:order-1">
           {/* Tagline / Organizer */}
-          <motion.div 
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2.5 px-3.5 py-1.5 bg-slate-950 text-slate-100 border border-slate-800 rounded-full w-fit mb-6 shadow-sm"
-          >
-            <span className="w-1.5 h-1.5 rounded-full bg-brand-pink animate-ping" />
-            <span className="text-[10px] font-mono tracking-[0.2em] uppercase flex items-center gap-1">
-              <span className="text-brand-blue font-bold">msf TechFed</span>
-              <span className="text-slate-600">|</span>
-              <span className="text-slate-400">Official Assembly</span>
-            </span>
-          </motion.div>
-
           {/* Premium High-Tech Brand Identity Typography */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -91,14 +77,6 @@ export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
                 alt="TECHCON 26" 
                 className="w-full h-auto object-contain drop-shadow-md" 
               />
-            </div>
-            
-            {/* Slogan with high letter spacing from the logo concept */}
-            <div className="mt-3.5 flex items-center gap-3 justify-center lg:justify-start">
-              <span className="h-[1px] w-8 bg-gradient-to-r from-brand-pink to-brand-purple hidden sm:block" />
-              <span className="text-[10px] sm:text-xs md:text-sm font-display font-medium tracking-[0.3em] sm:tracking-[0.45em] text-transparent bg-clip-text bg-gradient-to-r from-brand-pink via-brand-purple to-brand-blue uppercase text-center">
-                defining the future
-              </span>
             </div>
           </motion.div>
 
@@ -117,35 +95,35 @@ export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="grid grid-cols-2 sm:grid-cols-3 gap-6 border-t border-slate-100 pt-6 mb-10 max-w-lg w-full"
+            className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 border-t border-slate-100 pt-6 mb-10 max-w-lg w-full"
           >
-            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-2 sm:gap-3">
-              <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-brand-purple shrink-0 border border-purple-100/50">
-                <Calendar size={18} />
+            <div className="flex items-center text-left gap-3">
+              <div className="w-8 h-8 rounded-full bg-purple-50 flex items-center justify-center text-brand-purple shrink-0 border border-purple-100/50">
+                <Calendar size={14} />
               </div>
               <div className="flex flex-col">
-                <span className="text-[10px] font-mono tracking-widest text-slate-400 uppercase">DATE</span>
-                <span className="text-sm font-sans font-bold text-slate-800">15 July 2026</span>
+                <span className="text-[9px] font-mono tracking-widest text-slate-400 uppercase">DATE</span>
+                <span className="text-xs sm:text-sm font-sans font-bold text-slate-800">15 July 2026</span>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-2 sm:gap-3">
-              <div className="w-10 h-10 rounded-xl bg-pink-50 flex items-center justify-center text-brand-pink shrink-0 border border-pink-100/50">
-                <MapPin size={18} />
+            <div className="flex items-center text-left gap-3">
+              <div className="w-8 h-8 rounded-full bg-pink-50 flex items-center justify-center text-brand-pink shrink-0 border border-pink-100/50">
+                <MapPin size={14} />
               </div>
               <div className="flex flex-col">
-                <span className="text-[10px] font-mono tracking-widest text-slate-400 uppercase">VENUE</span>
-                <span className="text-sm font-sans font-bold text-slate-800">CUSAT, Kochi</span>
+                <span className="text-[9px] font-mono tracking-widest text-slate-400 uppercase">VENUE</span>
+                <span className="text-xs sm:text-sm font-sans font-bold text-slate-800">CUSAT, Kochi</span>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-2 sm:gap-3 col-span-2 sm:col-span-1">
-              <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-brand-blue shrink-0 border border-blue-100/50">
-                <User size={18} />
+            <div className="flex items-center text-left gap-3">
+              <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-brand-blue shrink-0 border border-blue-100/50">
+                <User size={14} />
               </div>
               <div className="flex flex-col">
-                <span className="text-[10px] font-mono tracking-widest text-slate-400 uppercase">ORGANIZER</span>
-                <span className="text-sm font-sans font-bold text-slate-800">msf TechFed</span>
+                <span className="text-[9px] font-mono tracking-widest text-slate-400 uppercase">ORGANIZER</span>
+                <span className="text-xs sm:text-sm font-sans font-bold text-slate-800">msf TechFed</span>
               </div>
             </div>
           </motion.div>
@@ -157,7 +135,7 @@ export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
             transition={{ duration: 0.6, delay: 0.4 }}
             className="w-full max-w-lg mb-6 relative"
           >
-            <div className="w-full rounded-[32px] p-6 sm:p-8 bg-gradient-to-r from-brand-pink via-brand-purple to-brand-blue bg-[length:200%_auto] animate-[pulse_4s_ease-in-out_infinite] flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div className="w-full rounded-[32px] p-6 sm:p-8 bg-gradient-to-r from-brand-pink via-brand-purple to-brand-blue bg-[length:200%_auto] animate-[gradient_6s_ease-in-out_infinite] flex flex-col sm:flex-row items-center justify-between gap-6">
               
               <div className="text-center sm:text-left text-white">
                 <h4 className="font-sans font-bold text-xl mb-1 drop-shadow-sm">Secure Your Pass</h4>

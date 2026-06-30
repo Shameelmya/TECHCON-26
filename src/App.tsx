@@ -5,7 +5,7 @@
 
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { Award, Compass, Shield, Heart } from 'lucide-react';
+import { Award, Compass, Shield } from 'lucide-react';
 import { AttendeeRegistration } from './types';
 
 // Component Imports
@@ -208,9 +208,10 @@ export default function App() {
                 </button>
                 <span>•</span>
                 <span className="flex items-center gap-1">
-                  <span>Crafted with</span>
-                  <Heart size={8} className="text-pink-500 fill-pink-500" />
-                  <span>in India</span>
+                  <span>Created & Designed by</span>
+                  <a href="https://instagram.com/dotprojectsofficial" target="_blank" rel="noopener noreferrer" className="text-brand-purple hover:text-brand-pink font-bold transition-colors">
+                    Dot Projects
+                  </a>
                 </span>
               </div>
             </div>

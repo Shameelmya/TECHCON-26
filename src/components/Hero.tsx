@@ -95,11 +95,11 @@ export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 border-t border-slate-100 pt-6 mb-10 max-w-lg w-full"
+            className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 border-t border-slate-100 pt-6 mb-10 max-w-lg w-full"
           >
-            <div className="flex items-center text-left gap-3">
-              <div className="w-8 h-8 rounded-full bg-purple-50 flex items-center justify-center text-brand-purple shrink-0 border border-purple-100/50">
-                <Calendar size={14} />
+            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-2 sm:gap-3">
+              <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-brand-purple shrink-0 border border-purple-100/50">
+                <Calendar size={18} />
               </div>
               <div className="flex flex-col">
                 <span className="text-[9px] font-mono tracking-widest text-slate-400 uppercase">DATE</span>
@@ -107,9 +107,9 @@ export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
               </div>
             </div>
 
-            <div className="flex items-center text-left gap-3">
-              <div className="w-8 h-8 rounded-full bg-pink-50 flex items-center justify-center text-brand-pink shrink-0 border border-pink-100/50">
-                <MapPin size={14} />
+            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-2 sm:gap-3">
+              <div className="w-10 h-10 rounded-xl bg-pink-50 flex items-center justify-center text-brand-pink shrink-0 border border-pink-100/50">
+                <MapPin size={18} />
               </div>
               <div className="flex flex-col">
                 <span className="text-[9px] font-mono tracking-widest text-slate-400 uppercase">VENUE</span>
@@ -117,9 +117,9 @@ export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
               </div>
             </div>
 
-            <div className="flex items-center text-left gap-3">
-              <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-brand-blue shrink-0 border border-blue-100/50">
-                <User size={14} />
+            <div className="hidden sm:flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-2 sm:gap-3">
+              <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-brand-blue shrink-0 border border-blue-100/50">
+                <User size={18} />
               </div>
               <div className="flex flex-col">
                 <span className="text-[9px] font-mono tracking-widest text-slate-400 uppercase">ORGANIZER</span>

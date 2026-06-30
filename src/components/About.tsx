@@ -44,11 +44,11 @@ export default function About() {
           <span className="text-[11px] font-mono font-bold tracking-[0.25em] text-brand-purple uppercase block mb-3.5">
             // ABOUT THE CONVENTION
           </span>
-          <h2 className="text-4xl sm:text-5xl font-orbitron font-bold tracking-[0.05em] text-slate-950 uppercase leading-[1.05] mb-6">
-            Empowering the Next Generation.
+          <h2 className="text-3xl sm:text-4xl font-orbitron font-extrabold tracking-[0.05em] text-slate-950 uppercase leading-[1.05] mb-6">
+            DEFINING THE <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-purple to-brand-blue">FUTURE</span>
           </h2>
-          <p className="text-sm font-sans text-slate-500 leading-relaxed max-w-md">
-            Organized by <span className="font-bold text-slate-900 font-sans">msf TechFed</span>, TECHCON '26 is the flag-bearer of next-generation technical assemblies in Kerala. Held at the historic CUSAT campus in Kochi, this physical conclave is where vision morphs into robust skill.
+          <p className="text-sm font-sans text-slate-500 leading-relaxed max-w-md mx-auto">
+            Organized by <span className="font-bold text-slate-900 font-sans">msf TechFed</span>, TECHCON '26 is the flagship technical assembly driving innovation and technological excellence in Kerala. Located at the historic CUSAT campus in Kochi, this conclave is where breakthrough ideas transform into real-world technological solutions.
           </p>
         </div>
 

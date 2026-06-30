@@ -71,7 +71,7 @@ export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
         }}
       />
 
-      <div className="relative max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center z-10">
+      <div className="relative max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-8 items-center z-10">
         
         {/* Left column: Headings and copy */}
         <div className="lg:col-span-7 flex flex-col justify-center items-center lg:items-start text-center lg:text-left order-2 lg:order-1">
@@ -81,9 +81,9 @@ export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1 }}
-            className="flex flex-col mb-6 items-center w-full"
+            className="flex flex-col mb-4 sm:mb-6 items-center lg:items-start w-full"
           >
-            <div className="flex justify-center w-full max-w-[280px] sm:max-w-[400px]">
+            <div className="flex justify-center lg:justify-start w-full max-w-[280px] sm:max-w-[400px] lg:max-w-[1100px]">
               <img 
                 src="/hero-typography.png" 
                 alt="TECHCON 26" 
@@ -99,7 +99,7 @@ export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-[14px] sm:text-[16px] text-slate-500 font-sans font-normal leading-relaxed mb-8 max-w-xl text-center lg:text-left"
           >
-            The premium technological assembly of India begins here. Join developers, researchers, and network architects at the historic CUSAT campus in Kochi to co-create tomorrow's digital infrastructure.
+            Kerala's premier technical conference. A dynamic physical conclave where student innovators, researchers, and developers converge to co-create the digital future.
           </motion.p>
 
           {/* Key Metadata Row */}
@@ -201,7 +201,7 @@ export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
             className="flex items-center gap-3 sm:gap-6 w-fit bg-slate-50/50 p-3 sm:p-4 rounded-2xl border border-slate-100/80"
           >
             <div className="flex flex-col items-center min-w-[50px] sm:min-w-[64px]">
-              <span className="font-orbitron text-xl sm:text-2xl font-extrabold text-slate-800 tabular-nums">
+              <span className="font-orbitron text-xl sm:text-2xl font-black text-slate-800 tabular-nums">
                 {String(timeLeft.days).padStart(2, '0')}
               </span>
               <span className="text-[9px] font-mono tracking-wider text-slate-400 uppercase mt-1">DAYS</span>
@@ -209,7 +209,7 @@ export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
             <div className="text-slate-300 font-mono text-xl sm:text-2xl font-light animate-pulse">:</div>
             
             <div className="flex flex-col items-center min-w-[50px] sm:min-w-[64px]">
-              <span className="font-orbitron text-xl sm:text-2xl font-extrabold text-brand-purple tabular-nums">
+              <span className="font-orbitron text-xl sm:text-2xl font-black text-brand-purple tabular-nums">
                 {String(timeLeft.hours).padStart(2, '0')}
               </span>
               <span className="text-[9px] font-mono tracking-wider text-slate-400 uppercase mt-1">HOURS</span>
@@ -217,7 +217,7 @@ export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
             <div className="text-slate-300 font-mono text-xl sm:text-2xl font-light animate-pulse">:</div>
 
             <div className="flex flex-col items-center min-w-[50px] sm:min-w-[64px]">
-              <span className="font-orbitron text-xl sm:text-2xl font-extrabold text-brand-blue tabular-nums">
+              <span className="font-orbitron text-xl sm:text-2xl font-black text-brand-blue tabular-nums">
                 {String(timeLeft.minutes).padStart(2, '0')}
               </span>
               <span className="text-[9px] font-mono tracking-wider text-slate-400 uppercase mt-1">MINUTES</span>
@@ -225,7 +225,7 @@ export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
             <div className="text-slate-300 font-mono text-xl sm:text-2xl font-light animate-pulse">:</div>
 
             <div className="flex flex-col items-center min-w-[50px] sm:min-w-[64px]">
-              <span className="font-orbitron text-xl sm:text-2xl font-extrabold text-brand-pink tabular-nums">
+              <span className="font-orbitron text-xl sm:text-2xl font-black text-brand-pink tabular-nums">
                 {String(timeLeft.seconds).padStart(2, '0')}
               </span>
               <span className="text-[9px] font-mono tracking-wider text-slate-400 uppercase mt-1">SECONDS</span>
@@ -234,8 +234,8 @@ export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
         </div>
 
         {/* Right column: Interactive Premium Logo Float Visual */}
-        <div className="lg:col-span-5 flex items-center justify-center order-1 lg:order-2 h-72 sm:h-96 lg:h-[480px]">
-          <div className="relative w-64 h-64 sm:w-80 sm:h-80 lg:w-[400px] lg:h-[400px]">
+        <div className="lg:col-span-5 flex items-center justify-center order-1 lg:order-2 h-72 sm:h-96 lg:h-[550px]">
+          <div className="relative w-64 h-64 sm:w-80 sm:h-80 lg:w-[500px] lg:h-[500px]">
             {/* Glowing Soft Background Circle blobs behind Logo */}
             <motion.div
               className="absolute inset-0 rounded-full bg-gradient-to-tr from-purple-500/25 via-pink-500/10 to-blue-500/20 blur-3xl"
@@ -281,10 +281,10 @@ export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
                   src={graphics[currentGraphicIndex]} 
                   alt="TECHCON Graphic" 
                   className="w-5/6 h-5/6 object-contain absolute" 
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.8, ease: "easeInOut" }}
                 />
               </AnimatePresence>
             </motion.div>

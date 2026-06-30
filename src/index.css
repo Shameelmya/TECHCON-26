@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Rajdhani:wght@500;600;700&family=Jura:wght@400;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", "Jura", sans-serif;
+  --font-orbitron: "Jura", "Orbitron", sans-serif;
+  --font-jura: "Jura", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --font-rajdhani: "Rajdhani", sans-serif;
+
+  --color-brand-pink: #FF208E;
+  --color-brand-purple: #782DFF;
+  --color-brand-blue: #209CFF;
+  --color-brand-navy: #0F172A;
+  --color-brand-dark: #070B13;
+  --color-brand-black: #010409;
+}

@@ -76,7 +76,7 @@ export default function Venue() {
                   <div className="space-y-0.5">
                     <h4 className="text-xs font-mono font-bold text-brand-purple uppercase tracking-wider">Nearest Metro Station</h4>
                     <p className="text-sm font-orbitron font-bold text-slate-100 uppercase tracking-wide">CUSAT Metro Station <span className="text-slate-500 font-sans text-xs">(250m)</span></p>
-                    <p className="text-xs text-slate-400 font-sans leading-normal">Located directly at the campus entrance. High-frequency shuttles and e-autos run to the auditorium.</p>
+                    <p className="text-xs text-slate-400 font-sans leading-normal">Direct access to campus entrance via shuttles.</p>
                   </div>
                 </div>
 
@@ -88,7 +88,7 @@ export default function Venue() {
                   <div className="space-y-0.5">
                     <h4 className="text-xs font-mono font-bold text-brand-pink uppercase tracking-wider">Nearest Railway Station</h4>
                     <p className="text-sm font-orbitron font-bold text-slate-100 uppercase tracking-wide">Ernakulam Town ERN / Aluva AWY <span className="text-slate-500 font-sans text-xs">(9km - 11km)</span></p>
-                    <p className="text-xs text-slate-400 font-sans leading-normal">Both hubs link directly with the Kochi Metro network for immediate, fast transit to the campus entrance.</p>
+                    <p className="text-xs text-slate-400 font-sans leading-normal">Linked to Kochi Metro for direct transit.</p>
                   </div>
                 </div>
 
@@ -100,7 +100,7 @@ export default function Venue() {
                   <div className="space-y-0.5">
                     <h4 className="text-xs font-mono font-bold text-brand-blue uppercase tracking-wider">Nearest Airport</h4>
                     <p className="text-sm font-orbitron font-bold text-slate-100 uppercase tracking-wide">Cochin International Airport COK <span className="text-slate-500 font-sans text-xs">(22km)</span></p>
-                    <p className="text-xs text-slate-400 font-sans leading-normal">Nedumbassery Airport has standard prepaid airport cabs, Uber services, and direct shuttle buses to Kalamassery.</p>
+                    <p className="text-xs text-slate-400 font-sans leading-normal">Direct shuttle and cab services available.</p>
                   </div>
                 </div>
               </div>

@@ -49,40 +49,17 @@ export default function Navbar({ onNavigate, activeSection, onOpenAdmin, onOpenR
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
-        {/* TECHCON Brand Logo / Link */}
-        <div 
-          onClick={() => handleItemClick('hero')} 
-          className="flex items-center gap-2.5 cursor-pointer hover-logo select-none group"
+        {/* Logo Assembly */}
+        <button 
+          onClick={() => handleItemClick('hero')}
+          className="flex items-center gap-2 lg:gap-3 group select-none relative"
         >
-          {/* Small Logo Icon */}
-          <div className="relative w-8 h-8 flex items-center justify-center">
-            <svg viewBox="0 0 100 100" className="w-full h-full filter drop-shadow-sm group-hover:rotate-6 transition-transform duration-300">
-              <defs>
-                <linearGradient id="nav-logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#FF208E" />
-                  <stop offset="50%" stopColor="#782DFF" />
-                  <stop offset="100%" stopColor="#209CFF" />
-                </linearGradient>
-              </defs>
-              <path
-                d="M 30,25 C 30,25 45,20 65,22 C 72,23 75,28 72,32 C 68,36 55,38 45,42 C 41,44 38,48 38,55 L 38,72 C 38,79 42,82 48,80 C 56,77 64,68 64,68"
-                fill="none"
-                stroke="url(#nav-logo-grad)"
-                strokeWidth="15"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
-          <div className="flex flex-col">
-            <span className="font-orbitron text-[13px] tracking-[0.15em] font-bold text-slate-950 uppercase leading-none">
-              TECHCON<span className="text-brand-pink font-extrabold font-orbitron">'26</span>
-            </span>
-            <span className="text-[8px] font-mono tracking-[0.05em] text-slate-400 uppercase leading-none mt-1">
-              by msf TechFed
-            </span>
-          </div>
-        </div>
+          <img 
+            src="/navbar-logo.png" 
+            alt="TECHCON 26" 
+            className="h-8 sm:h-10 w-auto object-contain relative z-10 transition-transform duration-300 group-hover:scale-105" 
+          />
+        </button>
 
         {/* Desktop Menu Links */}
         <div className="hidden md:flex items-center gap-1.5 bg-slate-100/50 p-1 rounded-full border border-slate-200/40 backdrop-blur-sm">

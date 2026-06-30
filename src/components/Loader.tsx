@@ -25,10 +25,10 @@ export default function Loader({ onComplete }: LoaderProps) {
         }
         // Accelerate/decelerate realistically
         const remaining = 100 - prev;
-        const step = Math.max(1, Math.floor(Math.random() * remaining * 0.15) + 1);
+        const step = Math.max(1, Math.floor(Math.random() * remaining * 0.25) + 1);
         return Math.min(100, prev + step);
       });
-    }, 120);
+    }, 20);
 
     return () => clearInterval(timer);
   }, [onComplete]);
@@ -77,103 +77,18 @@ export default function Loader({ onComplete }: LoaderProps) {
         </div>
 
         {/* The TECHCON '26 Logo Assembly */}
-        <div className="relative w-36 h-36 mb-8 flex items-center justify-center">
+        <div className="relative w-48 h-32 mb-6 flex flex-col items-center justify-center select-none">
           {/* Pulsing Backlight */}
           <motion.div 
             className="absolute inset-0 rounded-full bg-gradient-to-tr from-purple-500/20 via-pink-500/10 to-blue-500/20 blur-2xl"
             animate={{ scale: [0.9, 1.1, 0.9], opacity: [0.5, 0.8, 0.5] }}
             transition={{ duration: 3, repeat: Infinity }}
           />
-
-          {/* Styled Techcon Ribbon T Logo SVG */}
-          <svg viewBox="0 0 100 100" className="w-full h-full filter drop-shadow-[0_8px_16px_rgba(120,45,255,0.15)]">
-            <defs>
-              <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#FF20BE" />
-                <stop offset="50%" stopColor="#782DFF" />
-                <stop offset="100%" stopColor="#209CFF" />
-              </linearGradient>
-            </defs>
-
-            {/* Circuit Traces around logo (slow draw) */}
-            <motion.path
-              d="M 20,40 L 10,40 L 10,60 M 30,20 L 30,5"
-              fill="none"
-              stroke="#782DFF"
-              strokeWidth="1.2"
-              strokeLinecap="round"
-              initial={{ pathLength: 0 }}
-              animate={{ pathLength: progress / 100 }}
-              className="opacity-40"
-            />
-            <motion.path
-              d="M 75,30 L 90,30 L 90,15 M 70,18 L 85,18"
-              fill="none"
-              stroke="#FF208E"
-              strokeWidth="1.2"
-              strokeLinecap="round"
-              initial={{ pathLength: 0 }}
-              animate={{ pathLength: progress / 100 }}
-              className="opacity-40"
-            />
-
-            {/* Glowing end nodes for circuit lines */}
-            {progress > 40 && (
-              <>
-                <motion.circle cx="10" cy="60" r="2" fill="#782DFF" initial={{ scale: 0 }} animate={{ scale: 1 }} />
-                <motion.circle cx="90" cy="15" r="2" fill="#FF208E" initial={{ scale: 0 }} animate={{ scale: 1 }} />
-              </>
-            )}
-
-            {/* Logo main ribbon - Letter 'T' futuristic structure */}
-            {/* The vertical and horizontal sweeps */}
-            <motion.path
-              d="M 30,25 C 30,25 45,20 65,22 C 72,23 75,28 72,32 C 68,36 55,38 45,42 C 41,44 38,48 38,55 L 38,72 C 38,79 42,82 48,80 C 56,77 64,68 64,68"
-              fill="none"
-              stroke="url(#logo-grad)"
-              strokeWidth="12"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              initial={{ pathLength: 0, opacity: 0 }}
-              animate={{ pathLength: 0.1 + (progress / 110), opacity: 1 }}
-              transition={{ duration: 0.1 }}
-            />
-            
-            {/* Elegant overlay ribbon representing the C shape (Open Book / Connectivity concept) */}
-            <motion.path
-              d="M 68,48 C 68,58 58,68 45,68 C 34,68 25,58 25,48 C 25,38 34,28 45,28"
-              fill="none"
-              stroke="url(#logo-grad)"
-              strokeWidth="6"
-              strokeLinecap="round"
-              strokeDasharray="4, 4"
-              initial={{ pathLength: 0, opacity: 0 }}
-              animate={{ pathLength: progress / 100, opacity: 0.6 }}
-              className="mix-blend-overlay"
-            />
-          </svg>
+          <img src="/loading-logo.png" alt="Loading..." className="w-full h-full object-contain filter drop-shadow-md relative z-10" />
         </div>
 
         {/* Text Details */}
         <div className="text-center select-none">
-          <motion.h1 
-            className="text-2xl font-orbitron tracking-[0.28em] font-bold text-slate-950 uppercase"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            TECHCON<span className="text-brand-pink font-bold font-orbitron">'26</span>
-          </motion.h1>
-          <motion.p 
-            className="text-[10px] font-mono tracking-[0.4em] text-slate-400 uppercase mt-1.5"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-          >
-            DEFINING THE FUTURE
-          </motion.p>
-
-          {/* Progress Percent Counter */}
           <div className="mt-8 flex flex-col items-center">
             <span className="font-mono text-xl font-medium text-slate-800 tabular-nums">
               {progress}%
@@ -194,10 +109,10 @@ export default function Loader({ onComplete }: LoaderProps) {
             className="mt-14"
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.6 }}
-            transition={{ delay: 0.6 }}
+            transition={{ delay: 0.4 }}
           >
-            <p className="text-[11px] text-slate-400 font-sans tracking-wide">
-              organized by <span className="text-slate-700 font-medium font-mono">msf TechFed</span>
+            <p className="text-[11px] text-slate-400 font-sans tracking-wide uppercase">
+              organized by <span className="text-slate-700 font-bold font-['Jura'] text-[14px]">msf TechFed</span>
             </p>
           </motion.div>
         </div>

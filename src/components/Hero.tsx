@@ -85,13 +85,12 @@ export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
             transition={{ duration: 0.8, delay: 0.1 }}
             className="flex flex-col mb-6 items-center lg:items-start"
           >
-            <div className="flex items-baseline gap-1.5 sm:gap-2 flex-wrap justify-center lg:justify-start">
-              <h1 className="text-5xl sm:text-7xl lg:text-8xl font-orbitron font-bold tracking-[0.08em] leading-none text-slate-950 uppercase">
-                techcon
-              </h1>
-              <span className="font-orbitron font-extrabold text-5xl sm:text-7xl lg:text-8xl text-brand-pink tracking-[0.05em] leading-none">
-                26
-              </span>
+            <div className="flex justify-center lg:justify-start w-full max-w-[400px]">
+              <img 
+                src="/hero-typography.png" 
+                alt="TECHCON 26" 
+                className="w-full h-auto object-contain drop-shadow-md" 
+              />
             </div>
             
             {/* Slogan with high letter spacing from the logo concept */}
@@ -151,34 +150,26 @@ export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
             </div>
           </motion.div>
 
-          {/* Action banner */}
+          {/* Minimal Action banner */}
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="w-full max-w-xl mb-6 relative group"
+            className="w-full max-w-lg mb-6 relative"
           >
-            {/* Animated Gradient Background */}
-            <div className="absolute inset-0 bg-gradient-to-r from-brand-pink via-brand-purple to-brand-blue rounded-3xl opacity-90 blur-sm group-hover:opacity-100 transition-opacity duration-500 bg-[length:200%_auto] animate-[pulse_4s_ease-in-out_infinite]" />
-            <div className="relative p-1 bg-gradient-to-r from-brand-pink via-brand-purple to-brand-blue rounded-3xl bg-[length:200%_auto] animate-[pulse_4s_ease-in-out_infinite]">
-              <div className="bg-slate-950 rounded-[22px] p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 relative overflow-hidden">
-                {/* Circuit lines in banner */}
-                <div className="absolute inset-0 opacity-20 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 50% 50%, #ffffff 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
-                <div className="absolute top-0 right-0 w-32 h-32 bg-brand-pink/20 blur-[40px] pointer-events-none" />
-                <div className="absolute bottom-0 left-0 w-32 h-32 bg-brand-blue/20 blur-[40px] pointer-events-none" />
-                
-                <div className="text-center sm:text-left z-10">
-                  <h4 className="text-white font-orbitron font-bold text-lg mb-1">Secure Your Pass</h4>
-                  <p className="text-slate-400 font-sans text-xs max-w-[200px] mx-auto sm:mx-0">Limited seats available for the premier tech assembly.</p>
-                </div>
-                
-                <button
-                  onClick={onOpenRegister}
-                  className="z-10 px-8 py-3.5 bg-white text-slate-900 font-sans font-bold text-sm rounded-full shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:scale-105 hover:shadow-[0_0_30px_rgba(255,255,255,0.5)] transition-all duration-300 w-full sm:w-auto shrink-0"
-                >
-                  REGISTER NOW
-                </button>
+            <div className="w-full rounded-[32px] p-6 sm:p-8 bg-gradient-to-r from-brand-pink via-brand-purple to-brand-blue bg-[length:200%_auto] animate-[pulse_4s_ease-in-out_infinite] flex flex-col sm:flex-row items-center justify-between gap-6">
+              
+              <div className="text-center sm:text-left text-white">
+                <h4 className="font-sans font-bold text-xl mb-1 drop-shadow-sm">Secure Your Pass</h4>
+                <p className="font-sans text-sm text-white/90">Limited seats available.</p>
               </div>
+              
+              <button
+                onClick={onOpenRegister}
+                className="px-8 py-3.5 bg-white text-slate-900 font-sans font-bold text-sm rounded-full transition-transform duration-300 hover:scale-105 w-full sm:w-auto shrink-0"
+              >
+                REGISTER NOW
+              </button>
             </div>
           </motion.div>
 

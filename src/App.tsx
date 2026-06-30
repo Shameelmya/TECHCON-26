@@ -18,7 +18,6 @@ import Collaborators from './components/Collaborators';
 import WhyAttend from './components/WhyAttend';
 import Timeline from './components/Timeline';
 import Venue from './components/Venue';
-import CalendarCard from './components/CalendarCard';
 import RegistrationForm from './components/RegistrationForm';
 import TicketPass from './components/TicketPass';
 import AdminDashboard from './components/AdminDashboard';
@@ -105,9 +104,6 @@ export default function App() {
 
               {/* Geographic Venue Transit fold */}
               <Venue />
-
-              {/* Add to Calendar Event integrations */}
-              <CalendarCard />
 
             </main>
           )}

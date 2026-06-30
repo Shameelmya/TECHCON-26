@@ -51,145 +51,48 @@ export default function TicketPass({ registration, onBackToHome }: TicketPassPro
     }
   }, [registration]);
 
-  const handleSavePNG = () => {
-    // Create high-resolution 640x960 export in full compliance with white-theme guidelines
-    const canvas = document.createElement('canvas');
-    canvas.width = 640;
-    canvas.height = 960;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    // Fill white ticket background
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, 640, 960);
-
-    // Draw top gradient stripe
-    const gradient = ctx.createLinearGradient(0, 0, 640, 0);
-    gradient.addColorStop(0, '#782DFF'); // brand-purple
-    gradient.addColorStop(1, '#FF208E'); // brand-pink
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, 640, 20);
-
-    // Subtle ticket border
-    ctx.strokeStyle = '#e2e8f0';
-    ctx.lineWidth = 4;
-    ctx.strokeRect(10, 10, 620, 940);
-
-    // Horizontal TECHCON Logo
-    ctx.fillStyle = '#0f172a';
-    ctx.font = 'bold 36px sans-serif';
-    ctx.fillText('TECHCON \'26', 45, 95);
-
-    ctx.fillStyle = '#782DFF';
-    ctx.font = 'bold 12px sans-serif';
-    ctx.fillText('DEFINING THE DIGITAL TOMORROW', 45, 125);
-
-    // Ticket ID on top right
-    ctx.fillStyle = '#0f172a';
-    ctx.font = 'bold 20px monospace';
-    ctx.textAlign = 'right';
-    ctx.fillText(registration.id, 595, 95);
-
-    ctx.fillStyle = '#64748b';
-    ctx.font = 'bold 10px monospace';
-    ctx.fillText('OFFICIAL ENTRY PASS', 595, 120);
-
-    // Reset text align
-    ctx.textAlign = 'left';
-
-    // Divider Line 1
-    ctx.strokeStyle = '#f1f5f9';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(40, 160);
-    ctx.lineTo(600, 160);
-    ctx.stroke();
-
-    // Attendee Name
-    ctx.fillStyle = '#64748b';
-    ctx.font = 'bold 11px monospace';
-    ctx.fillText('ATTENDEE / PARTICIPANT', 45, 205);
-    ctx.fillStyle = '#0f172a';
-    ctx.font = 'bold 28px sans-serif';
-    ctx.fillText(registration.fullName.toUpperCase(), 45, 245);
-
-    // ID Relevance & Phone directly under the name
-    ctx.fillStyle = '#782DFF';
-    ctx.font = 'bold 14px monospace';
-    ctx.fillText(`ID: ${registration.id}   |   PHONE: ${registration.mobileNumber}`, 45, 275);
-
-    // Role Category
-    ctx.fillStyle = '#64748b';
-    ctx.font = 'bold 11px monospace';
-    ctx.fillText('PASS CATEGORY', 45, 340);
-    ctx.fillStyle = '#FF208E';
-    ctx.font = 'bold 18px sans-serif';
-    ctx.fillText(registration.occupation.toUpperCase(), 45, 375);
-
-    // Venue & Location
-    ctx.fillStyle = '#64748b';
-    ctx.font = 'bold 11px monospace';
-    ctx.fillText('VENUE', 340, 340);
-    ctx.fillStyle = '#0f172a';
-    ctx.font = 'bold 16px sans-serif';
-    ctx.fillText('CUSAT, KOCHI', 340, 375);
-
-    // Date
-    ctx.fillStyle = '#64748b';
-    ctx.font = 'bold 11px monospace';
-    ctx.fillText('DATE & TIME', 45, 440);
-    ctx.fillStyle = '#0f172a';
-    ctx.font = 'bold 14px sans-serif';
-    ctx.fillText('JULY 15, 2026', 45, 475);
-
-    // Organizer info
-    ctx.fillStyle = '#64748b';
-    ctx.font = 'bold 11px monospace';
-    ctx.fillText('ORGANIZED BY', 340, 440);
-    ctx.fillStyle = '#0f172a';
-    ctx.font = 'bold 14px sans-serif';
-    ctx.fillText('msf Kerala State Committee Tech Wing', 340, 475);
-
-    // Ticket stub dashed line
-    ctx.strokeStyle = '#cbd5e1';
-    ctx.setLineDash([8, 8]);
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(40, 540);
-    ctx.lineTo(600, 540);
-    ctx.stroke();
-    ctx.setLineDash([]); // Reset line dash
-
-    // Draw QR canvas image onto the exporter canvas
-    if (qrCanvasRef.current) {
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(220, 590, 200, 200);
-      ctx.drawImage(qrCanvasRef.current, 230, 600, 180, 180);
+  const handleSavePNG = async () => {
+    if (!ticketRef.current) return;
+    try {
+      const html2canvas = (await import('html2canvas')).default;
+      const canvas = await html2canvas(ticketRef.current, { scale: 3, useCORS: true, backgroundColor: null });
+      const url = canvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `techcon26_boardingpass_${registration.id}.png`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Failed to generate ticket image', error);
     }
-
-    // Ticket instructions
-    ctx.fillStyle = '#64748b';
-    ctx.font = '11px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('PLEASE PRESENT THIS ENTRY PASS AT THE VENUE GATE FOR INSTANT CHECK-IN', 320, 830);
-    ctx.fillStyle = '#94a3b8';
-    ctx.font = 'bold 9px monospace';
-    ctx.fillText('POWERED BY MSF TECHFED SYSTEMS', 320, 860);
-
-    // Export & Download trigger
-    const url = canvas.toDataURL('image/png');
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `techcon26_boardingpass_${registration.id}.png`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
   };
 
-  const handleShareWhatsApp = () => {
-    const text = `Hey! I just registered for TECHCON '26 (organized by msf TechFed). Here is my official Entry Pass Boarding ID: *${registration.id}*. See you there at CUSAT, Kochi on July 15, 2026!`;
-    const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
-    window.open(url, '_blank');
+  const handleShareWhatsApp = async () => {
+    if (!ticketRef.current) return;
+    try {
+      const html2canvas = (await import('html2canvas')).default;
+      const canvas = await html2canvas(ticketRef.current, { scale: 3, useCORS: true, backgroundColor: null });
+      canvas.toBlob(async (blob) => {
+        if (!blob) return;
+        const file = new File([blob], `techcon26_boardingpass_${registration.id}.png`, { type: 'image/png' });
+        
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            files: [file],
+            title: `TECHCON '26 Entry Pass`,
+            text: `Hey! I just registered for TECHCON '26. Here is my official Entry Pass Boarding ID: ${registration.id}.`
+          });
+        } else {
+          // Fallback if sharing files is not supported (desktop browsers mostly)
+          const text = `Hey! I just registered for TECHCON '26. Here is my official Entry Pass Boarding ID: ${registration.id}.`;
+          const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+          window.open(url, '_blank');
+        }
+      });
+    } catch (error) {
+      console.error('Failed to share ticket image', error);
+    }
   };
 
   return (

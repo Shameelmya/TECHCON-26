@@ -287,7 +287,7 @@ export const getRegistrations = (): AttendeeRegistration[] => {
   }
 };
 
-export const saveRegistration = (reg: Omit<AttendeeRegistration, 'id' | 'ticketNumber' | 'verificationToken' | 'checkedIn' | 'checkInTime' | 'createdAt'>): AttendeeRegistration => {
+export const saveRegistration = async (reg: Omit<AttendeeRegistration, 'id' | 'ticketNumber' | 'verificationToken' | 'checkedIn' | 'checkInTime' | 'createdAt'>): Promise<AttendeeRegistration> => {
   const list = getRegistrations();
   
   // Check duplicates
@@ -312,10 +312,21 @@ export const saveRegistration = (reg: Omit<AttendeeRegistration, 'id' | 'ticketN
 
   const updated = [...list, newReg];
   localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+
+  try {
+    await fetch('https://script.google.com/macros/s/AKfycbxzAOiL7SXAk2Sg2Zzt0HWHODnCPNnzrM60I34xbaAVxnBBKM8Donpo1YSPXArr_sRHNQ/exec', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'register', ...newReg })
+    });
+  } catch (err) {
+    console.error("Failed to sync registration to Google Sheets:", err);
+  }
+
   return newReg;
 };
 
-export const checkInAttendee = (ticketNumberOrId: string): AttendeeRegistration => {
+export const checkInAttendee = async (ticketNumberOrId: string): Promise<AttendeeRegistration> => {
   const list = getRegistrations();
   const cleanedInput = ticketNumberOrId.trim().toUpperCase();
   
@@ -337,6 +348,17 @@ export const checkInAttendee = (ticketNumberOrId: string): AttendeeRegistration 
   list[index].checkInTime = new Date().toISOString();
 
   localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+
+  try {
+    await fetch('https://script.google.com/macros/s/AKfycbxzAOiL7SXAk2Sg2Zzt0HWHODnCPNnzrM60I34xbaAVxnBBKM8Donpo1YSPXArr_sRHNQ/exec', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'checkin', ticketNumber: list[index].ticketNumber })
+    });
+  } catch (err) {
+    console.error("Failed to sync check-in to Google Sheets:", err);
+  }
+
   return list[index];
 };
 
@@ -445,3 +467,19 @@ export const exportToCSV = (list: AttendeeRegistration[]) => {
   link.click();
   document.body.removeChild(link);
 };
+
+export const loginAdmin = async (password: string): Promise<boolean> => {
+  try {
+    const res = await fetch('https://script.google.com/macros/s/AKfycbxzAOiL7SXAk2Sg2Zzt0HWHODnCPNnzrM60I34xbaAVxnBBKM8Donpo1YSPXArr_sRHNQ/exec', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'login', password })
+    });
+    const data = await res.json();
+    return data.status === 'success';
+  } catch (err) {
+    console.error("Admin login failed:", err);
+    return false;
+  }
+};
+

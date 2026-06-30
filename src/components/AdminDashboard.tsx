@@ -11,7 +11,8 @@ import {
   FileSpreadsheet, FileText, Check, AlertCircle, Copy, HelpCircle
 } from 'lucide-react';
 import { AttendeeRegistration, AdminStats } from '../types';
-import { getRegistrations, getStats, checkInAttendee, revertCheckIn, exportToCSV } from '../utils/db';
+import { getRegistrations, getStats, checkInAttendee, revertCheckIn, exportToCSV, loginAdmin } from '../utils/db';
+import { Html5QrcodeScanner } from 'html5-qrcode';
 
 interface AdminDashboardProps {
   onClose: () => void;
@@ -47,24 +48,25 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
     setStats(getStats());
   };
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoginError('');
     
     // Access with official passcode or guest access
-    if (password === 'TECHCON2026' || password === 'techcon2026' || password === 'admin') {
+    const isValid = await loginAdmin(password);
+    if (isValid || password === 'admin') {
       setIsAuthenticated(true);
     } else {
-      setLoginError('Invalid administrator credentials. Try: "TECHCON2026"');
+      setLoginError('Invalid administrator credentials.');
     }
   };
 
-  const handleManualCheckIn = (ticketOrId: string) => {
+  const handleManualCheckIn = async (ticketOrId: string) => {
     setScannerResult(null);
     if (!ticketOrId.trim()) return;
 
     try {
-      const attendee = checkInAttendee(ticketOrId);
+      const attendee = await checkInAttendee(ticketOrId);
       setScannerResult({
         success: true,
         msg: `SUCCESS: Checked in ${attendee.fullName} (${attendee.occupation}) at ${new Date(attendee.checkInTime!).toLocaleTimeString()}`
@@ -79,18 +81,50 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
     }
   };
 
-  const handleToggleCheckInTable = (attendee: AttendeeRegistration) => {
+  const handleToggleCheckInTable = async (attendee: AttendeeRegistration) => {
     try {
       if (attendee.checkedIn) {
         revertCheckIn(attendee.id);
       } else {
-        checkInAttendee(attendee.id);
+        await checkInAttendee(attendee.id);
       }
       loadData();
     } catch (e: any) {
       alert(e.message);
     }
   };
+
+  useEffect(() => {
+    let html5QrcodeScanner: Html5QrcodeScanner | null = null;
+    if (activeTab === 'checkin') {
+      // Delay initialization slightly to ensure DOM is ready
+      const timer = setTimeout(() => {
+        const readerElement = document.getElementById('reader');
+        if (readerElement) {
+          html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader",
+            { fps: 10, qrbox: { width: 250, height: 250 } },
+            false
+          );
+          html5QrcodeScanner.render(
+            (decodedText: string) => {
+              // Automatically check in using the decoded text
+              handleManualCheckIn(decodedText);
+            },
+            (errorMessage: any) => {}
+          );
+        }
+      }, 100);
+      return () => {
+        clearTimeout(timer);
+        if (html5QrcodeScanner) {
+          try {
+            html5QrcodeScanner.clear();
+          } catch (e) {}
+        }
+      };
+    }
+  }, [activeTab]);
 
   // Export filtered attendees to Excel CSV
   const handleExportCSV = () => {
@@ -488,11 +522,13 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
                   </div>
                   <h3 className="text-base font-orbitron font-bold text-slate-900 uppercase">Interactive Gate Scanner</h3>
                   <p className="text-xs text-slate-400 max-w-sm mx-auto font-sans leading-relaxed">
-                    Scan or type the Entry Pass ID (e.g. <span className="font-mono font-bold text-purple-600">TC26A001</span>) to record physical attendance instantly.
+                    Scan the QR code on the ticket, or type the Entry Pass ID (e.g. <span className="font-mono font-bold text-purple-600">TC26A001</span>) to record physical attendance instantly.
                   </p>
                 </div>
 
-                <div className="flex gap-2.5">
+                <div id="reader" className="w-full mt-4 rounded-2xl overflow-hidden border border-slate-200"></div>
+
+                <div className="flex gap-2.5 mt-4">
                   <input
                     type="text"
                     placeholder="Enter TC26A001 / Ticket Pass Code..."

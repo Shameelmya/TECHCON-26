@@ -36,7 +36,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
   const [place, setPlace] = useState('');
   const [country, setCountry] = useState('India');
   
-  const [occupation, setOccupation] = useState<'Student' | 'Working Professional' | 'Entrepreneur' | 'Faculty' | 'Research Scholar' | 'Other'>('Student');
+  const [occupation, setOccupation] = useState<'Student' | 'Working Professional' | 'Entrepreneur' | 'Researcher' | 'Other'>('Student');
   
   // Conditional Student fields
   const [institution, setInstitution] = useState('');
@@ -56,7 +56,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
   const [department, setDepartment] = useState('');
 
   // Consent
-  const [consent, setConsent] = useState(false);
+  const [consent, setConsent] = useState(true);
 
   // Auto-fill duplicate detector on mobile number entry
   useEffect(() => {
@@ -97,7 +97,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
       } else if (existing.occupation === 'Entrepreneur') {
         setCompanyName(existing.company || '');
         setSector(existing.industry || '');
-      } else if (existing.occupation === 'Research Scholar') {
+      } else if (existing.occupation === 'Researcher') {
         setUniversity(existing.company || '');
         setDepartment(existing.department || '');
       }
@@ -131,7 +131,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
     setStep(1);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg(null);
 
@@ -191,13 +191,13 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
       } else if (occupation === 'Entrepreneur') {
         payload.company = companyName;
         payload.industry = sector;
-      } else if (occupation === 'Research Scholar' || occupation === 'Faculty') {
+      } else if (occupation === 'Researcher') {
         payload.company = university;
         payload.department = department;
         payload.profession = occupation;
       }
 
-      const registrationResult = saveRegistration(payload);
+      const registrationResult = await saveRegistration(payload);
       onSuccess(registrationResult);
     } catch (err: any) {
       setErrorMsg(err.message || 'An unexpected error occurred during submission.');
@@ -277,7 +277,6 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
                 <label className="text-[11px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Mobile Number</label>
                 <input
                   type="tel"
-                  placeholder=""
                   value={mobileNumber}
                   onChange={(e) => setMobileNumber(e.target.value)}
                   className="w-full px-4 py-3 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-sm text-slate-800 transition-colors"
@@ -290,7 +289,6 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
                 <label className="text-[11px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Full Name</label>
                 <input
                   type="text"
-                  placeholder=""
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   className="w-full px-4 py-3 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-sm text-slate-800 transition-colors"
@@ -304,7 +302,6 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
                 <label className="text-[11px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Email Address</label>
                 <input
                   type="email"
-                  placeholder=""
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-4 py-3 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-sm text-slate-800 transition-colors"
@@ -318,18 +315,23 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
                 <div className="flex justify-between items-center">
                   <label className="text-[11px] font-mono tracking-wider text-slate-400 uppercase font-semibold">WhatsApp Number</label>
                   {!isDuplicateMobileFound && (
-                    <button
-                      type="button"
-                      onClick={() => setWhatsAppNumber(mobileNumber)}
-                      className="text-[9px] font-sans text-purple-600 hover:underline font-semibold"
-                    >
-                      Same as Mobile
-                    </button>
+                    <div className="flex items-center gap-1.5">
+                      <input 
+                        id="same-mobile" 
+                        type="checkbox" 
+                        className="w-3 h-3 accent-purple-600 rounded cursor-pointer"
+                        onChange={(e) => {
+                          if (e.target.checked) setWhatsAppNumber(mobileNumber);
+                        }}
+                      />
+                      <label htmlFor="same-mobile" className="text-[9px] font-sans text-purple-600 font-semibold cursor-pointer select-none">
+                        Same as Mobile
+                      </label>
+                    </div>
                   )}
                 </div>
                 <input
                   type="tel"
-                  placeholder=""
                   value={whatsAppNumber}
                   onChange={(e) => setWhatsAppNumber(e.target.value)}
                   className="w-full px-4 py-3 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-sm text-slate-800 transition-colors"
@@ -343,7 +345,6 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
                 <label className="text-[11px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Place of Residence</label>
                 <input
                   type="text"
-                  placeholder=""
                   value={place}
                   onChange={(e) => setPlace(e.target.value)}
                   className="w-full px-4 py-3 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-sm text-slate-800 transition-colors"
@@ -421,7 +422,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
             <div className="flex flex-col gap-2">
               <label className="text-[11px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Select Current Role *</label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {['Student', 'Working Professional', 'Entrepreneur', 'Faculty', 'Research Scholar', 'Other'].map((role) => (
+                {['Student', 'Working Professional', 'Entrepreneur', 'Researcher', 'Other'].map((role) => (
                   <button
                     key={role}
                     type="button"
@@ -453,8 +454,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
                     <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Institution Name *</label>
                     <input
                       type="text"
-                      placeholder=""
-                      value={institution}
+                          value={institution}
                       onChange={(e) => setInstitution(e.target.value)}
                       className="w-full px-4 py-2.5 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-xs text-slate-800 bg-white"
                       disabled={isDuplicateMobileFound}
@@ -487,8 +487,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
                         <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Which Course? *</label>
                         <input
                           type="text"
-                          placeholder=""
-                          value={customCourse}
+                                  value={customCourse}
                           onChange={(e) => setCustomCourse(e.target.value)}
                           className="w-full px-4 py-2.5 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-xs text-slate-800 bg-white"
                           disabled={isDuplicateMobileFound}
@@ -507,8 +506,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
                     <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Job Title (Optional)</label>
                     <input
                       type="text"
-                      placeholder=""
-                      value={jobTitle}
+                          value={jobTitle}
                       onChange={(e) => setJobTitle(e.target.value)}
                       className="w-full px-4 py-2.5 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-xs text-slate-800 bg-white"
                       disabled={isDuplicateMobileFound}
@@ -518,8 +516,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
                     <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Institution Name / Employer (Optional)</label>
                     <input
                       type="text"
-                      placeholder=""
-                      value={profInstitution}
+                          value={profInstitution}
                       onChange={(e) => setProfInstitution(e.target.value)}
                       className="w-full px-4 py-2.5 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-xs text-slate-800 bg-white"
                       disabled={isDuplicateMobileFound}
@@ -535,8 +532,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
                     <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Company Name (Optional)</label>
                     <input
                       type="text"
-                      placeholder=""
-                      value={companyName}
+                          value={companyName}
                       onChange={(e) => setCompanyName(e.target.value)}
                       className="w-full px-4 py-2.5 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-xs text-slate-800 bg-white"
                       disabled={isDuplicateMobileFound}
@@ -546,8 +542,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
                     <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Sector / Industry (Optional)</label>
                     <input
                       type="text"
-                      placeholder=""
-                      value={sector}
+                          value={sector}
                       onChange={(e) => setSector(e.target.value)}
                       className="w-full px-4 py-2.5 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-xs text-slate-800 bg-white"
                       disabled={isDuplicateMobileFound}
@@ -556,15 +551,14 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
                 </div>
               )}
 
-              {/* RESEARCHER / FACULTY FIELDS */}
-              {(occupation === 'Research Scholar' || occupation === 'Faculty') && (
+              {/* RESEARCHER FIELDS */}
+              {occupation === 'Researcher' && (
                 <div className="space-y-4">
                   <div className="flex flex-col gap-1.5">
                     <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">University / Institution *</label>
                     <input
                       type="text"
-                      placeholder=""
-                      value={university}
+                          value={university}
                       onChange={(e) => setUniversity(e.target.value)}
                       className="w-full px-4 py-2.5 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-xs text-slate-800 bg-white"
                       disabled={isDuplicateMobileFound}
@@ -575,8 +569,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
                     <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Department / Branch *</label>
                     <input
                       type="text"
-                      placeholder=""
-                      value={department}
+                          value={department}
                       onChange={(e) => setDepartment(e.target.value)}
                       className="w-full px-4 py-2.5 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-xs text-slate-800 bg-white"
                       disabled={isDuplicateMobileFound}

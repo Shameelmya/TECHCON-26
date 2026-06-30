@@ -158,7 +158,7 @@ export default function TicketPass({ registration, onBackToHome }: TicketPassPro
             {/* Primary Passenger Pass details */}
             <div className="space-y-5 mb-5 text-left relative z-10">
               <div>
-                <span className="text-[10px] font-mono tracking-widest text-slate-400 uppercase block mb-1">PASSENGER / ATTENDEE</span>
+                <span className="text-[10px] font-mono tracking-widest text-slate-400 uppercase block mb-1">ATTENDEE NAME</span>
                 <span className="text-2xl font-bold font-sans tracking-tight text-slate-900 block truncate uppercase">
                   {registration.fullName}
                 </span>

@@ -263,78 +263,11 @@ export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
                 ease: "easeInOut"
               }}
             >
-              <svg viewBox="0 0 100 100" className="w-5/6 h-5/6">
-                <defs>
-                  <linearGradient id="hero-logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#FF20BE" />
-                    <stop offset="45%" stopColor="#782DFF" />
-                    <stop offset="100%" stopColor="#209CFF" />
-                  </linearGradient>
-                  
-                  <filter id="logo-glow" x="-20%" y="-20%" width="140%" height="140%">
-                    <feGaussianBlur stdDeviation="6" result="blur" />
-                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                  </filter>
-                </defs>
-
-                {/* Network connectivity lines branching from Logo */}
-                {/* Circuit line 1 */}
-                <motion.path
-                  d="M 68,22 Q 85,22 88,10"
-                  fill="none"
-                  stroke="#FF20BE"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  animate={{ pathLength: [0, 1, 0] }}
-                  transition={{ duration: 4, repeat: Infinity, delay: 0.5, ease: "easeInOut" }}
-                />
-                <circle cx="88" cy="10" r="2.5" fill="#FF20BE" className="animate-pulse" />
-
-                {/* Circuit line 2 */}
-                <motion.path
-                  d="M 68,28 Q 90,32 94,48"
-                  fill="none"
-                  stroke="#209CFF"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  animate={{ pathLength: [0, 1, 0] }}
-                  transition={{ duration: 4, repeat: Infinity, delay: 2, ease: "easeInOut" }}
-                />
-                <circle cx="94" cy="48" r="2.5" fill="#209CFF" className="animate-pulse" />
-
-                {/* Circuit line 3 */}
-                <motion.path
-                  d="M 38,72 Q 20,74 12,65"
-                  fill="none"
-                  stroke="#782DFF"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  animate={{ pathLength: [0, 1, 0] }}
-                  transition={{ duration: 4, repeat: Infinity, delay: 1.2, ease: "easeInOut" }}
-                />
-                <circle cx="12" cy="65" r="2.5" fill="#782DFF" className="animate-pulse" />
-
-                {/* Stylized premium letter T brand geometry */}
-                <path
-                  d="M 30,25 C 30,25 45,20 65,22 C 72,23 75,28 72,32 C 68,36 55,38 45,42 C 41,44 38,48 38,55 L 38,72 C 38,79 42,82 48,80 C 56,77 64,68 64,68"
-                  fill="none"
-                  stroke="url(#hero-logo-grad)"
-                  strokeWidth="11"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="drop-shadow-lg"
-                />
-
-                {/* Complementary decorative transparent loop C shape for open book connectivity */}
-                <path
-                  d="M 68,48 C 68,58 58,68 45,68 C 34,68 25,58 25,48 C 25,38 34,28 45,28"
-                  fill="none"
-                  stroke="url(#hero-logo-grad)"
-                  strokeWidth="4"
-                  strokeLinecap="round"
-                  className="opacity-45 mix-blend-overlay"
-                />
-              </svg>
+              <img 
+                src="/hero-graphic.png" 
+                alt="TECHCON Graphic" 
+                className="w-5/6 h-5/6 object-contain" 
+              />
             </motion.div>
           </div>
         </div>

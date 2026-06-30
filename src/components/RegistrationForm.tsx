@@ -30,7 +30,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
   const [email, setEmail] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
   const [whatsAppNumber, setWhatsAppNumber] = useState('');
-  const [age, setAge] = useState<number>(20);
+  const [age, setAge] = useState<number | ''>('');
   const [gender, setGender] = useState('Male');
   const [district, setDistrict] = useState('Ernakulam');
   const [place, setPlace] = useState('');
@@ -57,6 +57,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
 
   // Consent
   const [consent, setConsent] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Auto-fill duplicate detector on mobile number entry
   useEffect(() => {
@@ -79,7 +80,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
       setFullName(existing.fullName || '');
       setEmail(existing.email || '');
       setWhatsAppNumber(existing.whatsAppNumber || '');
-      setAge(existing.age || 20);
+      setAge(existing.age || '');
       setGender(existing.gender || 'Male');
       setDistrict(existing.district || 'Ernakulam');
       setPlace(existing.place || '');
@@ -113,16 +114,18 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
     // Validation for Step 1
     if (step === 1) {
       if (!fullName.trim()) return setErrorMsg('Please enter your full name');
-      if (!email.trim() || !email.includes('@')) return setErrorMsg('Please enter a valid email address');
+      if (email.trim() && !email.includes('@')) return setErrorMsg('Please enter a valid email address');
       if (!mobileNumber.trim()) return setErrorMsg('Please enter your mobile number');
       if (isDuplicateMobileFound) {
         return setErrorMsg('This mobile number is already registered. Please use another mobile number.');
       }
       if (!whatsAppNumber.trim()) return setErrorMsg('Please enter your WhatsApp number');
       if (!place.trim()) return setErrorMsg('Please enter your Place of residence');
-      if (age < 5 || age > 95) return setErrorMsg('Please enter a valid age');
       
       setStep(2);
+      setTimeout(() => {
+        document.getElementById('register-flow')?.scrollIntoView({ behavior: 'smooth' });
+      }, 50);
     }
   };
 
@@ -133,6 +136,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
     setErrorMsg(null);
 
     if (isDuplicateMobileFound) {
@@ -158,6 +162,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
       }
     }
 
+    setIsSubmitting(true);
     try {
       const payload: any = {
         fullName,
@@ -201,6 +206,8 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
       onSuccess(registrationResult);
     } catch (err: any) {
       setErrorMsg(err.message || 'An unexpected error occurred during submission.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -299,14 +306,13 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
 
               {/* Email Address */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-[11px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Email Address</label>
+                <label className="text-[11px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Email Address (Optional)</label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-4 py-3 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-sm text-slate-800 transition-colors"
                   disabled={isDuplicateMobileFound}
-                  required
                 />
               </div>
 
@@ -370,16 +376,13 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
 
               {/* Age */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-[11px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Age (Years)</label>
+                <label className="text-[11px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Age (Years) (Optional)</label>
                 <input
                   type="number"
-                  min="5"
-                  max="95"
                   value={age}
-                  onChange={(e) => setAge(parseInt(e.target.value) || 20)}
+                  onChange={(e) => setAge(e.target.value ? parseInt(e.target.value) : '')}
                   className="w-full px-4 py-3 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-sm text-slate-800 transition-colors"
                   disabled={isDuplicateMobileFound}
-                  required
                 />
               </div>
 
@@ -451,14 +454,13 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
               {occupation === 'Student' && (
                 <div className="space-y-4">
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Institution Name *</label>
+                    <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Institution Name (Optional)</label>
                     <input
                       type="text"
-                          value={institution}
+                      value={institution}
                       onChange={(e) => setInstitution(e.target.value)}
                       className="w-full px-4 py-2.5 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-xs text-slate-800 bg-white"
                       disabled={isDuplicateMobileFound}
-                      required
                     />
                   </div>
 
@@ -484,14 +486,13 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
 
                     {showCourseColumn && (
                       <div className="flex flex-col gap-1.5">
-                        <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Which Course? *</label>
+                        <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Which Course? (Optional)</label>
                         <input
                           type="text"
                                   value={customCourse}
                           onChange={(e) => setCustomCourse(e.target.value)}
                           className="w-full px-4 py-2.5 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-xs text-slate-800 bg-white"
                           disabled={isDuplicateMobileFound}
-                          required
                         />
                       </div>
                     )}
@@ -555,25 +556,23 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
               {occupation === 'Researcher' && (
                 <div className="space-y-4">
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">University / Institution *</label>
+                    <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">University / Institution (Optional)</label>
                     <input
                       type="text"
                           value={university}
                       onChange={(e) => setUniversity(e.target.value)}
                       className="w-full px-4 py-2.5 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-xs text-slate-800 bg-white"
                       disabled={isDuplicateMobileFound}
-                      required
                     />
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Department / Branch *</label>
+                    <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Department / Branch (Optional)</label>
                     <input
                       type="text"
                           value={department}
                       onChange={(e) => setDepartment(e.target.value)}
                       className="w-full px-4 py-2.5 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-xs text-slate-800 bg-white"
                       disabled={isDuplicateMobileFound}
-                      required
                     />
                   </div>
                 </div>
@@ -641,10 +640,17 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
           ) : (
             <button
               type="submit"
-              className="px-10 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-sans font-semibold text-xs rounded-full shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50"
-              disabled={isDuplicateMobileFound}
+              className="px-10 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-sans font-semibold text-xs rounded-full shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-75 disabled:cursor-wait"
+              disabled={isDuplicateMobileFound || isSubmitting}
             >
-              SUBMIT & GENERATE TICKET
+              {isSubmitting ? (
+                <span className="flex items-center gap-2 justify-center">
+                  <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  PROCESSING...
+                </span>
+              ) : (
+                "SUBMIT & GENERATE TICKET"
+              )}
             </button>
           )}
         </div>

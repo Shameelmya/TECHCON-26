@@ -483,3 +483,49 @@ export const loginAdmin = async (password: string): Promise<boolean> => {
   }
 };
 
+export const getSettings = async (): Promise<boolean> => {
+  try {
+    const res = await fetch('https://script.google.com/macros/s/AKfycbxzAOiL7SXAk2Sg2Zzt0HWHODnCPNnzrM60I34xbaAVxnBBKM8Donpo1YSPXArr_sRHNQ/exec', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'getSettings' })
+    });
+    const data = await res.json();
+    return data.isOpen !== false;
+  } catch (err) {
+    console.error("Failed to get settings:", err);
+    return true; 
+  }
+};
+
+export const toggleRegistrationStatus = async (isOpen: boolean, password: string = 'admin'): Promise<boolean> => {
+  try {
+    const res = await fetch('https://script.google.com/macros/s/AKfycbxzAOiL7SXAk2Sg2Zzt0HWHODnCPNnzrM60I34xbaAVxnBBKM8Donpo1YSPXArr_sRHNQ/exec', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'toggleRegistration', isOpen, password })
+    });
+    const data = await res.json();
+    return data.status === 'success';
+  } catch (err) {
+    console.error("Failed to toggle registration:", err);
+    return false;
+  }
+};
+
+export const fetchPass = async (fullName: string, mobileNumber: string): Promise<any> => {
+  try {
+    const res = await fetch('https://script.google.com/macros/s/AKfycbxzAOiL7SXAk2Sg2Zzt0HWHODnCPNnzrM60I34xbaAVxnBBKM8Donpo1YSPXArr_sRHNQ/exec', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'getPass', fullName, mobileNumber })
+    });
+    const data = await res.json();
+    if (data.status === 'success') {
+      return data.ticket;
+    }
+    throw new Error(data.message || 'Ticket not found.');
+  } catch (err) {
+    throw err;
+  }
+};

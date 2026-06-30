@@ -11,7 +11,7 @@ import {
   FileSpreadsheet, FileText, Check, AlertCircle, Copy, HelpCircle
 } from 'lucide-react';
 import { AttendeeRegistration, AdminStats } from '../types';
-import { getRegistrations, getStats, checkInAttendee, revertCheckIn, exportToCSV, loginAdmin } from '../utils/db';
+import { getRegistrations, getStats, checkInAttendee, revertCheckIn, exportToCSV, loginAdmin, getSettings, toggleRegistrationStatus } from '../utils/db';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 
 interface AdminDashboardProps {
@@ -22,6 +22,8 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
+  const [isRegOpen, setIsRegOpen] = useState(true);
+  const [isTogglingReg, setIsTogglingReg] = useState(false);
 
   // Dashboard Stats
   const [stats, setStats] = useState<AdminStats | null>(null);
@@ -42,10 +44,12 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
     }
   }, [isAuthenticated]);
 
-  const loadData = () => {
+  const loadData = async () => {
     const list = getRegistrations();
     setAttendees(list);
     setStats(getStats());
+    const regState = await getSettings();
+    setIsRegOpen(regState);
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -318,15 +322,40 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
               </div>
             </div>
 
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2.5 flex-wrap">
+              {/* Registration Status Toggle */}
+              <button
+                onClick={async () => {
+                  setIsTogglingReg(true);
+                  const newState = !isRegOpen;
+                  const success = await toggleRegistrationStatus(newState, password);
+                  if (success) setIsRegOpen(newState);
+                  else alert("Failed to change registration status. Please try again.");
+                  setIsTogglingReg(false);
+                }}
+                disabled={isTogglingReg}
+                className={`px-4 py-2.5 rounded-xl border transition-all flex items-center gap-2 text-xs font-semibold ${
+                  isRegOpen
+                    ? 'bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100'
+                    : 'bg-rose-50 border-rose-200 text-rose-700 hover:bg-rose-100'
+                }`}
+              >
+                {isTogglingReg ? (
+                  <div className="w-3.5 h-3.5 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <div className={`w-2.5 h-2.5 rounded-full ${isRegOpen ? 'bg-emerald-500' : 'bg-rose-500'}`} />
+                )}
+                <span>{isRegOpen ? 'REGISTRATIONS OPEN' : 'REGISTRATIONS CLOSED'}</span>
+              </button>
+
               {/* Refresh button */}
               <button
                 onClick={loadData}
                 className="p-2.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl text-slate-500 hover:text-slate-900 transition-all flex items-center gap-1.5 text-xs font-semibold"
                 title="Refresh registrations"
               >
-                <RefreshCw size={13} className="text-slate-600 animate-spin" style={{ animationDuration: '6s' }} />
-                <span>REFRESH</span>
+                <RefreshCw size={13} className="text-slate-600 animate-[spin_6s_linear_infinite]" />
+                <span className="hidden sm:inline">REFRESH</span>
               </button>
               
               <button
@@ -337,7 +366,7 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
                 className="flex items-center gap-2 px-4 py-2.5 border border-red-200 bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 font-sans font-semibold text-xs rounded-xl transition-all"
               >
                 <LogOut size={13} />
-                <span>Lock Console</span>
+                <span className="hidden sm:inline">Lock Console</span>
               </button>
             </div>
           </div>

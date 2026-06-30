@@ -82,22 +82,20 @@ export default function Navbar({ onNavigate, activeSection, onOpenAdmin, onOpenR
         </div>
 
         {/* Action Buttons */}
-        <div className="hidden md:flex items-center gap-3">
+        <div className="flex items-center gap-2 md:gap-3">
           
           {/* Primary CTA */}
           <button
             onClick={onOpenRegister}
-            className="px-5 py-2 text-[13px] font-sans font-bold bg-gradient-to-r from-brand-purple to-brand-pink text-white rounded-full hover:shadow-[0_4px_12px_rgba(120,45,255,0.25)] hover:-translate-y-0.5 transition-all duration-300"
+            className="px-4 md:px-5 py-1.5 md:py-2 text-[12px] md:text-[13px] font-sans font-bold bg-gradient-to-r from-brand-purple to-brand-pink text-white rounded-full hover:shadow-[0_4px_12px_rgba(120,45,255,0.25)] hover:-translate-y-0.5 transition-all duration-300"
           >
             Register Now
           </button>
-        </div>
 
-        {/* Mobile Hamburger toggle */}
-        <div className="md:hidden flex items-center gap-3">
+          {/* Mobile Hamburger toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-full hover:bg-slate-100 text-slate-700 transition-colors"
+            className="md:hidden p-1.5 rounded-full hover:bg-slate-100 text-slate-700 transition-colors"
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>

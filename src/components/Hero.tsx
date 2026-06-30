@@ -8,11 +8,12 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Calendar, MapPin, User, ChevronRight } from 'lucide-react';
 
 interface HeroProps {
+  isRegOpen?: boolean;
   onOpenRegister: () => void;
   onExploreEvent: () => void;
 }
 
-export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
+export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent }: HeroProps) {
   const [timeLeft, setTimeLeft] = useState({ days: 15, hours: 0, minutes: 0, seconds: 0 });
   const [currentGraphicIndex, setCurrentGraphicIndex] = useState(0);
   
@@ -23,7 +24,7 @@ export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
     // Graphic carousel timer
     const graphicInterval = setInterval(() => {
       setCurrentGraphicIndex((prev) => (prev + 1) % graphics.length);
-    }, 5000);
+    }, 2500);
     return () => clearInterval(graphicInterval);
   }, []);
 
@@ -71,7 +72,7 @@ export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
         }}
       />
 
-      <div className="relative max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-8 items-center z-10">
+      <div className="relative max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-1 sm:gap-8 lg:gap-8 items-center z-10">
         
         {/* Left column: Headings and copy */}
         <div className="lg:col-span-7 flex flex-col justify-center items-center lg:items-start text-center lg:text-left order-2 lg:order-1">
@@ -83,7 +84,7 @@ export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
             transition={{ duration: 0.8, delay: 0.1 }}
             className="flex flex-col mb-4 sm:mb-6 items-center lg:items-start w-full"
           >
-            <div className="flex justify-center lg:justify-start w-full max-w-[280px] sm:max-w-[400px] lg:max-w-[1100px]">
+            <div className="flex justify-center lg:justify-start w-full max-w-[280px] sm:max-w-[400px] lg:max-w-[900px]">
               <img 
                 src="/hero-typography.png" 
                 alt="TECHCON 26" 
@@ -107,7 +108,7 @@ export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 border-t border-slate-100 pt-6 mb-10 max-w-lg w-full"
+            className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-6 border-t border-slate-100 pt-6 mb-10 max-w-lg w-full"
           >
             <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-2 sm:gap-3">
               <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-brand-purple shrink-0 border border-purple-100/50">
@@ -156,9 +157,16 @@ export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
               
               <button
                 onClick={onOpenRegister}
-                className="px-8 py-3.5 bg-white text-slate-900 font-sans font-bold text-sm rounded-full transition-transform duration-300 hover:scale-105 w-full sm:w-auto shrink-0"
+                disabled={!isRegOpen}
+                className={`px-8 py-3.5 bg-white font-sans font-bold text-sm rounded-full transition-transform duration-300 w-full sm:w-auto shrink-0 shadow-lg ${
+                  isRegOpen 
+                    ? 'hover:scale-105 animate-[pulse_3s_ease-in-out_infinite] shadow-purple-500/20' 
+                    : 'opacity-80 cursor-not-allowed shadow-slate-200'
+                }`}
               >
-                REGISTER NOW
+                <span className={isRegOpen ? "bg-gradient-to-r from-brand-purple to-brand-pink bg-clip-text text-transparent" : "text-slate-500"}>
+                  {isRegOpen ? "REGISTER NOW" : "REGISTRATION CLOSED"}
+                </span>
               </button>
             </div>
           </motion.div>
@@ -234,7 +242,7 @@ export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
         </div>
 
         {/* Right column: Interactive Premium Logo Float Visual */}
-        <div className="lg:col-span-5 flex items-center justify-center order-1 lg:order-2 h-72 sm:h-96 lg:h-[550px]">
+        <div className="lg:col-span-5 flex items-center justify-center order-1 lg:order-2 h-64 sm:h-96 lg:h-[550px]">
           <div className="relative w-64 h-64 sm:w-80 sm:h-80 lg:w-[500px] lg:h-[500px]">
             {/* Glowing Soft Background Circle blobs behind Logo */}
             <motion.div
@@ -280,7 +288,7 @@ export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
                   key={currentGraphicIndex}
                   src={graphics[currentGraphicIndex]} 
                   alt="TECHCON Graphic" 
-                  className="w-5/6 h-5/6 object-contain absolute" 
+                  className="w-full h-full object-contain absolute" 
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}

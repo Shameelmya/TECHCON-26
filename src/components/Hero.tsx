@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { Calendar, MapPin, User, ChevronRight } from 'lucide-react';
 
 interface HeroProps {
@@ -14,6 +14,18 @@ interface HeroProps {
 
 export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
   const [timeLeft, setTimeLeft] = useState({ days: 15, hours: 0, minutes: 0, seconds: 0 });
+  const [currentGraphicIndex, setCurrentGraphicIndex] = useState(0);
+  
+  // Memoize array outside of effect dependency to avoid recreation or just declare outside
+  const graphics = ['/hero-graphic.png', '/hero-graphic1.png', '/hero-graphic2.png'];
+
+  useEffect(() => {
+    // Graphic carousel timer
+    const graphicInterval = setInterval(() => {
+      setCurrentGraphicIndex((prev) => (prev + 1) % graphics.length);
+    }, 5000);
+    return () => clearInterval(graphicInterval);
+  }, []);
 
   useEffect(() => {
     // Target date: 15 July 2026 UTC
@@ -263,11 +275,18 @@ export default function Hero({ onOpenRegister, onExploreEvent }: HeroProps) {
                 ease: "easeInOut"
               }}
             >
-              <img 
-                src="/hero-graphic.png" 
-                alt="TECHCON Graphic" 
-                className="w-5/6 h-5/6 object-contain" 
-              />
+              <AnimatePresence mode="wait">
+                <motion.img 
+                  key={currentGraphicIndex}
+                  src={graphics[currentGraphicIndex]} 
+                  alt="TECHCON Graphic" 
+                  className="w-5/6 h-5/6 object-contain absolute" 
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                />
+              </AnimatePresence>
             </motion.div>
           </div>
         </div>

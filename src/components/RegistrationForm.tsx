@@ -454,7 +454,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
               {occupation === 'Student' && (
                 <div className="space-y-4">
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Institution Name (Optional)</label>
+                    <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Institution Name</label>
                     <input
                       type="text"
                       value={institution}
@@ -486,7 +486,7 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
 
                     {showCourseColumn && (
                       <div className="flex flex-col gap-1.5">
-                        <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Which Course? (Optional)</label>
+                        <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Which Course?</label>
                         <input
                           type="text"
                                   value={customCourse}

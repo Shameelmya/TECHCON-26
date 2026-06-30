@@ -291,9 +291,12 @@ export const saveRegistration = async (reg: Omit<AttendeeRegistration, 'id' | 't
   const list = getRegistrations();
   
   // Check duplicates
-  const duplicate = list.find(item => item.email.toLowerCase() === reg.email.toLowerCase() || item.mobileNumber === reg.mobileNumber);
+  const duplicate = list.find(item => 
+    (reg.email && item.email && item.email.toLowerCase() === reg.email.toLowerCase()) || 
+    (item.mobileNumber === reg.mobileNumber)
+  );
   if (duplicate) {
-    throw new Error(`Already registered. Found existing user with email "${reg.email}" or phone "${reg.mobileNumber}".`);
+    throw new Error(`Already registered. Found existing user with email "${reg.email || 'N/A'}" or phone "${reg.mobileNumber}".`);
   }
 
   const id = generateCustomID(list.length);

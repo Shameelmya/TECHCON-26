@@ -115,13 +115,13 @@ export default function App() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-50 bg-slate-950/40 backdrop-blur-md flex items-center justify-center p-6 overflow-y-auto"
+                className="fixed inset-0 z-50 bg-slate-950/40 backdrop-blur-md flex items-start justify-center p-4 sm:p-6 overflow-y-auto"
               >
                 <motion.div 
                   initial={{ scale: 0.95, y: 15 }}
                   animate={{ scale: 1, y: 0 }}
                   exit={{ scale: 0.95, y: 15 }}
-                  className="w-full max-w-2xl"
+                  className="w-full max-w-2xl my-auto py-8 sm:py-0"
                 >
                   <RegistrationForm 
                     onSuccess={handleRegisterSuccess}

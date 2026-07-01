@@ -24,7 +24,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
     // Graphic carousel timer
     const graphicInterval = setInterval(() => {
       setCurrentGraphicIndex((prev) => (prev + 1) % graphics.length);
-    }, 2500);
+    }, 4000);
     return () => clearInterval(graphicInterval);
   }, []);
 
@@ -152,22 +152,23 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
               
               <div className="text-center sm:text-left text-white">
                 <h4 className="font-sans font-bold text-xl mb-1 drop-shadow-sm">Secure Your Pass</h4>
-                <p className="font-sans text-sm text-white/90">Limited seats available.</p>
               </div>
               
-              <button
+              <motion.button
                 onClick={onOpenRegister}
                 disabled={!isRegOpen}
-                className={`px-8 py-3.5 bg-white font-sans font-bold text-sm rounded-full transition-transform duration-300 w-full sm:w-auto shrink-0 shadow-lg ${
+                animate={isRegOpen ? { scale: [1, 1.05, 1] } : {}}
+                transition={isRegOpen ? { repeat: Infinity, duration: 3, ease: "easeInOut" } : {}}
+                className={`px-8 py-3.5 bg-white text-slate-800 font-sans font-bold text-sm rounded-full w-full sm:w-auto shrink-0 shadow-lg ${
                   isRegOpen 
-                    ? 'hover:scale-105 animate-[pulse_3s_ease-in-out_infinite] shadow-purple-500/20' 
+                    ? 'shadow-purple-500/20 hover:shadow-purple-500/40' 
                     : 'opacity-80 cursor-not-allowed shadow-slate-200'
                 }`}
               >
-                <span className={isRegOpen ? "bg-gradient-to-r from-brand-purple to-brand-pink bg-clip-text text-transparent" : "text-slate-500"}>
+                <span>
                   {isRegOpen ? "REGISTER NOW" : "REGISTRATION CLOSED"}
                 </span>
-              </button>
+              </motion.button>
             </div>
           </motion.div>
 
@@ -272,18 +273,11 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
 
             {/* Floating Logo SVG */}
             <motion.div
-              className="absolute inset-0 flex items-center justify-center hover-logo filter drop-shadow-[0_16px_32px_rgba(120,45,255,0.18)]"
-              animate={{ 
-                y: [-12, 12, -12],
-                rotate: [-1, 1, -1]
-              }}
-              transition={{
-                duration: 5,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
+              className="absolute inset-0 flex items-center justify-center filter drop-shadow-[0_16px_32px_rgba(120,45,255,0.18)]"
+              animate={{ y: [-12, 12, -12] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
             >
-              <AnimatePresence mode="wait">
+              <AnimatePresence>
                 <motion.img 
                   key={currentGraphicIndex}
                   src={graphics[currentGraphicIndex]} 

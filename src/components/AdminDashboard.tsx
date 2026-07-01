@@ -11,7 +11,7 @@ import {
   FileSpreadsheet, FileText, Check, AlertCircle, Copy, HelpCircle
 } from 'lucide-react';
 import { AttendeeRegistration, AdminStats } from '../types';
-import { getRegistrations, getStats, checkInAttendee, revertCheckIn, exportToCSV, loginAdmin, getSettings, toggleRegistrationStatus } from '../utils/db';
+import { getRegistrations, fetchAllRegistrations, getStats, checkInAttendee, revertCheckIn, exportToCSV, loginAdmin, getSettings, toggleRegistrationStatus } from '../utils/db';
 import { Html5QrcodeScanner } from 'html5-qrcode';
 
 interface AdminDashboardProps {
@@ -45,7 +45,7 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
   }, [isAuthenticated]);
 
   const loadData = async () => {
-    const list = getRegistrations();
+    const list = await fetchAllRegistrations();
     setAttendees(list);
     setStats(getStats());
     const regState = await getSettings();
@@ -250,9 +250,6 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
                 <p className="text-xs text-slate-500 mt-1.5 font-sans leading-relaxed">
                   Provide administrator passcode to access live registrations, check-in controls, and sheet sync engines.
                 </p>
-                <div className="mt-2.5 p-1.5 bg-purple-50 border border-purple-100 rounded-lg inline-block text-[10px] font-mono text-purple-700">
-                  PASSCODE: <span className="font-bold underline">TECHCON2026</span>
-                </div>
               </div>
 
               {loginError && (

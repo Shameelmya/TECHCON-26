@@ -46,7 +46,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
   return (
     <section 
       id="hero" 
-      className="relative min-h-screen flex items-center justify-center px-4 md:px-8 pt-32 md:pt-48 pb-10"
+      className="relative min-h-screen flex items-center justify-center px-4 md:px-8 pt-24 md:pt-32 pb-10"
     >
       {/* Blurred Soft Light Blobs for Depth */}
       <div className="absolute w-[450px] h-[450px] rounded-full bg-gradient-to-tr from-brand-purple/20 to-brand-pink/20 blur-[120px] -top-20 left-1/4 pointer-events-none animate-[pulse_8s_infinite]" />
@@ -79,7 +79,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.2 }}
-              className="w-24 sm:w-32 md:w-40 lg:w-48 object-contain mb-4 sm:mb-6"
+              className="w-24 sm:w-32 md:w-40 lg:w-48 object-contain mb-8 sm:mb-12 lg:mb-16"
             />
             <h1 className="text-[13vw] md:text-[7rem] lg:text-[9.5rem] whitespace-nowrap font-orbitron font-black tracking-tighter leading-none flex items-center justify-center drop-shadow-[0_0_25px_rgba(255,255,255,0.4)]">
               <motion.div 

@@ -1,203 +1,89 @@
-import { useEffect, useRef, useState } from 'react';
-import { useScroll } from 'motion/react';
+import { useEffect, useRef } from 'react';
 
 export default function CircuitBackground() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const { scrollY } = useScroll();
-  const scrollVelocity = useRef(0);
-  const lastScrollY = useRef(0);
-  const mouseRef = useRef({ x: window.innerWidth / 2, y: window.innerHeight / 2 });
-  
-  const [mounted, setMounted] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const blob1Ref = useRef<HTMLDivElement>(null);
+  const blob2Ref = useRef<HTMLDivElement>(null);
+  const blob3Ref = useRef<HTMLDivElement>(null);
 
-  // 1. Device Detection
   useEffect(() => {
-    const checkDevice = () => {
-      const mobile = window.innerWidth < 768 || window.matchMedia('(hover: none) and (pointer: coarse)').matches;
-      setIsMobile(mobile);
+    const handleScroll = () => {
+      if (!blob1Ref.current || !blob2Ref.current || !blob3Ref.current) return;
+      
+      const scrollY = window.scrollY;
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollPercent = scrollY / (maxScroll || 1);
+
+      // Magenta blob slides down and right
+      const blob1X = scrollPercent * 40; // up to 40vw
+      const blob1Y = scrollPercent * 50; // up to 50vh
+      
+      // Blue blob slides up and left
+      const blob2X = scrollPercent * -40; // up to -40vw
+      const blob2Y = scrollPercent * -50; // up to -50vh
+      
+      // Purple blob scales up
+      const blob3Scale = 1 + scrollPercent * 1.5; // Scale from 1 to 2.5
+
+      blob1Ref.current.style.transform = `translate3d(${blob1X}vw, ${blob1Y}vh, 0)`;
+      blob2Ref.current.style.transform = `translate3d(${blob2X}vw, ${blob2Y}vh, 0)`;
+      blob3Ref.current.style.transform = `scale(${blob3Scale})`;
     };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
     
-    checkDevice();
-    window.addEventListener('resize', checkDevice);
-    setMounted(true);
-    
-    return () => window.removeEventListener('resize', checkDevice);
+    // Initial position
+    handleScroll();
+
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Scroll Tracking
-  useEffect(() => {
-    if (isMobile) return;
-    const unsubscribe = scrollY.on('change', (latest) => {
-      const delta = latest - lastScrollY.current;
-      scrollVelocity.current = delta;
-      lastScrollY.current = latest;
-    });
-    return () => unsubscribe();
-  }, [scrollY, isMobile]);
-
-  // Mouse Tracking for Parallax
-  useEffect(() => {
-    if (isMobile) return;
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseRef.current = { x: e.clientX, y: e.clientY };
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [isMobile]);
-
-  // 2. Desktop Experience (The Quantum Node Network)
-  useEffect(() => {
-    if (!mounted || isMobile || !canvasRef.current) return;
-
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d', { alpha: false }); // Optimize for no transparency buffer
-    if (!ctx) return;
-
-    let animationFrameId: number;
-    let particles: Particle[] = [];
-    let width = window.innerWidth;
-    let height = window.innerHeight;
-
-    const initCanvas = () => {
-      width = window.innerWidth;
-      height = window.innerHeight;
-      canvas.width = width;
-      canvas.height = height;
-    };
-
-    class Particle {
-      x: number;
-      y: number;
-      vx: number;
-      vy: number;
-      baseSize: number;
-      color: string;
-      parallaxFactor: number;
-
-      constructor() {
-        this.x = Math.random() * width;
-        this.y = Math.random() * height;
-        this.vx = (Math.random() - 0.5) * 0.5;
-        this.vy = (Math.random() - 0.5) * 0.5;
-        this.baseSize = Math.random() * 1.5 + 0.5;
-        // Glow in Electric Magenta (#E01A8A) and Deep Cyber Blue (#2036F2)
-        this.color = Math.random() > 0.5 ? '#E01A8A' : '#2036F2';
-        this.parallaxFactor = Math.random() * 0.05 + 0.01;
-      }
-
-      update(scrollV: number, mouseX: number, mouseY: number) {
-        // Accelerate on scroll
-        const speedMultiplier = 1 + Math.abs(scrollV) * 0.1;
-        
-        // Mouse parallax shift
-        const dx = (mouseX - width / 2) * this.parallaxFactor;
-        const dy = (mouseY - height / 2) * this.parallaxFactor;
-
-        this.x += this.vx * speedMultiplier + (dx * 0.02);
-        this.y += this.vy * speedMultiplier + scrollV * 0.2 + (dy * 0.02);
-
-        // Wrap around
-        if (this.x < -50) this.x = width + 50;
-        if (this.x > width + 50) this.x = -50;
-        if (this.y < -50) this.y = height + 50;
-        if (this.y > height + 50) this.y = -50;
-      }
-
-      draw() {
-        if (!ctx) return;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.baseSize, 0, Math.PI * 2);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-      }
-    }
-
-    const initParticles = () => {
-      particles = [];
-      const particleCount = Math.min(Math.floor((width * height) / 12000), 120);
-      for (let i = 0; i < particleCount; i++) {
-        particles.push(new Particle());
-      }
-    };
-
-    const drawLines = () => {
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-
-          if (distance < 160) {
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            const opacity = 1 - distance / 160;
-            
-            const gradient = ctx.createLinearGradient(particles[i].x, particles[i].y, particles[j].x, particles[j].y);
-            // E01A8A = 224, 26, 138 | 2036F2 = 32, 54, 242
-            const color1 = particles[i].color === '#E01A8A' ? `rgba(224, 26, 138, ${opacity * 0.5})` : `rgba(32, 54, 242, ${opacity * 0.5})`;
-            const color2 = particles[j].color === '#E01A8A' ? `rgba(224, 26, 138, ${opacity * 0.5})` : `rgba(32, 54, 242, ${opacity * 0.5})`;
-            
-            gradient.addColorStop(0, color1);
-            gradient.addColorStop(1, color2);
-            
-            ctx.strokeStyle = gradient;
-            ctx.lineWidth = 1.2;
-            ctx.stroke();
-          }
-        }
-      }
-    };
-
-    const animate = () => {
-      // Use dark background fill instead of clearRect for performance and trailing effects
-      ctx.fillStyle = '#0A0A0C';
-      ctx.fillRect(0, 0, width, height);
-
-      scrollVelocity.current *= 0.9;
-
-      particles.forEach(p => {
-        p.update(scrollVelocity.current, mouseRef.current.x, mouseRef.current.y);
-        p.draw();
-      });
-
-      drawLines();
-      animationFrameId = requestAnimationFrame(animate);
-    };
-
-    initCanvas();
-    initParticles();
-    animate();
-
-    const handleResize = () => {
-      initCanvas();
-      initParticles();
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => {
-      cancelAnimationFrame(animationFrameId);
-      window.removeEventListener('resize', handleResize);
-    };
-  }, [mounted, isMobile]);
-
-  if (!mounted) return null;
-
-  // 3. Mobile Experience (The Glassmorphic Engine)
-  // Disable Canvas WebGL completely to save battery, relying purely on CSS background
   return (
-    <div className="fixed inset-0 w-full h-full pointer-events-none z-[-1] bg-[#0A0A0C]">
-      {/* Soft overlay gradients */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0C] via-brand-purple/5 to-[#0A0A0C] z-0 opacity-80" />
+    <div 
+      ref={containerRef}
+      className="fixed inset-0 w-full h-full pointer-events-none z-[-1] overflow-hidden"
+      style={{ backgroundColor: '#0A0A0C' }}
+    >
+      {/* Blob 1: Electric Magenta */}
+      <div 
+        ref={blob1Ref}
+        className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] min-w-[300px] min-h-[300px] rounded-full"
+        style={{
+          backgroundColor: '#E01A8A',
+          filter: 'blur(140px)',
+          opacity: 0.6,
+          willChange: 'transform',
+          transition: 'transform 1.8s cubic-bezier(0.1, 0.8, 0.2, 1)',
+        }}
+      />
       
-      {!isMobile && (
-        <canvas
-          ref={canvasRef}
-          className="block absolute inset-0 w-full h-full z-10 mix-blend-screen opacity-90"
-        />
-      )}
+      {/* Blob 2: Deep Cyber Blue */}
+      <div 
+        ref={blob2Ref}
+        className="absolute bottom-[-10%] right-[-10%] w-[55vw] h-[55vw] min-w-[350px] min-h-[350px] rounded-full"
+        style={{
+          backgroundColor: '#2036F2',
+          filter: 'blur(140px)',
+          opacity: 0.6,
+          willChange: 'transform',
+          transition: 'transform 1.8s cubic-bezier(0.1, 0.8, 0.2, 1)',
+        }}
+      />
       
+      {/* Blob 3: Deep Purple */}
+      <div 
+        ref={blob3Ref}
+        className="absolute top-[25%] left-[25%] w-[40vw] h-[40vw] min-w-[250px] min-h-[250px] rounded-full"
+        style={{
+          backgroundColor: '#4A148C',
+          filter: 'blur(140px)',
+          opacity: 0.25,
+          willChange: 'transform',
+          transition: 'transform 1.8s cubic-bezier(0.1, 0.8, 0.2, 1)',
+          transformOrigin: 'center center',
+        }}
+      />
+
       {/* Noise Texture Overlay for modern grain */}
       <div 
         className="absolute inset-0 opacity-[0.04] mix-blend-overlay z-20"

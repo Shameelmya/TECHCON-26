@@ -53,9 +53,7 @@ export default function Venue() {
           
           {/* Dark Transit Info Details Card */}
           <div className="flex flex-col justify-between bg-brand-navy/50 backdrop-blur-md border border-slate-800/80 p-6 sm:p-8 rounded-[32px] shadow-2xl relative overflow-hidden">
-            <div className="absolute left-0 top-0 p-3 select-none pointer-events-none opacity-20">
-              <span className="font-mono text-[9px] text-slate-400">LOC.A_TRANSIT_GRID_026</span>
-            </div>
+
 
             <div className="relative z-10 space-y-6">
               <div>

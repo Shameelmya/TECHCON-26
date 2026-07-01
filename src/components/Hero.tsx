@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { ChevronRight, ArrowRight, Calendar, MapPin, User, ArrowDown } from 'lucide-react';
 import MagneticButton from './MagneticButton';
 

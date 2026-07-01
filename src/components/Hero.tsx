@@ -11,9 +11,10 @@ interface HeroProps {
   isRegOpen?: boolean;
   onOpenRegister: () => void;
   onExploreEvent: () => void;
+  onGetPass: () => void;
 }
 
-export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent }: HeroProps) {
+export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent, onGetPass }: HeroProps) {
   const [timeLeft, setTimeLeft] = useState({ days: 15, hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
@@ -142,21 +143,29 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
                 <h4 className="font-sans font-bold text-xl mb-1 drop-shadow-sm">Secure Your Pass</h4>
               </div>
               
-              <motion.button
-                onClick={onOpenRegister}
-                disabled={!isRegOpen}
-                animate={isRegOpen ? { scale: [1, 1.05, 1] } : {}}
-                transition={isRegOpen ? { repeat: Infinity, duration: 3, ease: "easeInOut" } : {}}
-                className={`px-8 py-3.5 bg-white text-slate-800 font-sans font-bold text-sm rounded-full w-full sm:w-auto shrink-0 shadow-lg ${
-                  isRegOpen 
-                    ? 'shadow-purple-500/20 hover:shadow-purple-500/40' 
-                    : 'opacity-80 cursor-not-allowed shadow-slate-200'
-                }`}
-              >
-                <span>
-                  {isRegOpen ? "REGISTER NOW" : "REGISTRATION CLOSED"}
-                </span>
-              </motion.button>
+              <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+                <motion.button
+                  onClick={onOpenRegister}
+                  disabled={!isRegOpen}
+                  animate={isRegOpen ? { scale: [1, 1.05, 1] } : {}}
+                  transition={isRegOpen ? { repeat: Infinity, duration: 3, ease: "easeInOut" } : {}}
+                  className={`px-8 py-3.5 bg-white text-slate-800 font-sans font-bold text-sm rounded-full w-full sm:w-auto shrink-0 shadow-lg ${
+                    isRegOpen 
+                      ? 'shadow-purple-500/20 hover:shadow-purple-500/40' 
+                      : 'opacity-80 cursor-not-allowed shadow-slate-200'
+                  }`}
+                >
+                  <span>
+                    {isRegOpen ? "REGISTER NOW" : "REGISTRATION CLOSED"}
+                  </span>
+                </motion.button>
+                <button
+                  onClick={onGetPass}
+                  className="px-6 py-3.5 bg-brand-purple/20 border border-brand-purple/30 text-white hover:bg-brand-purple hover:border-brand-purple font-sans font-bold text-sm rounded-full w-full sm:w-auto shrink-0 transition-colors shadow-lg shadow-purple-500/10"
+                >
+                  RETRIEVE PASS
+                </button>
+              </div>
             </div>
           </motion.div>
 

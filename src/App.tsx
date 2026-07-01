@@ -21,6 +21,7 @@ import Venue from './components/Venue';
 import RegistrationForm from './components/RegistrationForm';
 import TicketPass from './components/TicketPass';
 import AdminDashboard from './components/AdminDashboard';
+import { getRegistrations, fetchAllRegistrations } from './utils/db';
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -40,6 +41,27 @@ export default function App() {
 
   const handleBackToHomeFromPass = () => {
     setActiveRegistration(null);
+  };
+
+  const handleGetPass = async () => {
+    const num = window.prompt("Enter your registered mobile number to retrieve your pass:");
+    if (!num) return;
+    
+    // Check local first
+    let list = getRegistrations();
+    let reg = list.find(r => r.mobileNumber === num.trim());
+    
+    // Fallback to server if not in local cache
+    if (!reg) {
+      list = await fetchAllRegistrations();
+      reg = list.find(r => r.mobileNumber === num.trim());
+    }
+    
+    if (reg) {
+      setActiveRegistration(reg);
+    } else {
+      alert("No registration found with this mobile number. Please check the number or register anew.");
+    }
   };
 
   return (
@@ -87,6 +109,7 @@ export default function App() {
               {/* Hero fold */}
               <Hero 
                 onOpenRegister={() => setIsRegisterOpen(true)} 
+                onGetPass={handleGetPass}
                 onExploreEvent={() => {
                   const element = document.getElementById('about');
                   if (element) {

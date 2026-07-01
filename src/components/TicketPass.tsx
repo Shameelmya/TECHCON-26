@@ -275,12 +275,25 @@ export default function TicketPass({ registration, onBackToHome }: TicketPassPro
             </p>
           </div>
 
-          <button
-            onClick={onBackToHome}
-            className="w-full py-4 border border-slate-200 hover:bg-slate-50 text-slate-700 font-sans font-semibold text-xs uppercase tracking-wider rounded-2xl transition-colors text-center"
-          >
-            Return to Homepage
-          </button>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={onBackToHome}
+              className="flex-1 py-4 border border-slate-200 hover:bg-slate-50 text-slate-700 font-sans font-semibold text-xs uppercase tracking-wider rounded-2xl transition-colors text-center"
+            >
+              Back to Home
+            </button>
+            <button
+              onClick={() => {
+                onBackToHome();
+                setTimeout(() => {
+                  window.location.hash = 'register';
+                }, 100);
+              }}
+              className="flex-1 py-4 bg-purple-600 hover:bg-purple-700 text-white font-sans font-bold text-xs uppercase tracking-wider rounded-2xl transition-colors text-center shadow-lg shadow-purple-500/20"
+            >
+              Register Another
+            </button>
+          </div>
         </div>
 
       </div>

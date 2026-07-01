@@ -34,6 +34,7 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
   // Manual Check-in Console state
   const [scannerInput, setScannerInput] = useState('');
   const [scannerResult, setScannerResult] = useState<{ success: boolean; msg: string } | null>(null);
+  const [isCameraActive, setIsCameraActive] = useState(false);
 
   // Copy success indicator
   const [copiedCode, setCopiedCode] = useState(false);
@@ -66,11 +67,16 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
   };
 
   const handleManualCheckIn = async (ticketOrId: string) => {
-    setScannerResult(null);
-    if (!ticketOrId.trim()) return;
-
     try {
-      const attendee = await checkInAttendee(ticketOrId);
+      let finalId = ticketOrId.trim();
+      try {
+        const parsed = JSON.parse(finalId);
+        if (parsed.id) finalId = String(parsed.id).trim();
+      } catch (e) {
+        // Not JSON, use as is
+      }
+      
+      const attendee = await checkInAttendee(finalId);
       setScannerResult({
         success: true,
         msg: `SUCCESS: Checked in ${attendee.fullName} (${attendee.occupation}) at ${new Date(attendee.checkInTime!).toLocaleTimeString()}`
@@ -102,7 +108,7 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
     let html5QrCode: Html5Qrcode | null = null;
     let isComponentMounted = true;
 
-    if (activeTab === 'checkin') {
+    if (activeTab === 'checkin' && isCameraActive) {
       const timer = setTimeout(() => {
         if (!isComponentMounted) return;
         const readerElement = document.getElementById('reader');
@@ -117,7 +123,6 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
             (errorMessage: any) => {}
           ).catch((err) => {
             console.error("Camera failed to start:", err);
-            // Fallback: If camera fails to auto-start, we could try scanning images or show an error
           });
         }
       }, 300);
@@ -130,7 +135,12 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
         }
       };
     }
-  }, [activeTab]);
+    
+    // Auto turn off camera if tab changes
+    if (activeTab !== 'checkin') {
+      setIsCameraActive(false);
+    }
+  }, [activeTab, isCameraActive]);
 
   // Export filtered attendees to Excel CSV
   const handleExportCSV = () => {
@@ -542,7 +552,21 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
                   </p>
                 </div>
 
-                <div id="reader" className="w-full mt-4 rounded-2xl overflow-hidden border border-slate-200"></div>
+                {!isCameraActive ? (
+                  <div className="w-full mt-4 rounded-2xl border-2 border-dashed border-slate-300 p-8 flex flex-col items-center justify-center bg-slate-50 gap-4">
+                    <button
+                      onClick={() => setIsCameraActive(true)}
+                      className="px-10 py-5 bg-red-600 hover:bg-red-700 text-white font-orbitron font-bold text-sm sm:text-base rounded-2xl shadow-lg transition-all animate-pulse shadow-red-500/30 tracking-widest"
+                    >
+                      SCAN QR CODE
+                    </button>
+                    <p className="text-[10px] text-slate-400 font-mono text-center max-w-[200px]">
+                      Click to activate rear camera & request scanning permissions
+                    </p>
+                  </div>
+                ) : (
+                  <div id="reader" className="w-full mt-4 rounded-2xl overflow-hidden border border-slate-200"></div>
+                )}
 
                 <div className="flex gap-2.5 mt-4">
                   <input

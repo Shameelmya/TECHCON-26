@@ -68,7 +68,9 @@ export const fetchAllRegistrations = async (): Promise<AttendeeRegistration[]> =
 };
 
 export const saveRegistration = async (reg: Omit<AttendeeRegistration, 'id' | 'ticketNumber' | 'verificationToken' | 'checkedIn' | 'checkInTime' | 'createdAt'>): Promise<AttendeeRegistration> => {
-  const list = getRegistrations();
+  // Fetch latest list from Google Sheets first to avoid ID collisions on different devices
+  const serverList = await fetchAllRegistrations();
+  const list = serverList.length > 0 ? serverList : getRegistrations();
   
   // Check duplicates
   const duplicate = list.find(item => 

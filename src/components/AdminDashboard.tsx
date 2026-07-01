@@ -101,29 +101,27 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
   useEffect(() => {
     let html5QrcodeScanner: Html5QrcodeScanner | null = null;
     if (activeTab === 'checkin') {
-      // Delay initialization slightly to ensure DOM is ready
       const timer = setTimeout(() => {
         const readerElement = document.getElementById('reader');
-        if (readerElement) {
+        if (readerElement && readerElement.innerHTML === '') {
           html5QrcodeScanner = new Html5QrcodeScanner(
             "reader",
-            { fps: 10, qrbox: { width: 250, height: 250 } },
+            { fps: 10, qrbox: { width: 250, height: 250 }, rememberLastUsedCamera: true },
             false
           );
           html5QrcodeScanner.render(
             (decodedText: string) => {
-              // Automatically check in using the decoded text
               handleManualCheckIn(decodedText);
             },
             (errorMessage: any) => {}
           );
         }
-      }, 100);
+      }, 300);
       return () => {
         clearTimeout(timer);
         if (html5QrcodeScanner) {
           try {
-            html5QrcodeScanner.clear();
+            html5QrcodeScanner.clear().catch(e => console.error("Failed to clear scanner", e));
           } catch (e) {}
         }
       };
@@ -424,50 +422,38 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
           <div className="flex gap-1.5 border-b border-slate-200 pb-1.5 select-none overflow-x-auto">
             <button
               onClick={() => setActiveTab('analytics')}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-sans font-bold border transition-all whitespace-nowrap ${
+              className={`flex justify-center items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-sans font-bold border transition-all whitespace-nowrap ${
                 activeTab === 'analytics'
                   ? 'bg-purple-600 border-purple-600 text-white shadow-sm'
                   : 'border-transparent text-slate-500 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
-              <BarChart3 size={13} />
-              <span>LIVE ANALYTICS REPORTS</span>
+              <BarChart3 className="w-5 h-5 sm:w-3.5 sm:h-3.5" />
+              <span className="hidden sm:inline">LIVE ANALYTICS REPORTS</span>
             </button>
 
             <button
               onClick={() => setActiveTab('checkin')}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-sans font-bold border transition-all whitespace-nowrap ${
+              className={`flex justify-center items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-sans font-bold border transition-all whitespace-nowrap ${
                 activeTab === 'checkin'
                   ? 'bg-purple-600 border-purple-600 text-white shadow-sm'
                   : 'border-transparent text-slate-500 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
-              <QrCode size={13} />
-              <span>GATE CHECK-IN RADAR</span>
+              <QrCode className="w-5 h-5 sm:w-3.5 sm:h-3.5" />
+              <span className="hidden sm:inline">GATE CHECK-IN RADAR</span>
             </button>
 
             <button
               onClick={() => setActiveTab('directory')}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-sans font-bold border transition-all whitespace-nowrap ${
+              className={`flex justify-center items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-sans font-bold border transition-all whitespace-nowrap ${
                 activeTab === 'directory'
                   ? 'bg-purple-600 border-purple-600 text-white shadow-sm'
                   : 'border-transparent text-slate-500 hover:text-slate-900 hover:bg-slate-100'
               }`}
             >
-              <ClipboardList size={13} />
-              <span>ATTENDEE RECORDS ({filteredAttendees.length})</span>
-            </button>
-
-            <button
-              onClick={() => setActiveTab('appscript')}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-sans font-bold border transition-all whitespace-nowrap ${
-                activeTab === 'appscript'
-                  ? 'bg-purple-600 border-purple-600 text-white shadow-sm'
-                  : 'border-transparent text-slate-500 hover:text-slate-900 hover:bg-slate-100'
-              }`}
-            >
-              <Shield size={13} />
-              <span>GOOGLE APPS SCRIPT ENGINE</span>
+              <ClipboardList className="w-5 h-5 sm:w-3.5 sm:h-3.5" />
+              <span className="hidden sm:inline">ATTENDEE RECORDS ({filteredAttendees.length})</span>
             </button>
           </div>
 
@@ -689,51 +675,7 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
           )}
 
           {/* TAB 4: Google Apps Script secure engine code */}
-          {activeTab === 'appscript' && (
-            <div className="space-y-6 pt-2">
-              <div className="bg-white border border-slate-200 p-6 sm:p-8 rounded-3xl shadow-sm space-y-4">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-mono tracking-widest text-brand-purple uppercase font-bold block">// SECURE BACKEND STORAGE</span>
-                    <h3 className="text-base font-orbitron font-bold text-slate-900 uppercase">Google Sheets Integration Engine</h3>
-                    <p className="text-xs text-slate-500 font-sans leading-relaxed">
-                      Deploy this Google Apps Script code inside your Google Spreadsheet editor to securely save your database on Google Sheets with real-time duplication protection.
-                    </p>
-                  </div>
-                  <button
-                    onClick={handleCopyCode}
-                    className="flex items-center gap-1.5 px-3.5 py-2 bg-slate-950 hover:bg-purple-600 text-white font-sans font-semibold text-xs rounded-xl transition-all"
-                  >
-                    {copiedCode ? <Check size={13} /> : <Copy size={13} />}
-                    <span>{copiedCode ? 'Copied' : 'Copy Code'}</span>
-                  </button>
-                </div>
 
-                {/* Secure script explanation */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs font-sans text-slate-600 border-t border-slate-100 pt-5">
-                  <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100/80">
-                    <span className="font-bold text-slate-800 uppercase block mb-1">Step 1: Open Apps Script</span>
-                    Open your Google Sheet, navigate to the top extensions menu, and select <span className="font-bold">Extensions &gt; Apps Script</span>.
-                  </div>
-                  <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100/80">
-                    <span className="font-bold text-slate-800 uppercase block mb-1">Step 2: Paste & Setup</span>
-                    Delete any default code, paste the script below, configure your secure passcode, and click save.
-                  </div>
-                  <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100/80">
-                    <span className="font-bold text-slate-800 uppercase block mb-1">Step 3: Web App Deploy</span>
-                    Click <span className="font-bold">Deploy &gt; New Deployment</span>. Choose <span className="font-bold">Web App</span>, select run as "Me", set access to "Anyone", and deploy!
-                  </div>
-                </div>
-
-                {/* Code viewport block */}
-                <div className="relative">
-                  <pre className="p-5 bg-slate-950 text-emerald-400 font-mono text-xs rounded-2xl overflow-x-auto max-h-72 border border-slate-900 leading-relaxed">
-                    {APPS_SCRIPT_CODE}
-                  </pre>
-                </div>
-              </div>
-            </div>
-          )}
 
         </div>
       )}
@@ -742,86 +684,4 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
   );
 }
 
-// Google Apps Script source code variable
-const APPS_SCRIPT_CODE = `/**
- * SECURE TECHCON '26 REGISTRATION APPS SCRIPT ENGINE
- * 
- * Instructions:
- * 1. Open Google Sheet, click Extensions > Apps Script.
- * 2. Delete any existing code and paste this script.
- * 3. Change ADMIN_PASSWORD below to your secret password.
- * 4. Click 'Deploy' > 'New Deployment'. Choose type 'Web App'.
- *    Set 'Execute as' to 'Me' and 'Who has access' to 'Anyone'.
- * 5. Deploy and copy the web app URL.
- */
 
-const ADMIN_PASSWORD = "techcon_secure_secret_2026";
-
-function doPost(e) {
-  try {
-    const data = JSON.parse(e.postData.contents);
-    
-    // Check Authorization Passcode
-    if (data.passcode !== ADMIN_PASSWORD) {
-      return ContentService.createTextOutput(JSON.stringify({ 
-        success: false, 
-        error: "Unauthorized access: Invalid passcode." 
-      })).setMimeType(ContentService.MimeType.JSON);
-    }
-    
-    const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-    
-    // Auto-create headers if sheet is empty
-    if (sheet.getLastRow() === 0) {
-      sheet.appendRow([
-        "Registration ID", "Full Name", "Email", "Mobile Number", "WhatsApp Number", 
-        "Place of Residence", "District", "Age", "Gender", "Occupation", "Student Level", 
-        "Course", "Company / Institution", "Job Title / Department", "Timestamp"
-      ]);
-      sheet.getRange(1, 1, 1, 15).setFontWeight("bold").setBackground("#f1f5f9");
-    }
-    
-    // Check for duplicate mobile numbers exactly
-    const rows = sheet.getDataRange().getValues();
-    const mobileIndex = 3; // 4th column (0-indexed: 3) is Mobile Number
-    for (var i = 1; i < rows.length; i++) {
-      if (rows[i][mobileIndex].toString().trim() === data.mobileNumber.toString().trim()) {
-        return ContentService.createTextOutput(JSON.stringify({
-          success: false,
-          error: "This mobile number is already registered in the sheet database."
-        })).setMimeType(ContentService.MimeType.JSON);
-      }
-    }
-    
-    // Append the row securely
-    sheet.appendRow([
-      data.id,
-      data.fullName,
-      data.email,
-      data.mobileNumber,
-      data.whatsAppNumber,
-      data.place,
-      data.district,
-      data.age,
-      data.gender,
-      data.occupation,
-      data.level || "",
-      data.course || "",
-      data.company || data.institution || "",
-      data.profession || data.department || "",
-      new Date().toISOString()
-    ]);
-    
-    return ContentService.createTextOutput(JSON.stringify({ 
-      success: true, 
-      id: data.id 
-    })).setMimeType(ContentService.MimeType.JSON);
-    
-  } catch (error) {
-    return ContentService.createTextOutput(JSON.stringify({ 
-      success: false, 
-      error: error.toString() 
-    })).setMimeType(ContentService.MimeType.JSON);
-  }
-}
-`;

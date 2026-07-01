@@ -5,7 +5,7 @@
 
 import { AttendeeRegistration, AdminStats } from '../types';
 
-const STORAGE_KEY = 'techcon26_registrations';
+const STORAGE_KEY = 'techcon26_registrations_v2';
 
 // Helper to generate unique ID in TC26A001, TC26A002 ... TC26A999 format
 export function generateCustomID(count: number): string {

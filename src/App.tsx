@@ -44,23 +44,31 @@ export default function App() {
   };
 
   const handleGetPass = async () => {
-    const num = window.prompt("Enter your registered mobile number to retrieve your pass:");
-    if (!num) return;
+    const input = window.prompt("Enter your registered Phone Number OR Name to retrieve your pass:");
+    if (!input) return;
+    const query = input.trim().toLowerCase();
     
     // Check local first
     let list = getRegistrations();
-    let reg = list.find(r => r.mobileNumber === num.trim());
+    let reg = list.find(r => 
+      r.mobileNumber === query || 
+      r.fullName.toLowerCase().includes(query)
+    );
     
     // Fallback to server if not in local cache
     if (!reg) {
       list = await fetchAllRegistrations();
-      reg = list.find(r => r.mobileNumber === num.trim());
+      reg = list.find(r => 
+        r.mobileNumber === query || 
+        r.fullName.toLowerCase().includes(query)
+      );
     }
     
     if (reg) {
       setActiveRegistration(reg);
+      setIsRegisterOpen(false);
     } else {
-      alert("No registration found with this mobile number. Please check the number or register anew.");
+      alert("No registration found with this detail. Please check or register anew.");
     }
   };
 
@@ -109,7 +117,6 @@ export default function App() {
               {/* Hero fold */}
               <Hero 
                 onOpenRegister={() => setIsRegisterOpen(true)} 
-                onGetPass={handleGetPass}
                 onExploreEvent={() => {
                   const element = document.getElementById('about');
                   if (element) {
@@ -154,6 +161,7 @@ export default function App() {
                   <RegistrationForm 
                     onSuccess={handleRegisterSuccess}
                     onCancel={() => setIsRegisterOpen(false)}
+                    onGetPass={handleGetPass}
                   />
                 </motion.div>
               </motion.div>

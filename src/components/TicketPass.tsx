@@ -17,8 +17,11 @@ interface TicketPassProps {
 
 export default function TicketPass({ registration, onBackToHome }: TicketPassProps) {
   const [qrUrl, setQrUrl] = useState<string>('');
-  const ticketRef = useRef<HTMLDivElement | null>(null);
-  const qrCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const qrRef = useRef<HTMLCanvasElement>(null);
+  const ticketRef = useRef<HTMLDivElement>(null);
+  const [ticketDataUrl, setTicketDataUrl] = useState<string | null>(null);
+  const [ticketBlob, setTicketBlob] = useState<Blob | null>(null);
+  const [isGenerating, setIsGenerating] = useState(true);
 
   useEffect(() => {
     // Compile QR payload securely
@@ -44,47 +47,61 @@ export default function TicketPass({ registration, onBackToHome }: TicketPassPro
     });
 
     // Draw on hidden canvas for high-res PNG download
-    if (qrCanvasRef.current) {
-      QRCode.toCanvas(qrCanvasRef.current, qrPayload, {
-        width: 180,
+    if (qrRef.current) {
+      QRCode.toCanvas(qrRef.current, qrPayload, {
+        width: 140,
         margin: 1
+      }, () => {
+        // After QR is rendered, wait a tiny bit for DOM to paint, then generate the ticket image
+        setTimeout(async () => {
+          if (!ticketRef.current) return;
+          try {
+            const canvas = await html2canvas(ticketRef.current, { scale: 3, useCORS: true, backgroundColor: null });
+            const url = canvas.toDataURL('image/png');
+            setTicketDataUrl(url);
+            canvas.toBlob((blob) => {
+              setTicketBlob(blob);
+              setIsGenerating(false);
+            });
+          } catch(e) {
+            console.error("Failed to pre-generate ticket image", e);
+            setIsGenerating(false);
+          }
+        }, 500);
       });
     }
   }, [registration]);
 
-  const handleSavePNG = async () => {
-    if (!ticketRef.current) return;
+  const handleSavePNG = () => {
+    if (isGenerating || !ticketDataUrl) {
+      alert("Ticket image is still generating... Please try again in a few seconds.");
+      return;
+    }
     try {
-      const canvas = await html2canvas(ticketRef.current, { scale: 3, useCORS: true, backgroundColor: null });
-      const url = canvas.toDataURL('image/png');
       const a = document.createElement('a');
-      a.href = url;
+      a.href = ticketDataUrl;
       a.download = `techcon26_boardingpass_${registration.id}.png`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
     } catch (error) {
-      console.error('Failed to generate ticket image', error);
+      console.error('Failed to download ticket image', error);
       alert("Could not save ticket. Please take a screenshot instead.");
     }
   };
 
   const handleShareWhatsApp = async () => {
-    if (!ticketRef.current) return;
+    if (isGenerating || !ticketBlob) {
+      alert("Ticket image is still generating... Please try again in a few seconds.");
+      return;
+    }
     try {
-      if (navigator.share && navigator.canShare) {
-        const canvas = await html2canvas(ticketRef.current, { scale: 3, useCORS: true, backgroundColor: null });
-        canvas.toBlob(async (blob) => {
-          if (!blob) return;
-          const file = new File([blob], `techcon26_boardingpass_${registration.id}.png`, { type: 'image/png' });
-          if (navigator.canShare({ files: [file] })) {
-            await navigator.share({
-              files: [file],
-              title: `TECHCON '26 Entry Pass`,
-              text: `Hey! I just registered for TECHCON '26. Here is my official Entry Pass Boarding ID: ${registration.id}.`
-            });
-            return;
-          }
+      const file = new File([ticketBlob], `techcon26_boardingpass_${registration.id}.png`, { type: 'image/png' });
+      if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: `TECHCON '26 Entry Pass`,
+          text: `Hey! I just registered for TECHCON '26. Here is my official Entry Pass Boarding ID: ${registration.id}.`
         });
       } else {
         // Fallback for browsers that don't support file sharing or navigator.share
@@ -103,7 +120,7 @@ export default function TicketPass({ registration, onBackToHome }: TicketPassPro
     <div id="registration-success-pane" className="w-full max-w-4xl mx-auto py-12 px-4 sm:px-6">
       
       {/* Hidden high-res canvas */}
-      <canvas ref={qrCanvasRef} className="hidden" />
+      <canvas ref={qrRef} className="hidden" />
 
       {/* SUCCESS CONFIRMATION TITLE BAR */}
       <div className="text-center max-w-xl mx-auto mb-10 select-none">

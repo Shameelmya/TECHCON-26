@@ -4,6 +4,15 @@ function doPost(e) {
     var action = data.action;
     var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
 
+    if (action === "login") {
+      // Basic secure verification for admin dashboard
+      if (data.password === "msftech26") {
+        return ContentService.createTextOutput(JSON.stringify({ status: "success" })).setMimeType(ContentService.MimeType.JSON);
+      } else {
+        return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "Invalid password" })).setMimeType(ContentService.MimeType.JSON);
+      }
+    }
+
     if (action === "getAllRegistrations") {
       var dataRange = sheet.getDataRange();
       var values = dataRange.getValues();

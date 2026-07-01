@@ -134,7 +134,7 @@ export const checkInAttendee = async (ticketNumberOrId: string): Promise<Attende
     await fetch('https://script.google.com/macros/s/AKfycbxzAOiL7SXAk2Sg2Zzt0HWHODnCPNnzrM60I34xbaAVxnBBKM8Donpo1YSPXArr_sRHNQ/exec', {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ action: 'checkin', ticketNumber: list[index].ticketNumber })
+      body: JSON.stringify({ action: 'checkin', id: list[index].id })
     });
   } catch (err) {
     console.error("Failed to sync check-in to Google Sheets:", err);
@@ -151,6 +151,16 @@ export const revertCheckIn = (id: string): AttendeeRegistration => {
   list[index].checkedIn = false;
   list[index].checkInTime = null;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+  
+  // Sync revert to Google Sheets
+  try {
+    fetch('https://script.google.com/macros/s/AKfycbxzAOiL7SXAk2Sg2Zzt0HWHODnCPNnzrM60I34xbaAVxnBBKM8Donpo1YSPXArr_sRHNQ/exec', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'revertCheckin', id: list[index].id })
+    }).catch(e => console.error(e));
+  } catch (err) {}
+
   return list[index];
 };
 

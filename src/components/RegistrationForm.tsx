@@ -12,6 +12,7 @@ import { saveRegistration, getRegistrations } from '../utils/db';
 interface RegistrationFormProps {
   onSuccess: (reg: AttendeeRegistration) => void;
   onCancel: () => void;
+  onGetPass?: () => void;
 }
 
 const DISTRICTS_KERALA = [
@@ -20,7 +21,7 @@ const DISTRICTS_KERALA = [
   'Kasaragod', 'Idukki', 'Wayanad', 'Pathanamthitta', 'Other State'
 ];
 
-export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFormProps) {
+export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: RegistrationFormProps) {
   const [step, setStep] = useState(1);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [isDuplicateMobileFound, setIsDuplicateMobileFound] = useState(false);
@@ -248,6 +249,19 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
             />
           ))}
         </div>
+        
+        {onGetPass && (
+          <div className="mt-4 p-3.5 bg-brand-purple/5 rounded-xl border border-brand-purple/10 flex items-center justify-between animate-fade-in">
+            <span className="text-[11px] sm:text-xs text-brand-purple font-sans font-semibold uppercase tracking-wider">Already registered?</span>
+            <button
+              type="button"
+              onClick={onGetPass}
+              className="px-4 py-2 bg-white hover:bg-brand-purple text-brand-purple hover:text-white border border-brand-purple/20 rounded-lg text-xs font-bold transition-colors uppercase tracking-widest shadow-sm"
+            >
+              Get Pass
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Alert Messaging */}

@@ -34,6 +34,7 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
   // Manual Check-in Console state
   const [scannerInput, setScannerInput] = useState('');
   const [scannerResult, setScannerResult] = useState<{ success: boolean; msg: string } | null>(null);
+  const [foundAttendee, setFoundAttendee] = useState<AttendeeRegistration | null>(null);
   const [isCameraActive, setIsCameraActive] = useState(false);
 
   // Copy success indicator
@@ -66,7 +67,7 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
     }
   };
 
-  const handleManualCheckIn = async (ticketOrId: string) => {
+  const handleSearchForCheckIn = (ticketOrId: string) => {
     try {
       let finalId = ticketOrId.trim();
       try {
@@ -76,18 +77,39 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
         // Not JSON, use as is
       }
       
-      const attendee = await checkInAttendee(finalId);
+      const cleanedInput = finalId.toUpperCase();
+      const index = attendees.findIndex(
+        item => item.ticketNumber.toUpperCase() === cleanedInput || 
+                item.id.toUpperCase() === cleanedInput ||
+                item.verificationToken === finalId
+      );
+
+      if (index === -1) {
+        setScannerResult({ success: false, msg: `FAILED: No attendee found with ID "${finalId}".` });
+        setFoundAttendee(null);
+      } else {
+        setFoundAttendee(attendees[index]);
+        setScannerResult(null);
+      }
+    } catch (e: any) {
+      setScannerResult({ success: false, msg: `FAILED: ${e.message || 'Verification Error'}` });
+      setFoundAttendee(null);
+    }
+  };
+
+  const handleConfirmCheckIn = async () => {
+    if (!foundAttendee) return;
+    try {
+      const attendee = await checkInAttendee(foundAttendee.id);
       setScannerResult({
         success: true,
         msg: `SUCCESS: Checked in ${attendee.fullName} (${attendee.occupation}) at ${new Date(attendee.checkInTime!).toLocaleTimeString()}`
       });
+      setFoundAttendee(null);
       setScannerInput('');
       loadData();
     } catch (e: any) {
-      setScannerResult({
-        success: false,
-        msg: `FAILED: ${e.message || 'Verification Error'}`
-      });
+      setScannerResult({ success: false, msg: `FAILED: ${e.message || 'Check-in Error'}` });
     }
   };
 
@@ -118,7 +140,7 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
             { facingMode: "environment" }, // Prefer back camera
             { fps: 10, qrbox: { width: 250, height: 250 } },
             (decodedText: string) => {
-              handleManualCheckIn(decodedText);
+              handleSearchForCheckIn(decodedText);
             },
             (errorMessage: any) => {}
           ).catch((err) => {
@@ -574,16 +596,48 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
                     placeholder="Enter TC26A001 / Ticket Pass Code..."
                     value={scannerInput}
                     onChange={(e) => setScannerInput(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleManualCheckIn(scannerInput)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSearchForCheckIn(scannerInput)}
                     className="flex-1 px-4 py-3 bg-slate-50 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-mono text-sm text-slate-900 uppercase placeholder:normal-case"
                   />
                   <button
-                    onClick={() => handleManualCheckIn(scannerInput)}
-                    className="px-6 py-3 bg-slate-950 hover:bg-purple-600 text-white font-sans font-bold text-xs rounded-xl transition-all shadow-md uppercase"
+                    onClick={() => handleSearchForCheckIn(scannerInput)}
+                    className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-xl font-bold font-sans text-sm transition-colors shadow-sm"
                   >
-                    Check In
+                    SEARCH
                   </button>
                 </div>
+
+                {foundAttendee && (
+                  <div className="mt-4 p-5 rounded-2xl border-2 border-purple-200 bg-purple-50 space-y-4">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h4 className="font-bold text-slate-900">{foundAttendee.fullName}</h4>
+                        <p className="text-sm text-slate-500 font-mono">{foundAttendee.id} • {foundAttendee.mobileNumber}</p>
+                        <p className="text-xs text-slate-500 mt-1">{foundAttendee.occupation} - {foundAttendee.district}</p>
+                      </div>
+                      <div className="text-right">
+                        {foundAttendee.checkedIn ? (
+                          <span className="inline-block px-3 py-1 bg-green-100 text-green-700 font-bold text-[10px] rounded-full uppercase tracking-wide">
+                            Already In
+                          </span>
+                        ) : (
+                          <span className="inline-block px-3 py-1 bg-amber-100 text-amber-700 font-bold text-[10px] rounded-full uppercase tracking-wide">
+                            Pending
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    
+                    {!foundAttendee.checkedIn && (
+                      <button 
+                        onClick={handleConfirmCheckIn}
+                        className="w-full py-3 bg-green-600 hover:bg-green-700 text-white rounded-xl font-bold font-sans text-sm transition-colors shadow-sm"
+                      >
+                        MARK ATTENDANCE
+                      </button>
+                    )}
+                  </div>
+                )}
 
                 {scannerResult && (
                   <div className={`p-4 rounded-xl text-xs font-sans border ${

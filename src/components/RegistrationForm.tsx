@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { User, Phone, Mail, Award, BookOpen, AlertCircle, Check, MapPin } from 'lucide-react';
+import { User, Phone, Mail, Award, BookOpen, AlertCircle, Check, MapPin, X } from 'lucide-react';
 import { AttendeeRegistration } from '../types';
 import { saveRegistration, getRegistrations } from '../utils/db';
 
@@ -223,7 +223,16 @@ export default function RegistrationForm({ onSuccess, onCancel }: RegistrationFo
       <div className="mb-8 select-none">
         <div className="flex items-center justify-between text-xs font-mono text-slate-400 mb-4">
           <span className="text-purple-600 font-semibold uppercase">SECURE REGISTRATION</span>
-          <span>STAGE {step} OF 2</span>
+          <div className="flex items-center gap-4">
+            <span>STAGE {step} OF 2</span>
+            <button 
+              type="button" 
+              onClick={onCancel}
+              className="p-1 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-slate-600 -mr-2"
+            >
+              <X size={18} />
+            </button>
+          </div>
         </div>
 
         {/* 2-Step Wizards Tracker */}

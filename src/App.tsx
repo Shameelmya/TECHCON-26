@@ -25,7 +25,12 @@ import AdminDashboard from './components/AdminDashboard';
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
-  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
+  const [isRegisterOpen, setIsRegisterOpen] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.location.hash === '#register' || window.location.search.includes('register');
+    }
+    return false;
+  });
   const [activeRegistration, setActiveRegistration] = useState<AttendeeRegistration | null>(null);
 
   const handleRegisterSuccess = (reg: AttendeeRegistration) => {

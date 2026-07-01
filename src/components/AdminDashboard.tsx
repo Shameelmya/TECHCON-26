@@ -60,7 +60,7 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
     
     // Access with official passcode or guest access
     const isValid = await loginAdmin(password);
-    if (isValid || password === 'admin') {
+    if (isValid) {
       setIsAuthenticated(true);
     } else {
       setLoginError('Invalid administrator credentials.');

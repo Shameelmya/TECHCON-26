@@ -41,33 +41,66 @@ export default function CircuitBackground() {
       />
 
       {/* GPU Accelerated Mesh Gradient Blobs */}
-      <div className="absolute inset-0 w-full h-full blur-[100px] sm:blur-[140px] opacity-60">
+      <div className="absolute inset-0 w-full h-full blur-[90px] sm:blur-[140px] opacity-70">
         <motion.div
           style={{ x: blob1X, y: blob1Y }}
-          className="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] max-w-[600px] max-h-[600px] rounded-full bg-brand-purple/40 mix-blend-screen"
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.4, 0.6, 0.4],
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-[-10%] left-[-10%] w-[60vw] h-[60vw] max-w-[600px] max-h-[600px] rounded-full bg-brand-purple/50 mix-blend-screen"
         />
         
         <motion.div
           style={{ x: blob2X, y: blob2Y }}
-          className="absolute top-[40%] right-[-10%] w-[60vw] h-[60vw] max-w-[700px] max-h-[700px] rounded-full bg-brand-blue/30 mix-blend-screen"
-        />
-
-        <motion.div
-          style={{ y: blob3Y, scale: blob3Scale }}
-          className="absolute bottom-[-20%] left-[20%] w-[45vw] h-[45vw] max-w-[500px] max-h-[500px] rounded-full bg-brand-pink/30 mix-blend-screen"
-        />
-        
-        <motion.div
           animate={{
             scale: [1, 1.1, 1],
             opacity: [0.3, 0.5, 0.3],
           }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          className="absolute top-[40%] right-[-10%] w-[70vw] h-[70vw] max-w-[700px] max-h-[700px] rounded-full bg-brand-blue/40 mix-blend-screen"
+        />
+
+        <motion.div
+          style={{ y: blob3Y, scale: blob3Scale }}
+          animate={{
+            x: [0, 50, 0],
+            opacity: [0.3, 0.6, 0.3],
+          }}
+          transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+          className="absolute bottom-[-20%] left-[20%] w-[55vw] h-[55vw] max-w-[500px] max-h-[500px] rounded-full bg-brand-pink/40 mix-blend-screen"
+        />
+        
+        <motion.div
+          animate={{
+            scale: [1, 1.3, 1],
+            opacity: [0.3, 0.6, 0.3],
+            x: [0, -100, 0],
+            y: [0, 50, 0]
+          }}
           transition={{
-            duration: 8,
+            duration: 18,
             repeat: Infinity,
             ease: "easeInOut"
           }}
-          className="absolute top-[20%] left-[30%] w-[30vw] h-[30vw] max-w-[400px] max-h-[400px] rounded-full bg-cyan-500/20 mix-blend-screen"
+          className="absolute top-[20%] left-[30%] w-[40vw] h-[40vw] max-w-[400px] max-h-[400px] rounded-full bg-cyan-500/30 mix-blend-screen"
+        />
+
+        <motion.div
+          animate={{
+            scale: [1, 1.4, 1],
+            opacity: [0.2, 0.5, 0.2],
+            x: [0, 100, 0],
+            y: [0, -50, 0]
+          }}
+          transition={{
+            duration: 22,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 3
+          }}
+          className="absolute bottom-[30%] right-[20%] w-[50vw] h-[50vw] max-w-[450px] max-h-[450px] rounded-full bg-rose-500/20 mix-blend-screen"
         />
       </div>
     </div>

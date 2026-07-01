@@ -70,23 +70,28 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-            className="flex flex-col mb-4 sm:mb-6 items-center w-full"
+            className="inline-flex flex-col mb-4 sm:mb-6 items-center"
           >
             <motion.h1 
               initial={{ y: 30, filter: 'blur(20px)', opacity: 0, scale: 0.9 }}
               animate={{ y: 0, filter: 'blur(0px)', opacity: 1, scale: 1 }}
               transition={{ duration: 1, delay: 0.2, type: 'spring', bounce: 0.2 }}
-              className="text-6xl sm:text-7xl md:text-8xl lg:text-[10rem] font-orbitron font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/40 drop-shadow-[0_0_25px_rgba(255,255,255,0.4)] tracking-tighter leading-none"
+              style={{ WebkitTextStroke: '2px rgba(255,255,255,0.8)' }}
+              className="text-[13vw] md:text-[7rem] lg:text-[9.5rem] whitespace-nowrap font-orbitron font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/60 drop-shadow-[0_0_25px_rgba(255,255,255,0.6)] tracking-tighter leading-none"
             >
-              TECHCON<br className="sm:hidden" /> 26
+              TECHCON 26
             </motion.h1>
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1, delay: 0.6 }}
-              className="mt-4 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-jura font-bold text-brand-purple tracking-[0.3em] uppercase relative inline-block text-center drop-shadow-[0_0_15px_rgba(120,45,255,0.6)]"
+              className="mt-1 md:mt-2 w-full text-[2.8vw] md:text-xl lg:text-3xl font-jura font-bold text-brand-purple uppercase relative drop-shadow-[0_0_15px_rgba(120,45,255,0.6)]"
             >
-              <span className="relative z-10 px-2 bg-clip-text text-transparent bg-gradient-to-r from-brand-purple via-brand-pink to-brand-blue animate-pulse">Defining the Future</span>
+              <div className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-brand-purple via-brand-pink to-brand-blue animate-pulse w-full flex justify-between font-extrabold tracking-widest">
+                {"DEFINING THE FUTURE".split('').map((char, index) => (
+                  <span key={index}>{char === ' ' ? '\u00A0' : char}</span>
+                ))}
+              </div>
             </motion.div>
           </motion.div>
 

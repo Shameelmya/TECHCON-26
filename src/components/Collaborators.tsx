@@ -13,9 +13,6 @@ export default function Collaborators() {
 
       {/* Infinite scrolling marquee */}
       <div className="relative flex overflow-x-hidden w-full group">
-        <div className="absolute left-0 top-0 w-32 h-full bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-        <div className="absolute right-0 top-0 w-32 h-full bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
-        
         <div className="flex animate-[marquee_30s_linear_infinite] whitespace-nowrap group-hover:[animation-play-state:paused]">
           {[...dummyLogos, ...dummyLogos, ...dummyLogos].map((logo, idx) => (
             <div

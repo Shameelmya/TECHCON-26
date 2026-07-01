@@ -64,17 +64,27 @@ export default function About() {
               <motion.div
                 animate={{ y: [0, -8, 0] }}
                 transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: i * 0.5 }}
-                className="h-full p-6 bg-brand-black/60 hover:bg-brand-dark rounded-3xl border border-slate-800 hover:border-brand-purple/40 hover:shadow-[0_0_25px_rgba(120,45,255,0.2)] transition-all duration-300 group"
+                className="relative h-full rounded-3xl p-[1px] overflow-hidden group shadow-[0_0_20px_rgba(120,45,255,0.1)] hover:shadow-[0_0_30px_rgba(255,32,142,0.2)] transition-shadow duration-500"
               >
-                <div className="w-10 h-10 rounded-full bg-brand-dark flex items-center justify-center border border-slate-700 mb-5 group-hover:scale-110 group-hover:border-brand-purple transition-all duration-300">
-                  {pillar.icon}
+                {/* Rotating Conic Gradient Border */}
+                <motion.div 
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+                  className="absolute inset-[-100%] bg-[conic-gradient(from_0deg,transparent_0_320deg,#782dff_360deg)] opacity-70 group-hover:bg-[conic-gradient(from_0deg,transparent_0_320deg,#ff208e_360deg)] z-0"
+                />
+                
+                {/* Inner Card */}
+                <div className="relative z-10 h-full p-6 bg-brand-navy/90 backdrop-blur-xl rounded-[23px]">
+                  <div className="w-10 h-10 rounded-full bg-brand-dark flex items-center justify-center border border-slate-700 mb-5 group-hover:scale-110 group-hover:border-brand-purple transition-all duration-300">
+                    {pillar.icon}
+                  </div>
+                  <h3 className="text-base font-orbitron font-bold text-white uppercase tracking-wide mb-2 group-hover:text-brand-purple transition-colors">
+                    {pillar.title}
+                  </h3>
+                  <p className="text-xs sm:text-[13px] font-sans text-slate-400 leading-relaxed group-hover:text-slate-300 transition-colors">
+                    {pillar.desc}
+                  </p>
                 </div>
-                <h3 className="text-base font-orbitron font-bold text-white uppercase tracking-wide mb-2 group-hover:text-brand-purple transition-colors">
-                  {pillar.title}
-                </h3>
-                <p className="text-xs sm:text-[13px] font-sans text-slate-400 leading-relaxed group-hover:text-slate-300 transition-colors">
-                  {pillar.desc}
-                </p>
               </motion.div>
             </motion.div>
           ))}

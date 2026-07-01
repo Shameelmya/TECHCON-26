@@ -116,9 +116,20 @@ export default function WhyAttend() {
                     {session.tag}
                   </span>
                 </div>
-                <h3 className="text-xl font-orbitron font-bold text-white uppercase tracking-wide mb-3 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-slate-400 transition-all duration-300">
-                  {session.title}
-                </h3>
+                <div className="mb-4 inline-block relative">
+                  <h3 className="text-xl font-orbitron font-bold text-white uppercase tracking-wide group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-slate-400 transition-all duration-300">
+                    {session.title}
+                  </h3>
+                  {/* Maximum animated underline */}
+                  <motion.div 
+                    className={`absolute -bottom-1 left-0 h-[3px] bg-gradient-to-r ${session.gradient}`}
+                    animate={{ width: ['0%', '100%', '0%'], left: ['0%', '0%', '100%'] }}
+                    transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
+                  />
+                  <motion.div 
+                    className="absolute -bottom-1 left-0 w-full h-[3px] bg-white/20"
+                  />
+                </div>
                 <p className="text-sm font-sans text-slate-400 leading-relaxed">
                   {session.description}
                 </p>

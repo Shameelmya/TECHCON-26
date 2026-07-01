@@ -15,18 +15,6 @@ interface HeroProps {
 
 export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent }: HeroProps) {
   const [timeLeft, setTimeLeft] = useState({ days: 15, hours: 0, minutes: 0, seconds: 0 });
-  const [currentGraphicIndex, setCurrentGraphicIndex] = useState(0);
-  
-  // Memoize array outside of effect dependency to avoid recreation or just declare outside
-  const graphics = ['/hero-graphic.png', '/hero-graphic1.png', '/hero-graphic2.png'];
-
-  useEffect(() => {
-    // Graphic carousel timer
-    const graphicInterval = setInterval(() => {
-      setCurrentGraphicIndex((prev) => (prev + 1) % graphics.length);
-    }, 4000);
-    return () => clearInterval(graphicInterval);
-  }, []);
 
   useEffect(() => {
     // Target date: 15 July 2026 UTC
@@ -244,55 +232,72 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
 
         {/* Right column: Interactive Premium Logo Float Visual */}
         <div className="lg:col-span-5 flex items-center justify-center order-1 lg:order-2 h-64 sm:h-96 lg:h-[550px]">
-          <div className="relative w-64 h-64 sm:w-80 sm:h-80 lg:w-[500px] lg:h-[500px]">
-            {/* Glowing Soft Background Circle blobs behind Logo */}
-            <motion.div
-              className="absolute inset-0 rounded-full bg-gradient-to-tr from-purple-500/25 via-pink-500/10 to-blue-500/20 blur-3xl"
-              animate={{ 
-                scale: [0.85, 1.05, 0.85],
-                opacity: [0.6, 0.9, 0.6]
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            />
-
-            {/* Glowing Rings (Orbit Circles) */}
-            <motion.div
-              className="absolute inset-4 rounded-full border border-dashed border-purple-500/15"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-            />
-            <motion.div
-              className="absolute inset-12 rounded-full border border-dotted border-pink-500/15"
-              animate={{ rotate: -360 }}
-              transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-            />
-
-            {/* Floating Logo SVG */}
-            <motion.div
-              className="absolute inset-0 flex items-center justify-center filter drop-shadow-[0_16px_32px_rgba(120,45,255,0.18)]"
-              animate={{ y: [-12, 12, -12] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <AnimatePresence>
-                <motion.img 
-                  key={currentGraphicIndex}
-                  src={graphics[currentGraphicIndex]} 
-                  alt="TECHCON Graphic" 
-                  className="w-full h-full object-contain absolute" 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.8, ease: "easeInOut" }}
-                />
-              </AnimatePresence>
-            </motion.div>
-          </div>
+          <HeroLogos />
         </div>
       </div>
     </section>
+  );
+}
+
+const GRAPHICS = ['/hero-graphic.png', '/hero-graphic1.png', '/hero-graphic2.png'];
+
+function HeroLogos() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const graphicInterval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % GRAPHICS.length);
+    }, 4000);
+    return () => clearInterval(graphicInterval);
+  }, []);
+
+  return (
+    <div className="relative w-64 h-64 sm:w-80 sm:h-80 lg:w-[500px] lg:h-[500px]">
+      {/* Glowing Soft Background Circle blobs behind Logo */}
+      <motion.div
+        className="absolute inset-0 rounded-full bg-gradient-to-tr from-purple-500/25 via-pink-500/10 to-blue-500/20 blur-3xl"
+        animate={{ 
+          scale: [0.85, 1.05, 0.85],
+          opacity: [0.6, 0.9, 0.6]
+        }}
+        transition={{
+          duration: 4,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      />
+
+      {/* Glowing Rings (Orbit Circles) */}
+      <motion.div
+        className="absolute inset-4 rounded-full border border-dashed border-purple-500/15"
+        animate={{ rotate: 360 }}
+        transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+      />
+      <motion.div
+        className="absolute inset-12 rounded-full border border-dotted border-pink-500/15"
+        animate={{ rotate: -360 }}
+        transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+      />
+
+      {/* Floating Logo SVG */}
+      <motion.div
+        className="absolute inset-0 flex items-center justify-center filter drop-shadow-[0_16px_32px_rgba(120,45,255,0.18)]"
+        animate={{ y: [-12, 12, -12] }}
+        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+      >
+        <AnimatePresence mode="popLayout">
+          <motion.img 
+            key={currentIndex}
+            src={GRAPHICS[currentIndex]} 
+            alt="TECHCON Graphic" 
+            className="w-full h-full object-contain absolute" 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
+          />
+        </AnimatePresence>
+      </motion.div>
+    </div>
   );
 }

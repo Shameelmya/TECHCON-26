@@ -4,8 +4,9 @@
  */
 
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { Calendar, MapPin, User, ChevronRight } from 'lucide-react';
+import { motion } from 'motion/react';
+import { ChevronRight, ArrowRight, Calendar, MapPin, User, ArrowDown } from 'lucide-react';
+import MagneticButton from './MagneticButton';
 
 interface HeroProps {
   isRegOpen?: boolean;
@@ -72,15 +73,21 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
             className="inline-flex flex-col mb-4 sm:mb-6 items-center"
           >
-            <motion.h1 
-              initial={{ y: 30, filter: 'blur(20px)', opacity: 0, scale: 0.9 }}
-              animate={{ y: 0, filter: 'blur(0px)', opacity: 1, scale: 1 }}
-              transition={{ duration: 1, delay: 0.2, type: 'spring', bounce: 0.2 }}
+            <h1 
               style={{ WebkitTextStroke: '2px rgba(255,255,255,0.8)' }}
-              className="text-[13vw] md:text-[7rem] lg:text-[9.5rem] whitespace-nowrap font-orbitron font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/60 drop-shadow-[0_0_25px_rgba(255,255,255,0.6)] tracking-tighter leading-none"
+              className="text-[13vw] md:text-[7rem] lg:text-[9.5rem] whitespace-nowrap font-orbitron font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/60 drop-shadow-[0_0_25px_rgba(255,255,255,0.6)] tracking-tighter leading-none flex"
             >
-              TECHCON 26
-            </motion.h1>
+              {"TECHCON 26".split('').map((char, index) => (
+                <motion.span
+                  key={index}
+                  initial={{ opacity: 0, y: 50, rotateX: 90 }}
+                  animate={{ opacity: 1, y: 0, rotateX: 0 }}
+                  transition={{ duration: 0.8, delay: 0.1 + index * 0.05, type: 'spring', bounce: 0.4 }}
+                >
+                  {char === ' ' ? '\u00A0' : char}
+                </motion.span>
+              ))}
+            </h1>
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -150,28 +157,30 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
             transition={{ duration: 0.8, delay: 1.2 }}
             className="w-full max-w-2xl mb-6 relative"
           >
-            <div className="w-full rounded-[32px] p-6 sm:p-8 bg-gradient-to-r from-brand-pink via-brand-purple to-brand-blue bg-[length:200%_auto] animate-[gradient_6s_ease-in-out_infinite] flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div className="w-full rounded-[32px] p-6 sm:p-8 bg-gradient-to-r from-brand-pink/20 via-brand-purple/20 to-brand-blue/20 backdrop-blur-md bg-[length:200%_auto] animate-[gradient_6s_ease-in-out_infinite] flex flex-col sm:flex-row items-center justify-between gap-6 border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
               
               <div className="text-center sm:text-left text-white">
                 <h4 className="font-sans font-bold text-xl mb-1 drop-shadow-sm">Secure Your Pass</h4>
               </div>
               
               <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
-                <motion.button
-                  onClick={onOpenRegister}
-                  disabled={!isRegOpen}
-                  animate={isRegOpen ? { scale: [1, 1.05, 1] } : {}}
-                  transition={isRegOpen ? { repeat: Infinity, duration: 3, ease: "easeInOut" } : {}}
-                  className={`px-8 py-3.5 bg-brand-dark text-slate-200 font-sans font-bold text-sm rounded-full w-full sm:w-auto shrink-0 shadow-lg ${
-                    isRegOpen 
-                      ? 'shadow-purple-500/20 hover:shadow-purple-500/40' 
-                      : 'opacity-80 cursor-not-allowed shadow-slate-200'
-                  }`}
-                >
-                  <span>
-                    {isRegOpen ? "REGISTER NOW" : "REGISTRATION CLOSED"}
-                  </span>
-                </motion.button>
+                <MagneticButton className="w-full sm:w-auto">
+                  <motion.button
+                    onClick={onOpenRegister}
+                    disabled={!isRegOpen}
+                    animate={isRegOpen ? { scale: [1, 1.05, 1] } : {}}
+                    transition={isRegOpen ? { repeat: Infinity, duration: 3, ease: "easeInOut" } : {}}
+                    className={`px-8 py-3.5 bg-brand-dark/90 backdrop-blur-sm text-slate-200 font-sans font-bold text-sm rounded-full w-full sm:w-auto shrink-0 shadow-lg border border-slate-700/50 ${
+                      isRegOpen 
+                        ? 'shadow-purple-500/20 hover:shadow-purple-500/40 hover:text-white hover:border-brand-purple/50 transition-all duration-300' 
+                        : 'opacity-80 cursor-not-allowed shadow-slate-200'
+                    }`}
+                  >
+                    <span>
+                      {isRegOpen ? "REGISTER NOW" : "REGISTRATION CLOSED"}
+                    </span>
+                  </motion.button>
+                </MagneticButton>
               </div>
             </div>
           </motion.div>

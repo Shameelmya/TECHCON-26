@@ -31,7 +31,13 @@ export default function Venue() {
       <div className="max-w-7xl mx-auto relative z-10">
         
         {/* Header Title with futuristic layout */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          whileInView={{ opacity: 1, scale: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="text-center max-w-2xl mx-auto mb-16"
+        >
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-pink/10 border border-brand-pink/20 rounded-full mb-4">
             <Map size={12} className="text-brand-pink animate-pulse" />
             <span className="text-[10px] font-mono tracking-[0.2em] text-brand-pink uppercase font-bold">
@@ -40,16 +46,22 @@ export default function Venue() {
           </div>
           
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-orbitron font-bold tracking-[0.06em] text-white mb-5 uppercase">
-            The Venue: CUSAT, <span className="text-brand-pink font-extrabold font-orbitron">Kochi</span>
+            The Venue: <span className="text-brand-pink font-extrabold font-orbitron">Ernakulam</span>
           </h2>
           
           <p className="text-xs sm:text-sm font-sans text-slate-400 leading-relaxed max-w-xl mx-auto">
-            The assembly is hosted at Cochin University of Science and Technology, Kalamassery. CUSAT stands as Kerala's premier technological and academic campus.
+            The assembly is hosted at Ernakulam, serving as Kerala's premier technological, industrial, and academic hub.
           </p>
-        </div>
+        </motion.div>
 
         {/* Column layout: Transit Info Guide */}
-        <div className="max-w-4xl mx-auto items-stretch">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          whileInView={{ opacity: 1, scale: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="max-w-4xl mx-auto items-stretch"
+        >
           
           {/* Dark Transit Info Details Card */}
           <motion.div 
@@ -63,7 +75,7 @@ export default function Venue() {
                 <span className="text-[10px] font-mono tracking-[0.2em] text-brand-pink uppercase font-bold block mb-2">// QUICK TRANSIT COMMANDS</span>
                 <h3 className="text-xl sm:text-2xl font-orbitron font-bold text-white uppercase tracking-wide">Transit & Location Nodes</h3>
                 <p className="text-xs sm:text-sm text-slate-400 font-sans leading-relaxed mt-2">
-                  CUSAT campus is centrally linked with excellent transit lines, allowing hassle-free arrivals from all major districts of Kerala.
+                  Ernakulam is centrally linked with excellent transit lines, allowing hassle-free arrivals from all major districts of Kerala.
                 </p>
               </div>
 
@@ -76,8 +88,8 @@ export default function Venue() {
                   </div>
                   <div className="space-y-0.5">
                     <h4 className="text-xs font-mono font-bold text-brand-purple uppercase tracking-wider">Nearest Metro Station</h4>
-                    <p className="text-sm font-orbitron font-bold text-slate-100 uppercase tracking-wide">CUSAT Metro Station <span className="text-slate-500 font-sans text-xs">(250m)</span></p>
-                    <p className="text-xs text-slate-400 font-sans leading-normal">Direct access to campus entrance via shuttles.</p>
+                    <p className="text-sm font-orbitron font-bold text-slate-100 uppercase tracking-wide">Ernakulam Metro Stations <span className="text-slate-500 font-sans text-xs">(Connected)</span></p>
+                    <p className="text-xs text-slate-400 font-sans leading-normal">Direct access to major locations via shuttles.</p>
                   </div>
                 </div>
 
@@ -121,7 +133,7 @@ export default function Venue() {
               </a>
             </div>
           </motion.div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

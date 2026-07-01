@@ -18,7 +18,7 @@ export default function About() {
     {
       icon: <Eye className="text-brand-pink" size={20} />,
       title: 'Our Vision',
-      desc: 'To position Kerala on the international map of advanced engineering and digital thought leadership, setting standards for open-source research and youth tech-empowerment.',
+      desc: 'To position Kerala on the national map of advanced engineering and digital thought leadership, setting standards for open-source research and youth tech-empowerment.',
     },
     {
       icon: <Sparkles className="text-brand-blue" size={20} />,
@@ -56,8 +56,8 @@ export default function About() {
           {pillars.map((pillar, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 15, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.6, delay: i * 0.1, ease: 'easeOut' }}
             >
@@ -69,7 +69,7 @@ export default function About() {
                 {/* Rotating Conic Gradient Border */}
                 <motion.div 
                   animate={{ rotate: 360 }}
-                  transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
+                  transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
                   className="absolute inset-[-100%] bg-[conic-gradient(from_0deg,transparent_0_320deg,#782dff_360deg)] opacity-70 group-hover:bg-[conic-gradient(from_0deg,transparent_0_320deg,#ff208e_360deg)] z-0"
                 />
                 
@@ -92,8 +92,8 @@ export default function About() {
 
         {/* Organizer Section: msf TechFed */}
         <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, scale: 0.95, y: 15 }}
+          whileInView={{ opacity: 1, scale: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8 }}
           className="bg-brand-black/50 border border-slate-800 hover:border-brand-blue/30 rounded-[32px] p-8 sm:p-12 lg:p-16 relative overflow-hidden group transition-all duration-500"

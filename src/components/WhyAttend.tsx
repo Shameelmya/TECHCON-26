@@ -89,10 +89,10 @@ export default function WhyAttend() {
           {sessions.map((session, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              whileInView={{ opacity: 1, scale: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
+              transition={{ duration: 0.6, delay: i * 0.1, ease: 'easeOut' }}
             >
               <motion.div
                 animate={{ y: [0, -10, 0] }}
@@ -116,19 +116,18 @@ export default function WhyAttend() {
                     {session.tag}
                   </span>
                 </div>
-                <div className="mb-4 inline-block relative">
+                <div className="mb-4 inline-flex flex-col relative w-max">
                   <h3 className="text-xl font-orbitron font-bold text-white uppercase tracking-wide group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-slate-400 transition-all duration-300">
                     {session.title}
                   </h3>
                   {/* Maximum animated underline */}
-                  <motion.div 
-                    className={`absolute -bottom-1 left-0 h-[3px] bg-gradient-to-r ${session.gradient}`}
-                    animate={{ width: ['0%', '100%', '0%'], left: ['0%', '0%', '100%'] }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
-                  />
-                  <motion.div 
-                    className="absolute -bottom-1 left-0 w-full h-[3px] bg-white/20"
-                  />
+                  <div className="relative w-full h-[1px] mt-1 bg-white/10 overflow-hidden rounded-full">
+                    <motion.div 
+                      className={`absolute top-0 left-0 h-full w-[60%] bg-gradient-to-r from-transparent ${session.gradient} to-transparent`}
+                      animate={{ x: ['-100%', '200%'] }}
+                      transition={{ duration: 2.5, repeat: Infinity, ease: "easeOut" }}
+                    />
+                  </div>
                 </div>
                 <p className="text-sm font-sans text-slate-400 leading-relaxed">
                   {session.description}

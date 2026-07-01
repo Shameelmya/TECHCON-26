@@ -45,7 +45,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
   return (
     <section 
       id="hero" 
-      className="relative min-h-screen flex items-center justify-center pt-24 pb-16 overflow-hidden bg-white px-6 md:px-12"
+      className="relative min-h-screen flex items-center justify-center pt-24 pb-16 overflow-hidden bg-brand-dark px-6 md:px-12"
     >
       {/* Blurred Soft Light Blobs for Depth */}
       <div className="absolute w-[450px] h-[450px] rounded-full bg-gradient-to-tr from-purple-200/50 to-pink-200/40 blur-[120px] -top-20 left-1/4 pointer-events-none animate-[pulse_8s_infinite]" />
@@ -96,7 +96,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
-            className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-6 border-t border-slate-100 pt-6 mb-10 max-w-lg w-full"
+            className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-6 border-t border-slate-800 pt-6 mb-10 max-w-lg w-full"
           >
             <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-2 sm:gap-3">
               <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-brand-purple shrink-0 border border-purple-100/50">
@@ -104,7 +104,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
               </div>
               <div className="flex flex-col">
                 <span className="text-[9px] font-mono tracking-widest text-slate-400 uppercase">DATE</span>
-                <span className="text-xs sm:text-sm font-sans font-bold text-slate-800">15 July 2026</span>
+                <span className="text-xs sm:text-sm font-sans font-bold text-slate-200">15 July 2026</span>
               </div>
             </div>
 
@@ -114,7 +114,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
               </div>
               <div className="flex flex-col">
                 <span className="text-[9px] font-mono tracking-widest text-slate-400 uppercase">VENUE</span>
-                <span className="text-xs sm:text-sm font-sans font-bold text-slate-800">CUSAT, Kochi</span>
+                <span className="text-xs sm:text-sm font-sans font-bold text-slate-200">CUSAT, Kochi</span>
               </div>
             </div>
 
@@ -124,7 +124,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
               </div>
               <div className="flex flex-col">
                 <span className="text-[9px] font-mono tracking-widest text-slate-400 uppercase">ORGANIZER</span>
-                <span className="text-xs sm:text-sm font-sans font-bold text-slate-800">msf TechFed</span>
+                <span className="text-xs sm:text-sm font-sans font-bold text-slate-200">msf TechFed</span>
               </div>
             </div>
           </motion.div>
@@ -148,7 +148,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
                   disabled={!isRegOpen}
                   animate={isRegOpen ? { scale: [1, 1.05, 1] } : {}}
                   transition={isRegOpen ? { repeat: Infinity, duration: 3, ease: "easeInOut" } : {}}
-                  className={`px-8 py-3.5 bg-white text-slate-800 font-sans font-bold text-sm rounded-full w-full sm:w-auto shrink-0 shadow-lg ${
+                  className={`px-8 py-3.5 bg-brand-dark text-slate-200 font-sans font-bold text-sm rounded-full w-full sm:w-auto shrink-0 shadow-lg ${
                     isRegOpen 
                       ? 'shadow-purple-500/20 hover:shadow-purple-500/40' 
                       : 'opacity-80 cursor-not-allowed shadow-slate-200'
@@ -171,21 +171,21 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
           >
             <a
               href="#venue"
-              className="px-5 py-2.5 bg-slate-50 border border-slate-200 text-slate-700 font-sans font-medium text-xs rounded-full hover:bg-slate-100 transition-colors flex items-center gap-2"
+              className="px-5 py-2.5 bg-brand-black border border-slate-800 text-slate-300 font-sans font-medium text-xs rounded-full hover:bg-slate-100 transition-colors flex items-center gap-2"
             >
               <MapPin size={14} className="text-brand-pink" />
               <span>Location</span>
             </a>
             <a
               href="#calendar"
-              className="px-5 py-2.5 bg-slate-50 border border-slate-200 text-slate-700 font-sans font-medium text-xs rounded-full hover:bg-slate-100 transition-colors flex items-center gap-2"
+              className="px-5 py-2.5 bg-brand-black border border-slate-800 text-slate-300 font-sans font-medium text-xs rounded-full hover:bg-slate-100 transition-colors flex items-center gap-2"
             >
               <Calendar size={14} className="text-brand-purple" />
               <span>Add to Calendar</span>
             </a>
             <button
               onClick={onExploreEvent}
-              className="group px-5 py-2.5 bg-transparent border border-slate-300 text-slate-700 font-sans font-medium text-xs rounded-full hover:bg-slate-50 transition-colors flex items-center gap-1.5"
+              className="group px-5 py-2.5 bg-transparent border border-slate-300 text-slate-300 font-sans font-medium text-xs rounded-full hover:bg-brand-black transition-colors flex items-center gap-1.5"
             >
               <span>Explore Event</span>
               <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
@@ -197,10 +197,10 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.5 }}
-            className="flex items-center gap-3 sm:gap-6 w-fit bg-slate-50/50 p-3 sm:p-4 rounded-2xl border border-slate-100/80"
+            className="flex items-center gap-3 sm:gap-6 w-fit bg-brand-black/50 p-3 sm:p-4 rounded-2xl border border-slate-800/80"
           >
             <div className="flex flex-col items-center min-w-[50px] sm:min-w-[64px]">
-              <span className="font-orbitron text-xl sm:text-2xl font-black text-slate-800 tabular-nums">
+              <span className="font-orbitron text-xl sm:text-2xl font-black text-slate-200 tabular-nums">
                 {String(timeLeft.days).padStart(2, '0')}
               </span>
               <span className="text-[9px] font-mono tracking-wider text-slate-400 uppercase mt-1">DAYS</span>

@@ -52,33 +52,43 @@ export default function About() {
           </p>
         </div>
 
-        {/* Pillars Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
           {pillars.map((pillar, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 15 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="p-6 bg-brand-black/60 hover:bg-brand-dark rounded-3xl border border-slate-800 hover:border-slate-800 hover:shadow-lg transition-all duration-300 group"
+              transition={{ duration: 0.6, delay: i * 0.1, ease: 'easeOut' }}
             >
-              <div className="w-10 h-10 rounded-full bg-brand-dark flex items-center justify-center border border-slate-800 mb-5 group-hover:scale-105 transition-transform">
-                {pillar.icon}
-              </div>
-              <h3 className="text-base font-orbitron font-bold text-white uppercase tracking-wide mb-2">
-                {pillar.title}
-              </h3>
-              <p className="text-xs sm:text-[13px] font-sans text-slate-500 leading-relaxed">
-                {pillar.desc}
-              </p>
+              <motion.div
+                animate={{ y: [0, -8, 0] }}
+                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: i * 0.5 }}
+                className="h-full p-6 bg-brand-black/60 hover:bg-brand-dark rounded-3xl border border-slate-800 hover:border-brand-purple/40 hover:shadow-[0_0_25px_rgba(120,45,255,0.2)] transition-all duration-300 group"
+              >
+                <div className="w-10 h-10 rounded-full bg-brand-dark flex items-center justify-center border border-slate-700 mb-5 group-hover:scale-110 group-hover:border-brand-purple transition-all duration-300">
+                  {pillar.icon}
+                </div>
+                <h3 className="text-base font-orbitron font-bold text-white uppercase tracking-wide mb-2 group-hover:text-brand-purple transition-colors">
+                  {pillar.title}
+                </h3>
+                <p className="text-xs sm:text-[13px] font-sans text-slate-400 leading-relaxed group-hover:text-slate-300 transition-colors">
+                  {pillar.desc}
+                </p>
+              </motion.div>
             </motion.div>
           ))}
         </div>
 
         {/* Organizer Section: msf TechFed */}
-        <div className="bg-brand-black/50 border border-slate-800 rounded-[32px] p-8 sm:p-12 lg:p-16 relative overflow-hidden">
-          <div className="absolute right-0 bottom-0 opacity-[0.03] text-white pointer-events-none select-none">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8 }}
+          className="bg-brand-black/50 border border-slate-800 hover:border-brand-blue/30 rounded-[32px] p-8 sm:p-12 lg:p-16 relative overflow-hidden group transition-all duration-500"
+        >
+          <div className="absolute right-0 bottom-0 opacity-[0.03] text-brand-blue group-hover:opacity-[0.08] pointer-events-none select-none transition-opacity duration-700">
             <svg viewBox="0 0 100 100" className="w-48 h-48">
               <path d="M 0,50 L 50,50 L 70,70 L 100,70" fill="none" stroke="currentColor" strokeWidth="4" />
               <circle cx="100" cy="70" r="10" fill="currentColor" />
@@ -89,11 +99,11 @@ export default function About() {
             <span className="text-[10px] font-mono font-bold tracking-widest text-slate-400 uppercase block mb-3">
               THE PARENT ORGANIZER
             </span>
-            <h3 className="text-2xl sm:text-3xl font-orbitron font-bold text-white tracking-[0.06em] uppercase mb-6">
-              About <span className="text-brand-purple">msf TechFed</span>
+            <h3 className="text-2xl sm:text-3xl font-orbitron font-bold text-white tracking-[0.06em] uppercase mb-6 drop-shadow-md">
+              About <span className="text-brand-purple bg-clip-text text-transparent bg-gradient-to-r from-brand-purple to-brand-blue">msf TechFed</span>
             </h3>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm font-sans text-slate-500 leading-relaxed">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm font-sans text-slate-400 leading-relaxed">
               <div>
                 <p className="mb-4">
                   <span className="font-bold text-white font-sans">msf TechFed</span> is an independent technological wing spearheading advanced digital learning, developer training, and student tech ecosystems.
@@ -103,17 +113,20 @@ export default function About() {
                 </p>
               </div>
               <div className="space-y-4">
-                <div className="flex items-start gap-3 bg-brand-dark p-4 rounded-2xl border border-slate-800/60 shadow-sm">
+                <motion.div 
+                  whileHover={{ x: 5 }}
+                  className="flex items-start gap-3 bg-brand-dark p-4 rounded-2xl border border-slate-800/60 shadow-sm"
+                >
                   <CheckCircle2 className="text-brand-pink shrink-0 mt-0.5" size={16} />
                   <div>
                     <h5 className="text-xs font-orbitron font-bold text-white uppercase">Youth & Students Tech Ecosystem</h5>
                     <p className="text-xs text-slate-500 mt-1 leading-normal">The specialised technology and student empowerment cell of msf Kerala State Committee.</p>
                   </div>
-                </div>
+                </motion.div>
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
       </div>
     </section>

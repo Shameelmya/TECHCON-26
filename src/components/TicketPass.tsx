@@ -22,6 +22,7 @@ export default function TicketPass({ registration, onBackToHome }: TicketPassPro
   const [ticketDataUrl, setTicketDataUrl] = useState<string | null>(null);
   const [ticketBlob, setTicketBlob] = useState<Blob | null>(null);
   const [isGenerating, setIsGenerating] = useState(true);
+  const [showImageOverlay, setShowImageOverlay] = useState(false);
 
   useEffect(() => {
     // Compile QR payload securely
@@ -74,9 +75,16 @@ export default function TicketPass({ registration, onBackToHome }: TicketPassPro
 
   const handleSavePNG = () => {
     if (isGenerating || !ticketDataUrl) {
-      alert("Ticket image is still generating... Please try again in a few seconds.");
+      alert("Ticket image is still generating... Please wait a few seconds.");
       return;
     }
+    
+    // On mobile devices, showing the image directly is the safest cross-platform way to allow saving
+    if (window.innerWidth < 768) {
+      setShowImageOverlay(true);
+      return;
+    }
+    
     try {
       const a = document.createElement('a');
       a.href = ticketDataUrl;
@@ -86,13 +94,13 @@ export default function TicketPass({ registration, onBackToHome }: TicketPassPro
       document.body.removeChild(a);
     } catch (error) {
       console.error('Failed to download ticket image', error);
-      alert("Could not save ticket. Please take a screenshot instead.");
+      setShowImageOverlay(true);
     }
   };
 
   const handleShareWhatsApp = async () => {
     if (isGenerating || !ticketBlob) {
-      alert("Ticket image is still generating... Please try again in a few seconds.");
+      alert("Ticket image is still generating... Please wait a few seconds.");
       return;
     }
     try {
@@ -104,15 +112,11 @@ export default function TicketPass({ registration, onBackToHome }: TicketPassPro
           text: `Hey! I just registered for TECHCON '26. Here is my official Entry Pass Boarding ID: ${registration.id}.`
         });
       } else {
-        // Fallback for browsers that don't support file sharing or navigator.share
-        const text = `Hey! I just registered for TECHCON '26. Here is my official Entry Pass Boarding ID: ${registration.id}.`;
-        const url = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
-        window.location.href = url; // Use location.href instead of window.open to bypass popup blockers
+        setShowImageOverlay(true);
       }
     } catch (error) {
       console.error('Failed to share ticket image', error);
-      const text = `Hey! I just registered for TECHCON '26. Here is my official Entry Pass Boarding ID: ${registration.id}.`;
-      window.location.href = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+      setShowImageOverlay(true);
     }
   };
 
@@ -314,6 +318,29 @@ export default function TicketPass({ registration, onBackToHome }: TicketPassPro
         </div>
 
       </div>
+
+      {/* Image Overlay for Mobile Safari Compatibility */}
+      {showImageOverlay && ticketDataUrl && (
+        <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-xl flex flex-col items-center justify-center p-4">
+          <div className="w-full max-w-sm bg-slate-900 rounded-3xl p-6 flex flex-col items-center shadow-2xl border border-slate-800">
+            <h3 className="text-white font-orbitron font-bold text-lg mb-2">Your Entry Pass</h3>
+            <p className="text-slate-400 text-sm text-center mb-6">
+              <strong>Long press on the image below</strong> and select "Save to Photos" or "Share" to keep your ticket.
+            </p>
+            <img 
+              src={ticketDataUrl} 
+              alt="TECHCON Boarding Pass" 
+              className="w-full rounded-2xl shadow-xl border border-slate-700 mb-6"
+            />
+            <button
+              onClick={() => setShowImageOverlay(false)}
+              className="w-full py-4 bg-brand-purple hover:bg-purple-600 text-white font-bold rounded-2xl transition-colors"
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

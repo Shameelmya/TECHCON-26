@@ -67,18 +67,28 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
           {/* Tagline / Organizer */}
           {/* Premium High-Tech Brand Identity Typography */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.1 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}
             className="flex flex-col mb-4 sm:mb-6 items-center lg:items-start w-full"
           >
-            <div className="flex justify-center lg:justify-start w-full max-w-[280px] sm:max-w-[400px] lg:max-w-[900px]">
-              <img 
-                src="/hero-typography.png" 
-                alt="TECHCON 26" 
-                className="w-full h-auto object-contain drop-shadow-md" 
-              />
-            </div>
+            <motion.h1 
+              initial={{ y: 20, filter: 'blur(10px)' }}
+              animate={{ y: 0, filter: 'blur(0px)' }}
+              transition={{ duration: 0.8, delay: 0.2, type: 'spring' }}
+              className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-orbitron font-black text-transparent bg-clip-text bg-gradient-to-br from-white via-slate-100 to-slate-400 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] tracking-tighter"
+            >
+              TECHCON 26
+            </motion.h1>
+            <motion.div
+              initial={{ width: 0, opacity: 0 }}
+              animate={{ width: '100%', opacity: 1 }}
+              transition={{ duration: 1, delay: 0.5 }}
+              className="mt-2 text-xl sm:text-2xl md:text-3xl font-jura font-bold text-brand-purple tracking-[0.2em] uppercase relative inline-block text-center lg:text-left"
+            >
+              <span className="relative z-10 px-1 drop-shadow-md bg-brand-dark/50">Defining the Future</span>
+              <div className="absolute top-1/2 left-0 w-full h-[2px] bg-gradient-to-r from-brand-purple via-brand-pink to-transparent -z-10 opacity-70" />
+            </motion.div>
           </motion.div>
 
           {/* Brief introduction paragraph */}
@@ -114,7 +124,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
               </div>
               <div className="flex flex-col">
                 <span className="text-[9px] font-mono tracking-widest text-slate-400 uppercase">VENUE</span>
-                <span className="text-xs sm:text-sm font-sans font-bold text-slate-200">CUSAT, Kochi</span>
+                <span className="text-xs sm:text-sm font-sans font-bold text-slate-200">Ernakulam</span>
               </div>
             </div>
 

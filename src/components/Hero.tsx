@@ -73,6 +73,14 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
             className="inline-flex flex-col mb-4 sm:mb-6 items-center"
           >
+            <motion.img 
+              src="/hero-graphic.png" 
+              alt="Techcon 26 Graphic" 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.2 }}
+              className="w-24 sm:w-32 md:w-40 lg:w-48 object-contain mb-4 sm:mb-6"
+            />
             <h1 className="text-[13vw] md:text-[7rem] lg:text-[9.5rem] whitespace-nowrap font-orbitron font-black tracking-tighter leading-none flex items-center justify-center drop-shadow-[0_0_25px_rgba(255,255,255,0.4)]">
               <motion.div 
                 className="flex" 
@@ -137,9 +145,9 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            className="text-[13px] sm:text-[14px] text-slate-400 font-sans font-light leading-relaxed mb-10 max-w-xl mx-auto text-center px-2"
+            className="text-[13px] sm:text-[14px] md:text-[15px] text-slate-400 font-sans font-light leading-relaxed mb-10 max-w-4xl mx-auto text-center px-4"
           >
-            Kerala's premier technical conference. A dynamic physical conclave where<br className="hidden sm:block" /> student innovators, researchers, and developers converge to co-create the digital future.
+            Kerala's premier technical conference. A dynamic physical conclave where student innovators, researchers, and developers converge to co-create the digital future.
           </motion.p>
 
           {/* Key Metadata Row */}

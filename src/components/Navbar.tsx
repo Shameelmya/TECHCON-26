@@ -46,7 +46,7 @@ export default function Navbar({ onNavigate, activeSection, onOpenAdmin, onOpenR
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
           ? 'bg-brand-dark/70 backdrop-blur-md border-b border-slate-800 py-3 shadow-[0_2px_20px_rgba(0,0,0,0.02)]'
-          : 'bg-transparent py-5'
+          : 'bg-transparent py-5 md:py-8'
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">

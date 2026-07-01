@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Award, Compass, Shield } from 'lucide-react';
 import { AttendeeRegistration } from './types';
@@ -33,6 +33,25 @@ export default function App() {
   });
   const [isRetrieveOpen, setIsRetrieveOpen] = useState(false);
   const [activeRegistration, setActiveRegistration] = useState<AttendeeRegistration | null>(null);
+  const [activeSection, setActiveSection] = useState('hero');
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    const sections = document.querySelectorAll('section, header');
+    sections.forEach((section) => observer.observe(section));
+
+    return () => observer.disconnect();
+  }, []);
 
   const handleRegisterSuccess = (reg: AttendeeRegistration) => {
     setActiveRegistration(reg);
@@ -68,7 +87,7 @@ export default function App() {
                 element.scrollIntoView({ behavior: 'smooth' });
               }
             }}
-            activeSection="hero"
+            activeSection={activeSection}
             onOpenRegister={() => setIsRegisterOpen(true)}
             onOpenAdmin={() => setIsAdminOpen(true)}
           />

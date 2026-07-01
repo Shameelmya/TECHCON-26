@@ -46,7 +46,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
   return (
     <section 
       id="hero" 
-      className="relative min-h-screen flex items-center justify-center pt-24 pb-16 overflow-hidden px-6 md:px-12"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 md:px-8 pt-32 md:pt-48 pb-10"
     >
       {/* Blurred Soft Light Blobs for Depth */}
       <div className="absolute w-[450px] h-[450px] rounded-full bg-gradient-to-tr from-brand-purple/20 to-brand-pink/20 blur-[120px] -top-20 left-1/4 pointer-events-none animate-[pulse_8s_infinite]" />
@@ -75,7 +75,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
           >
             <h1 
               style={{ WebkitTextStroke: '2px rgba(255,255,255,0.8)' }}
-              className="text-[13vw] md:text-[7rem] lg:text-[9.5rem] whitespace-nowrap font-orbitron font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/60 drop-shadow-[0_0_25px_rgba(255,255,255,0.6)] tracking-tighter leading-none flex"
+              className="text-[13vw] md:text-[7rem] lg:text-[9.5rem] whitespace-nowrap font-orbitron font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-brand-purple to-white bg-[length:200%_auto] animate-[gradient_3s_ease-in-out_infinite] drop-shadow-[0_0_25px_rgba(255,255,255,0.6)] tracking-tighter leading-none flex"
             >
               {"TECHCON 26".split('').map((char, index) => (
                 <motion.span
@@ -94,9 +94,15 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
               transition={{ duration: 1, delay: 0.6 }}
               className="mt-1 md:mt-2 w-full text-[2.8vw] md:text-xl lg:text-3xl font-jura font-bold text-brand-purple uppercase relative drop-shadow-[0_0_15px_rgba(120,45,255,0.6)]"
             >
-              <div className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-brand-purple via-brand-pink to-brand-blue animate-pulse w-full flex justify-between font-extrabold tracking-widest">
+              <div className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-brand-purple via-brand-pink to-brand-blue w-full flex justify-between font-extrabold tracking-widest">
                 {"DEFINING THE FUTURE".split('').map((char, index) => (
-                  <span key={index}>{char === ' ' ? '\u00A0' : char}</span>
+                  <motion.span 
+                    key={index}
+                    animate={{ opacity: [0.4, 1, 0.4], scale: [0.95, 1, 0.95] }}
+                    transition={{ duration: 3, repeat: Infinity, delay: index * 0.1, ease: 'easeInOut' }}
+                  >
+                    {char === ' ' ? '\u00A0' : char}
+                  </motion.span>
                 ))}
               </div>
             </motion.div>
@@ -107,9 +113,9 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            className="text-[15px] sm:text-[18px] text-slate-300 font-sans font-normal leading-relaxed mb-10 max-w-2xl text-center"
+            className="text-[13px] sm:text-[14px] text-slate-400 font-sans font-light leading-relaxed mb-10 max-w-xl mx-auto text-center px-2"
           >
-            Kerala's premier technical conference. A dynamic physical conclave where student innovators, researchers, and developers converge to co-create the digital future.
+            Kerala's premier technical conference. A dynamic physical conclave where<br className="hidden sm:block" /> student innovators, researchers, and developers converge to co-create the digital future.
           </motion.p>
 
           {/* Key Metadata Row */}

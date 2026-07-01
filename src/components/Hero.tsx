@@ -74,7 +74,12 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
             className="inline-flex flex-col mb-4 sm:mb-6 items-center"
           >
             <h1 className="text-[13vw] md:text-[7rem] lg:text-[9.5rem] whitespace-nowrap font-orbitron font-black tracking-tighter leading-none flex items-center justify-center drop-shadow-[0_0_25px_rgba(255,255,255,0.4)]">
-              <div className="flex" style={{ WebkitTextStroke: '2px rgba(255,255,255,0.8)' }}>
+              <motion.div 
+                className="flex" 
+                style={{ WebkitTextStroke: '2px rgba(255,255,255,0.8)' }}
+                animate={{ gap: ['0px', '8px', '0px'] }}
+                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+              >
                 {"TECHCON".split('').map((char, index) => (
                   <motion.div
                     key={`t-${index}`}
@@ -86,8 +91,13 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
                     {char}
                   </motion.div>
                 ))}
-              </div>
-              <div className="flex ml-4 md:ml-8" style={{ WebkitTextStroke: '1px rgba(120,45,255,0.5)' }}>
+              </motion.div>
+              <motion.div 
+                className="flex ml-4 md:ml-8" 
+                style={{ WebkitTextStroke: '1px rgba(120,45,255,0.5)' }}
+                animate={{ gap: ['0px', '8px', '0px'] }}
+                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+              >
                 {"26".split('').map((char, index) => (
                   <motion.div
                     key={`n-${index}`}
@@ -98,7 +108,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
                     <span className="text-transparent bg-clip-text bg-gradient-to-br from-brand-pink to-brand-purple drop-shadow-xl">{char}</span>
                   </motion.div>
                 ))}
-              </div>
+              </motion.div>
             </h1>
             <motion.div
               initial={{ opacity: 0 }}

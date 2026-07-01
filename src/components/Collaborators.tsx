@@ -4,7 +4,7 @@ export default function Collaborators() {
   const dummyLogos = Array.from({ length: 8 }).map((_, i) => `LOGO ${i + 1}`);
 
   return (
-    <section className="py-12 bg-brand-dark border-y border-slate-800 overflow-hidden select-none">
+    <section className="py-12 border-y border-slate-800/30 overflow-hidden select-none">
       <div className="max-w-7xl mx-auto px-6 mb-8 text-center">
         <span className="text-[10px] font-mono tracking-[0.25em] text-slate-400 uppercase font-bold">
           // OUR COLLABORATORS & PARTNERS

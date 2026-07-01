@@ -9,7 +9,6 @@ import { Award, Compass, Shield } from 'lucide-react';
 import { AttendeeRegistration } from './types';
 
 // Component Imports
-import Loader from './components/Loader';
 import CircuitBackground from './components/CircuitBackground';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -25,7 +24,6 @@ import RetrievePassForm from './components/RetrievePassForm';
 import { getRegistrations, fetchAllRegistrations } from './utils/db';
 
 export default function App() {
-  const [isLoading, setIsLoading] = useState(true);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [isRegisterOpen, setIsRegisterOpen] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -57,16 +55,6 @@ export default function App() {
 
   return (
     <>
-      {/* 1. Futuristic Intro Loader */}
-      <AnimatePresence mode="wait">
-        {isLoading && (
-          <motion.div key="preloader" className="fixed inset-0 z-50">
-            <Loader onComplete={() => setIsLoading(false)} />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {!isLoading && (
         <div className="relative min-h-screen bg-brand-dark text-white overflow-x-hidden selection:bg-brand-purple selection:text-white">
           
           {/* Subtle canvas circuit backgrounds */}
@@ -248,7 +236,6 @@ export default function App() {
           </footer>
 
         </div>
-      )}
     </>
   );
 }

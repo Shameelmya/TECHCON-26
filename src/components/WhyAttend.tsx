@@ -54,7 +54,7 @@ export default function WhyAttend() {
   return (
     <section 
       id="why-attend" 
-      className="py-20 sm:py-28 bg-brand-dark border-t border-slate-900 px-6 md:px-12 relative overflow-hidden"
+      className="py-20 sm:py-28 px-6 md:px-12 relative overflow-hidden"
     >
       <div 
         className="absolute inset-0 pointer-events-none opacity-[0.02]" 
@@ -89,15 +89,23 @@ export default function WhyAttend() {
           {sessions.map((session, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              className={`relative p-8 rounded-3xl overflow-hidden group cursor-pointer transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl ${session.shadow}`}
+              transition={{ duration: 0.6, delay: i * 0.1 }}
             >
-              <div className="absolute inset-0 bg-brand-navy/60 backdrop-blur-md z-0 group-hover:bg-brand-navy/80 transition-colors duration-500" />
-              <div className={`absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r ${session.gradient} z-10`} />
-              <div className={`absolute -right-12 -top-12 w-40 h-40 rounded-full bg-gradient-to-br ${session.gradient} opacity-20 blur-[50px] group-hover:opacity-40 transition-opacity duration-500`} />
+              <motion.div
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: i * 0.2 }}
+                className={`h-full relative p-8 rounded-3xl overflow-hidden group cursor-pointer border border-slate-800/50 shadow-2xl ${session.shadow}`}
+              >
+                <div className="absolute inset-0 bg-brand-navy/50 backdrop-blur-md z-0" />
+                <div className={`absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r ${session.gradient} z-10`} />
+                <motion.div 
+                  animate={{ opacity: [0.2, 0.5, 0.2] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+                  className={`absolute -right-12 -top-12 w-40 h-40 rounded-full bg-gradient-to-br ${session.gradient} blur-[50px]`} 
+                />
               
               <div className="relative z-10 flex flex-col h-full">
                 <div className="flex justify-between items-start mb-6">
@@ -116,6 +124,7 @@ export default function WhyAttend() {
                 </p>
               </div>
             </motion.div>
+          </motion.div>
           ))}
         </div>
 

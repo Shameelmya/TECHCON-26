@@ -35,7 +35,7 @@ export default function About() {
   return (
     <section 
       id="about" 
-      className="py-20 sm:py-28 bg-brand-dark px-6 md:px-12 relative overflow-hidden"
+      className="py-20 sm:py-28 px-6 md:px-12 relative overflow-hidden"
     >
       <div className="max-w-7xl mx-auto">
         

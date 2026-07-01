@@ -15,7 +15,7 @@ export default function Venue() {
   return (
     <section 
       id="venue" 
-      className="py-20 sm:py-28 bg-brand-dark border-t border-slate-900 px-6 md:px-12 relative overflow-hidden"
+      className="py-20 sm:py-28 px-6 md:px-12 relative overflow-hidden"
     >
       {/* Background grids & radial glow blobs */}
       <div 
@@ -52,8 +52,11 @@ export default function Venue() {
         <div className="max-w-4xl mx-auto items-stretch">
           
           {/* Dark Transit Info Details Card */}
-          <div className="flex flex-col justify-between bg-brand-navy/50 backdrop-blur-md border border-slate-800/80 p-6 sm:p-8 rounded-[32px] shadow-2xl relative overflow-hidden">
-
+          <motion.div 
+            animate={{ y: [0, -10, 0] }}
+            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+            className="flex flex-col justify-between bg-brand-navy/50 backdrop-blur-md border border-slate-800/80 p-6 sm:p-8 rounded-[32px] shadow-[0_0_30px_rgba(255,32,142,0.15)] relative overflow-hidden"
+          >
 
             <div className="relative z-10 space-y-6">
               <div>
@@ -117,7 +120,7 @@ export default function Venue() {
                 <span>GET DIRECTIONS</span>
               </a>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

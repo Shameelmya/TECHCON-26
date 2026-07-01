@@ -5,7 +5,7 @@ export default function Timeline() {
   return (
     <section 
       id="timeline" 
-      className="py-24 sm:py-32 bg-brand-dark px-6 md:px-12 relative overflow-hidden"
+      className="py-24 sm:py-32 px-6 md:px-12 relative overflow-hidden"
     >
       {/* Background Soft Blobs */}
       <div className="absolute w-[400px] h-[400px] rounded-full bg-gradient-to-br from-pink-100/30 to-purple-100/20 blur-[110px] top-40 -right-48 pointer-events-none" />
@@ -21,25 +21,28 @@ export default function Timeline() {
           </h2>
         </div>
 
-        {/* Short Schedule Notice */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="relative inline-block"
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 blur-xl opacity-20 rounded-3xl" />
-          <div className="relative bg-brand-dark border border-slate-800 shadow-xl rounded-3xl p-10 sm:p-16 flex flex-col items-center justify-center max-w-2xl mx-auto">
-            <div className="w-16 h-16 rounded-full bg-brand-black flex items-center justify-center mb-6">
-              <Clock className="text-brand-purple" size={32} />
+          <motion.div 
+            animate={{ y: [0, -10, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+            className="relative bg-brand-navy/50 backdrop-blur-md border border-slate-800/50 shadow-[0_0_30px_rgba(120,45,255,0.15)] rounded-3xl p-10 sm:p-16 flex flex-col items-center justify-center max-w-2xl mx-auto"
+          >
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-3xl pointer-events-none" />
+            <div className="w-16 h-16 rounded-full bg-brand-dark/80 flex items-center justify-center mb-6 border border-brand-purple/30 shadow-[0_0_15px_rgba(120,45,255,0.2)] relative z-10">
+              <Clock className="text-brand-purple animate-pulse" size={32} />
             </div>
-            <h3 className="text-2xl font-orbitron font-bold text-white mb-3">
+            <h3 className="text-2xl font-orbitron font-bold text-white mb-3 relative z-10">
               Schedule Will Be Uploaded Soon
             </h3>
-            <p className="text-sm font-sans text-slate-500">
+            <p className="text-sm font-sans text-slate-400 relative z-10">
               We are finalizing the events and speakers for TECHCON '26. The full program schedule will be available here shortly.
             </p>
-          </div>
+          </motion.div>
         </motion.div>
       </div>
     </section>

@@ -45,106 +45,105 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
   return (
     <section 
       id="hero" 
-      className="relative min-h-screen flex items-center justify-center pt-24 pb-16 overflow-hidden bg-brand-dark px-6 md:px-12"
+      className="relative min-h-screen flex items-center justify-center pt-24 pb-16 overflow-hidden px-6 md:px-12"
     >
       {/* Blurred Soft Light Blobs for Depth */}
-      <div className="absolute w-[450px] h-[450px] rounded-full bg-gradient-to-tr from-purple-200/50 to-pink-200/40 blur-[120px] -top-20 left-1/4 pointer-events-none animate-[pulse_8s_infinite]" />
-      <div className="absolute w-[550px] h-[550px] rounded-full bg-gradient-to-br from-blue-100/40 to-purple-100/50 blur-[130px] bottom-10 right-10 pointer-events-none" />
+      <div className="absolute w-[450px] h-[450px] rounded-full bg-gradient-to-tr from-brand-purple/20 to-brand-pink/20 blur-[120px] -top-20 left-1/4 pointer-events-none animate-[pulse_8s_infinite]" />
+      <div className="absolute w-[550px] h-[550px] rounded-full bg-gradient-to-br from-brand-blue/20 to-brand-purple/20 blur-[130px] bottom-10 right-10 pointer-events-none" />
 
       {/* Grid Pattern overlay */}
       <div 
         className="absolute inset-0 pointer-events-none opacity-[0.02]" 
         style={{
-          backgroundImage: `radial-gradient(#1e293b 1px, transparent 1px)`,
+          backgroundImage: `radial-gradient(#ffffff 1px, transparent 1px)`,
           backgroundSize: '30px 30px'
         }}
       />
 
-      <div className="relative max-w-7xl mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-1 sm:gap-8 lg:gap-8 items-center z-10">
+      <div className="relative max-w-7xl mx-auto w-full flex flex-col items-center justify-center z-10">
         
-        {/* Left column: Headings and copy */}
-        <div className="lg:col-span-7 flex flex-col justify-center items-center lg:items-start text-center lg:text-left order-2 lg:order-1">
+        {/* Headings and copy */}
+        <div className="flex flex-col justify-center items-center text-center">
           {/* Tagline / Organizer */}
           {/* Premium High-Tech Brand Identity Typography */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1 }}
-            className="flex flex-col mb-4 sm:mb-6 items-center lg:items-start w-full"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            className="flex flex-col mb-4 sm:mb-6 items-center w-full"
           >
             <motion.h1 
-              initial={{ y: 20, filter: 'blur(10px)' }}
-              animate={{ y: 0, filter: 'blur(0px)' }}
-              transition={{ duration: 0.8, delay: 0.2, type: 'spring' }}
-              className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-orbitron font-black text-transparent bg-clip-text bg-gradient-to-br from-white via-slate-100 to-slate-400 drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] tracking-tighter"
+              initial={{ y: 30, filter: 'blur(20px)', opacity: 0, scale: 0.9 }}
+              animate={{ y: 0, filter: 'blur(0px)', opacity: 1, scale: 1 }}
+              transition={{ duration: 1, delay: 0.2, type: 'spring', bounce: 0.2 }}
+              className="text-6xl sm:text-7xl md:text-8xl lg:text-[10rem] font-orbitron font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-white/40 drop-shadow-[0_0_25px_rgba(255,255,255,0.4)] tracking-tighter leading-none"
             >
-              TECHCON 26
+              TECHCON<br className="sm:hidden" /> 26
             </motion.h1>
             <motion.div
-              initial={{ width: 0, opacity: 0 }}
-              animate={{ width: '100%', opacity: 1 }}
-              transition={{ duration: 1, delay: 0.5 }}
-              className="mt-2 text-xl sm:text-2xl md:text-3xl font-jura font-bold text-brand-purple tracking-[0.2em] uppercase relative inline-block text-center lg:text-left"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 0.6 }}
+              className="mt-4 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-jura font-bold text-brand-purple tracking-[0.3em] uppercase relative inline-block text-center drop-shadow-[0_0_15px_rgba(120,45,255,0.6)]"
             >
-              <span className="relative z-10 px-1 drop-shadow-md bg-brand-dark/50">Defining the Future</span>
-              <div className="absolute top-1/2 left-0 w-full h-[2px] bg-gradient-to-r from-brand-purple via-brand-pink to-transparent -z-10 opacity-70" />
+              <span className="relative z-10 px-2 bg-clip-text text-transparent bg-gradient-to-r from-brand-purple via-brand-pink to-brand-blue animate-pulse">Defining the Future</span>
             </motion.div>
           </motion.div>
 
           {/* Brief introduction paragraph */}
           <motion.p
-            initial={{ opacity: 0, y: 15 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-[14px] sm:text-[16px] text-slate-500 font-sans font-normal leading-relaxed mb-8 max-w-xl text-center lg:text-left"
+            transition={{ duration: 0.8, delay: 0.8 }}
+            className="text-[15px] sm:text-[18px] text-slate-300 font-sans font-normal leading-relaxed mb-10 max-w-2xl text-center"
           >
             Kerala's premier technical conference. A dynamic physical conclave where student innovators, researchers, and developers converge to co-create the digital future.
           </motion.p>
 
           {/* Key Metadata Row */}
           <motion.div 
-            initial={{ opacity: 0, y: 15 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-6 border-t border-slate-800 pt-6 mb-10 max-w-lg w-full"
+            transition={{ duration: 0.8, delay: 1 }}
+            className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 border-t border-slate-800/50 pt-8 mb-12 w-full max-w-3xl"
           >
-            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-2 sm:gap-3">
-              <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-brand-purple shrink-0 border border-purple-100/50">
-                <Calendar size={18} />
+            <div className="flex flex-col items-center text-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center text-brand-purple shrink-0 border border-purple-500/20 shadow-[0_0_15px_rgba(120,45,255,0.2)]">
+                <Calendar size={20} />
               </div>
               <div className="flex flex-col">
-                <span className="text-[9px] font-mono tracking-widest text-slate-400 uppercase">DATE</span>
-                <span className="text-xs sm:text-sm font-sans font-bold text-slate-200">15 July 2026</span>
+                <span className="text-[10px] font-mono tracking-widest text-slate-400 uppercase">DATE</span>
+                <span className="text-sm sm:text-base font-sans font-bold text-white">15 July 2026</span>
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-2 sm:gap-3">
-              <div className="w-10 h-10 rounded-xl bg-pink-50 flex items-center justify-center text-brand-pink shrink-0 border border-pink-100/50">
-                <MapPin size={18} />
+            <div className="flex flex-col items-center text-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-pink-500/10 flex items-center justify-center text-brand-pink shrink-0 border border-pink-500/20 shadow-[0_0_15px_rgba(255,32,142,0.2)]">
+                <MapPin size={20} />
               </div>
               <div className="flex flex-col">
-                <span className="text-[9px] font-mono tracking-widest text-slate-400 uppercase">VENUE</span>
-                <span className="text-xs sm:text-sm font-sans font-bold text-slate-200">Ernakulam</span>
+                <span className="text-[10px] font-mono tracking-widest text-slate-400 uppercase">VENUE</span>
+                <span className="text-sm sm:text-base font-sans font-bold text-white">Ernakulam</span>
               </div>
             </div>
 
-            <div className="hidden sm:flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-2 sm:gap-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-brand-blue shrink-0 border border-blue-100/50">
-                <User size={18} />
+            <div className="flex flex-col items-center text-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-brand-blue shrink-0 border border-blue-500/20 shadow-[0_0_15px_rgba(32,156,255,0.2)]">
+                <User size={20} />
               </div>
               <div className="flex flex-col">
-                <span className="text-[9px] font-mono tracking-widest text-slate-400 uppercase">ORGANIZER</span>
-                <span className="text-xs sm:text-sm font-sans font-bold text-slate-200">msf TechFed</span>
+                <span className="text-[10px] font-mono tracking-widest text-slate-400 uppercase">ORGANIZER</span>
+                <span className="text-sm sm:text-base font-sans font-bold text-white">msf TechFed</span>
               </div>
             </div>
           </motion.div>
 
           {/* Minimal Action banner */}
           <motion.div
-            initial={{ opacity: 0, y: 15 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="w-full max-w-lg mb-6 relative"
+            transition={{ duration: 0.8, delay: 1.2 }}
+            className="w-full max-w-2xl mb-6 relative"
           >
             <div className="w-full rounded-[32px] p-6 sm:p-8 bg-gradient-to-r from-brand-pink via-brand-purple to-brand-blue bg-[length:200%_auto] animate-[gradient_6s_ease-in-out_infinite] flex flex-col sm:flex-row items-center justify-between gap-6">
               

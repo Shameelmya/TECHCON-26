@@ -46,7 +46,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
   return (
     <section 
       id="hero" 
-      className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 md:px-8 pt-32 md:pt-48 pb-10"
+      className="relative min-h-screen flex items-center justify-center px-4 md:px-8 pt-32 md:pt-48 pb-10"
     >
       {/* Blurred Soft Light Blobs for Depth */}
       <div className="absolute w-[450px] h-[450px] rounded-full bg-gradient-to-tr from-brand-purple/20 to-brand-pink/20 blur-[120px] -top-20 left-1/4 pointer-events-none animate-[pulse_8s_infinite]" />

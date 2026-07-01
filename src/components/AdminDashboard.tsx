@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { AttendeeRegistration, AdminStats } from '../types';
 import { getRegistrations, fetchAllRegistrations, getStats, checkInAttendee, revertCheckIn, exportToCSV, loginAdmin, getSettings, toggleRegistrationStatus } from '../utils/db';
-import { Html5QrcodeScanner } from 'html5-qrcode';
+import { Html5QrcodeScanner, Html5Qrcode } from 'html5-qrcode';
 
 interface AdminDashboardProps {
   onClose: () => void;
@@ -99,30 +99,34 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
   };
 
   useEffect(() => {
-    let html5QrcodeScanner: Html5QrcodeScanner | null = null;
+    let html5QrCode: Html5Qrcode | null = null;
+    let isComponentMounted = true;
+
     if (activeTab === 'checkin') {
       const timer = setTimeout(() => {
+        if (!isComponentMounted) return;
         const readerElement = document.getElementById('reader');
         if (readerElement && readerElement.innerHTML === '') {
-          html5QrcodeScanner = new Html5QrcodeScanner(
-            "reader",
-            { fps: 10, qrbox: { width: 250, height: 250 }, rememberLastUsedCamera: true },
-            false
-          );
-          html5QrcodeScanner.render(
+          html5QrCode = new Html5Qrcode("reader");
+          html5QrCode.start(
+            { facingMode: "environment" }, // Prefer back camera
+            { fps: 10, qrbox: { width: 250, height: 250 } },
             (decodedText: string) => {
               handleManualCheckIn(decodedText);
             },
             (errorMessage: any) => {}
-          );
+          ).catch((err) => {
+            console.error("Camera failed to start:", err);
+            // Fallback: If camera fails to auto-start, we could try scanning images or show an error
+          });
         }
       }, 300);
+
       return () => {
+        isComponentMounted = false;
         clearTimeout(timer);
-        if (html5QrcodeScanner) {
-          try {
-            html5QrcodeScanner.clear().catch(e => console.error("Failed to clear scanner", e));
-          } catch (e) {}
+        if (html5QrCode && html5QrCode.isScanning) {
+          html5QrCode.stop().catch(e => console.error("Failed to stop scanner", e));
         }
       };
     }

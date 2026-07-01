@@ -21,6 +21,7 @@ import Venue from './components/Venue';
 import RegistrationForm from './components/RegistrationForm';
 import TicketPass from './components/TicketPass';
 import AdminDashboard from './components/AdminDashboard';
+import RetrievePassForm from './components/RetrievePassForm';
 import { getRegistrations, fetchAllRegistrations } from './utils/db';
 
 export default function App() {
@@ -32,6 +33,7 @@ export default function App() {
     }
     return false;
   });
+  const [isRetrieveOpen, setIsRetrieveOpen] = useState(false);
   const [activeRegistration, setActiveRegistration] = useState<AttendeeRegistration | null>(null);
 
   const handleRegisterSuccess = (reg: AttendeeRegistration) => {
@@ -43,33 +45,14 @@ export default function App() {
     setActiveRegistration(null);
   };
 
-  const handleGetPass = async () => {
-    const input = window.prompt("Enter your registered Phone Number OR Name to retrieve your pass:");
-    if (!input) return;
-    const query = input.trim().toLowerCase();
-    
-    // Check local first
-    let list = getRegistrations();
-    let reg = list.find(r => 
-      r.mobileNumber === query || 
-      r.fullName.toLowerCase().includes(query)
-    );
-    
-    // Fallback to server if not in local cache
-    if (!reg) {
-      list = await fetchAllRegistrations();
-      reg = list.find(r => 
-        r.mobileNumber === query || 
-        r.fullName.toLowerCase().includes(query)
-      );
-    }
-    
-    if (reg) {
-      setActiveRegistration(reg);
-      setIsRegisterOpen(false);
-    } else {
-      alert("No registration found with this detail. Please check or register anew.");
-    }
+  const handleGetPass = () => {
+    setIsRegisterOpen(false);
+    setIsRetrieveOpen(true);
+  };
+  
+  const handleOpenRegister = () => {
+    setIsRetrieveOpen(false);
+    setIsRegisterOpen(true);
   };
 
   return (
@@ -145,7 +128,7 @@ export default function App() {
 
           {/* 4. Registration Flow Sliding Modal Panel Overlay */}
           <AnimatePresence>
-            {isRegisterOpen && (
+            {(isRegisterOpen || isRetrieveOpen) && (
               <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -158,11 +141,22 @@ export default function App() {
                   exit={{ scale: 0.95, y: 15 }}
                   className="w-full max-w-2xl my-auto py-8 sm:py-0"
                 >
-                  <RegistrationForm 
-                    onSuccess={handleRegisterSuccess}
-                    onCancel={() => setIsRegisterOpen(false)}
-                    onGetPass={handleGetPass}
-                  />
+                  {isRegisterOpen ? (
+                    <RegistrationForm 
+                      onSuccess={handleRegisterSuccess}
+                      onCancel={() => setIsRegisterOpen(false)}
+                      onGetPass={handleGetPass}
+                    />
+                  ) : (
+                    <RetrievePassForm
+                      onSuccess={(reg) => {
+                        setActiveRegistration(reg);
+                        setIsRetrieveOpen(false);
+                      }}
+                      onCancel={() => setIsRetrieveOpen(false)}
+                      onOpenRegister={handleOpenRegister}
+                    />
+                  )}
                 </motion.div>
               </motion.div>
             )}

@@ -21,6 +21,7 @@ interface AdminDashboardProps {
 export default function AdminDashboard({ onClose }: AdminDashboardProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [loginError, setLoginError] = useState('');
   const [isRegOpen, setIsRegOpen] = useState(true);
   const [isTogglingReg, setIsTogglingReg] = useState(false);
@@ -56,7 +57,9 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isLoggingIn) return;
     setLoginError('');
+    setIsLoggingIn(true);
     
     // Access with official passcode or guest access
     const isValid = await loginAdmin(password);
@@ -65,6 +68,7 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
     } else {
       setLoginError('Invalid administrator credentials.');
     }
+    setIsLoggingIn(false);
   };
 
   const handleSearchForCheckIn = (ticketOrId: string) => {
@@ -319,9 +323,14 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 py-3 bg-gradient-to-r from-brand-purple to-brand-pink text-white font-sans font-semibold text-xs rounded-xl shadow-md hover:shadow-lg transition-all"
+                    disabled={isLoggingIn}
+                    className={`flex-1 py-3 font-sans font-semibold text-xs rounded-xl shadow-md transition-all ${
+                      isLoggingIn 
+                        ? 'bg-slate-200 text-slate-500 cursor-not-allowed'
+                        : 'bg-gradient-to-r from-brand-purple to-brand-pink text-white hover:shadow-lg'
+                    }`}
                   >
-                    UNLOCK ACCESS
+                    {isLoggingIn ? 'VALIDATING...' : 'UNLOCK ACCESS'}
                   </button>
                 </div>
               </form>

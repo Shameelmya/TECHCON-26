@@ -68,47 +68,43 @@ export const fetchAllRegistrations = async (): Promise<AttendeeRegistration[]> =
 };
 
 export const saveRegistration = async (reg: Omit<AttendeeRegistration, 'id' | 'ticketNumber' | 'verificationToken' | 'checkedIn' | 'checkInTime' | 'createdAt'>): Promise<AttendeeRegistration> => {
-  // Fetch latest list from Google Sheets first to avoid ID collisions on different devices
-  const serverList = await fetchAllRegistrations();
-  const list = serverList.length > 0 ? serverList : getRegistrations();
-  
-  // Check duplicates
-  const duplicate = list.find(item => 
-    (reg.email && item.email && item.email.toLowerCase() === reg.email.toLowerCase()) || 
-    (item.mobileNumber === reg.mobileNumber)
-  );
-  if (duplicate) {
-    throw new Error(`Already registered. Found existing user with email "${reg.email || 'N/A'}" or phone "${reg.mobileNumber}".`);
-  }
-
-  const id = generateCustomID(list.length);
-  const ticketNumber = generateTicketNumber();
-  const verificationToken = generateVerificationToken(id, reg.email);
-  
-  const newReg: AttendeeRegistration = {
-    ...reg,
-    id,
-    ticketNumber,
-    verificationToken,
-    checkedIn: false,
-    checkInTime: null,
-    createdAt: new Date().toISOString()
-  };
-
-  const updated = [...list, newReg];
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-
   try {
-    await fetch('https://script.google.com/macros/s/AKfycbxzAOiL7SXAk2Sg2Zzt0HWHODnCPNnzrM60I34xbaAVxnBBKM8Donpo1YSPXArr_sRHNQ/exec', {
+    const res = await fetch('https://script.google.com/macros/s/AKfycbxzAOiL7SXAk2Sg2Zzt0HWHODnCPNnzrM60I34xbaAVxnBBKM8Donpo1YSPXArr_sRHNQ/exec', {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ action: 'register', ...newReg })
+      body: JSON.stringify({ action: 'register', ...reg })
     });
-  } catch (err) {
-    console.error("Failed to sync registration to Google Sheets:", err);
-  }
+    
+    const data = await res.json();
+    
+    if (data.status === 'error') {
+      throw new Error(data.message || "Registration failed on server.");
+    }
 
-  return newReg;
+    if (data.status === 'success' && data.registration) {
+      const newReg: AttendeeRegistration = {
+        ...reg,
+        id: data.registration.id,
+        ticketNumber: data.registration.ticketNumber,
+        verificationToken: data.registration.verificationToken,
+        createdAt: data.registration.createdAt,
+        checkedIn: false,
+        checkInTime: null
+      };
+
+      // Add to local cache for instant viewing
+      const list = getRegistrations();
+      const updated = [...list, newReg];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+
+      return newReg;
+    }
+    
+    throw new Error("Invalid response from server.");
+  } catch (err: any) {
+    console.error("Failed to sync registration to Google Sheets:", err);
+    throw new Error(err.message || "Network error. Please try again.");
+  }
 };
 
 export const checkInAttendee = async (ticketNumberOrId: string): Promise<AttendeeRegistration> => {

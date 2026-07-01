@@ -67,7 +67,7 @@ export default function App() {
       </AnimatePresence>
 
       {!isLoading && (
-        <div className="relative min-h-screen bg-white text-slate-900 overflow-x-hidden selection:bg-purple-600 selection:text-white">
+        <div className="relative min-h-screen bg-brand-dark text-white overflow-x-hidden selection:bg-brand-purple selection:text-white">
           
           {/* Subtle canvas circuit backgrounds */}
           <CircuitBackground />

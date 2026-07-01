@@ -44,7 +44,7 @@ export default function Navbar({ onNavigate, activeSection, onOpenAdmin, onOpenR
       id="main-navbar"
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
-          ? 'bg-white/70 backdrop-blur-md border-b border-slate-100 py-3 shadow-[0_2px_20px_rgba(0,0,0,0.02)]'
+          ? 'bg-brand-dark/70 backdrop-blur-md border-b border-slate-800 py-3 shadow-[0_2px_20px_rgba(0,0,0,0.02)]'
           : 'bg-transparent py-5'
       }`}
     >
@@ -62,7 +62,7 @@ export default function Navbar({ onNavigate, activeSection, onOpenAdmin, onOpenR
         </button>
 
         {/* Desktop Menu Links */}
-        <div className="hidden md:flex items-center gap-1.5 bg-slate-100/50 p-1 rounded-full border border-slate-200/40 backdrop-blur-sm">
+        <div className="hidden md:flex items-center gap-1.5 bg-slate-100/50 p-1 rounded-full border border-slate-800/40 backdrop-blur-sm">
           {navItems.map((item) => {
             const isActive = activeSection === item.id;
             return (
@@ -71,8 +71,8 @@ export default function Navbar({ onNavigate, activeSection, onOpenAdmin, onOpenR
                 onClick={() => handleItemClick(item.id)}
                 className={`px-4 py-1.5 text-[13px] font-sans font-medium rounded-full transition-all duration-300 ${
                   isActive
-                    ? 'bg-white text-slate-950 shadow-[0_2px_8px_rgba(120,45,255,0.06)] border border-slate-100'
-                    : 'text-slate-500 hover:text-slate-900 hover:bg-white/30'
+                    ? 'bg-brand-dark text-white shadow-[0_2px_8px_rgba(120,45,255,0.06)] border border-slate-800'
+                    : 'text-slate-500 hover:text-white hover:bg-brand-dark/30'
                 }`}
               >
                 {item.label}
@@ -95,7 +95,7 @@ export default function Navbar({ onNavigate, activeSection, onOpenAdmin, onOpenR
           {/* Mobile Hamburger toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-1.5 rounded-full hover:bg-slate-100 text-slate-700 transition-colors"
+            className="md:hidden p-1.5 rounded-full hover:bg-slate-100 text-slate-300 transition-colors"
           >
             {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -109,7 +109,7 @@ export default function Navbar({ onNavigate, activeSection, onOpenAdmin, onOpenR
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden border-b border-slate-100 bg-white/95 backdrop-blur-md absolute top-full left-0 right-0 overflow-hidden shadow-lg"
+            className="md:hidden border-b border-slate-800 bg-brand-dark/95 backdrop-blur-md absolute top-full left-0 right-0 overflow-hidden shadow-lg"
           >
             <div className="px-6 py-6 flex flex-col gap-4">
               {navItems.map((item) => (
@@ -119,14 +119,14 @@ export default function Navbar({ onNavigate, activeSection, onOpenAdmin, onOpenR
                   className={`text-left py-2 px-4 rounded-xl text-[14px] font-sans font-medium transition-colors ${
                     activeSection === item.id
                       ? 'bg-purple-50 text-purple-700 font-semibold'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                      : 'text-slate-400 hover:text-white hover:bg-brand-black'
                   }`}
                 >
                   {item.label}
                 </button>
               ))}
               
-              <hr className="border-slate-100 my-1" />
+              <hr className="border-slate-800 my-1" />
               
               <button
                 onClick={() => {

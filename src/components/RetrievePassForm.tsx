@@ -11,33 +11,35 @@ interface RetrievePassFormProps {
 }
 
 export default function RetrievePassForm({ onSuccess, onCancel, onOpenRegister }: RetrievePassFormProps) {
-  const [query, setQuery] = useState('');
+  const [nameQuery, setNameQuery] = useState('');
+  const [phoneQuery, setPhoneQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!query.trim()) return;
+    if (!nameQuery.trim() || !phoneQuery.trim()) return;
     
     setErrorMsg(null);
     setIsSearching(true);
     
-    const lowerQuery = query.trim().toLowerCase();
+    const lowerName = nameQuery.trim().toLowerCase();
+    const phone = phoneQuery.trim();
     
     try {
       // Check local cache first
       let list = getRegistrations();
       let reg = list.find(r => 
-        r.mobileNumber === lowerQuery || 
-        r.fullName.toLowerCase().includes(lowerQuery)
+        r.mobileNumber === phone && 
+        r.fullName.toLowerCase().includes(lowerName)
       );
       
       // Fallback to server if not found in local cache
       if (!reg) {
         list = await fetchAllRegistrations();
         reg = list.find(r => 
-          r.mobileNumber === lowerQuery || 
-          r.fullName.toLowerCase().includes(lowerQuery)
+          r.mobileNumber === phone && 
+          r.fullName.toLowerCase().includes(lowerName)
         );
       }
       
@@ -89,30 +91,46 @@ export default function RetrievePassForm({ onSuccess, onCancel, onOpenRegister }
       )}
 
       <form onSubmit={handleSearch} className="space-y-6">
-        <div className="relative">
-          <label className="block text-xs font-mono text-slate-400 tracking-wider uppercase font-semibold mb-2 ml-1">
-            Phone Number or Name
-          </label>
+        <div className="space-y-4">
           <div className="relative">
-            <input
-              type="text"
-              required
-              autoFocus
-              disabled={isSearching}
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="e.g. 9876543210 or John Doe"
-              className="w-full pl-11 pr-4 py-4 bg-slate-50 border-2 border-slate-100 focus:border-brand-purple focus:bg-white rounded-2xl outline-none font-sans text-sm text-slate-900 transition-all placeholder:text-slate-400 font-medium"
-            />
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+            <label className="block text-xs font-mono text-slate-400 tracking-wider uppercase font-semibold mb-2 ml-1">
+              Registered Phone Number
+            </label>
+            <div className="relative">
+              <input
+                type="tel"
+                required
+                autoFocus
+                disabled={isSearching}
+                value={phoneQuery}
+                onChange={(e) => setPhoneQuery(e.target.value)}
+                className="w-full pl-4 pr-4 py-4 bg-slate-50 border-2 border-slate-100 focus:border-brand-purple focus:bg-white rounded-2xl outline-none font-sans text-sm text-slate-900 transition-all font-medium"
+              />
+            </div>
+          </div>
+          
+          <div className="relative">
+            <label className="block text-xs font-mono text-slate-400 tracking-wider uppercase font-semibold mb-2 ml-1">
+              Registered Name
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                required
+                disabled={isSearching}
+                value={nameQuery}
+                onChange={(e) => setNameQuery(e.target.value)}
+                className="w-full pl-4 pr-4 py-4 bg-slate-50 border-2 border-slate-100 focus:border-brand-purple focus:bg-white rounded-2xl outline-none font-sans text-sm text-slate-900 transition-all font-medium"
+              />
+            </div>
           </div>
         </div>
 
         <button
           type="submit"
-          disabled={isSearching || !query.trim()}
+          disabled={isSearching || !nameQuery.trim() || !phoneQuery.trim()}
           className={`w-full flex items-center justify-center gap-2 py-4 rounded-2xl font-bold font-sans text-sm transition-all shadow-lg ${
-            isSearching || !query.trim()
+            isSearching || !nameQuery.trim() || !phoneQuery.trim()
               ? 'bg-slate-200 text-slate-400 shadow-none cursor-not-allowed'
               : 'bg-brand-purple text-white shadow-purple-500/20 hover:shadow-purple-500/40 hover:-translate-y-0.5'
           }`}

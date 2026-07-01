@@ -73,20 +73,32 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
             className="inline-flex flex-col mb-4 sm:mb-6 items-center"
           >
-            <h1 
-              style={{ WebkitTextStroke: '2px rgba(255,255,255,0.8)' }}
-              className="text-[13vw] md:text-[7rem] lg:text-[9.5rem] whitespace-nowrap font-orbitron font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-brand-purple to-white bg-[length:200%_auto] animate-[gradient_3s_ease-in-out_infinite] drop-shadow-[0_0_25px_rgba(255,255,255,0.6)] tracking-tighter leading-none flex"
-            >
-              {"TECHCON 26".split('').map((char, index) => (
-                <motion.span
-                  key={index}
-                  initial={{ opacity: 0, y: 50, rotateX: 90 }}
-                  animate={{ opacity: 1, y: 0, rotateX: 0 }}
-                  transition={{ duration: 0.8, delay: 0.1 + index * 0.05, type: 'spring', bounce: 0.4 }}
-                >
-                  {char === ' ' ? '\u00A0' : char}
-                </motion.span>
-              ))}
+            <h1 className="text-[13vw] md:text-[7rem] lg:text-[9.5rem] whitespace-nowrap font-orbitron font-black tracking-tighter leading-none flex items-center justify-center drop-shadow-[0_0_25px_rgba(255,255,255,0.4)]">
+              <div className="flex" style={{ WebkitTextStroke: '2px rgba(255,255,255,0.8)' }}>
+                {"TECHCON".split('').map((char, index) => (
+                  <motion.div
+                    key={`t-${index}`}
+                    initial={{ opacity: 0, y: 50, rotateX: 90 }}
+                    animate={{ opacity: 1, y: 0, rotateX: 0 }}
+                    transition={{ duration: 0.8, delay: 0.1 + index * 0.05, type: 'spring', bounce: 0.4 }}
+                    className="text-white drop-shadow-lg"
+                  >
+                    {char}
+                  </motion.div>
+                ))}
+              </div>
+              <div className="flex ml-4 md:ml-8" style={{ WebkitTextStroke: '1px rgba(120,45,255,0.5)' }}>
+                {"26".split('').map((char, index) => (
+                  <motion.div
+                    key={`n-${index}`}
+                    initial={{ opacity: 0, y: 50, rotateX: 90 }}
+                    animate={{ opacity: 1, y: 0, rotateX: 0 }}
+                    transition={{ duration: 0.8, delay: 0.5 + index * 0.05, type: 'spring', bounce: 0.4 }}
+                  >
+                    <span className="text-transparent bg-clip-text bg-gradient-to-br from-brand-pink to-brand-purple drop-shadow-xl">{char}</span>
+                  </motion.div>
+                ))}
+              </div>
             </h1>
             <motion.div
               initial={{ opacity: 0 }}
@@ -94,15 +106,17 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
               transition={{ duration: 1, delay: 0.6 }}
               className="mt-1 md:mt-2 w-full text-[2.8vw] md:text-xl lg:text-3xl font-jura font-bold text-brand-purple uppercase relative drop-shadow-[0_0_15px_rgba(120,45,255,0.6)]"
             >
-              <div className="relative z-10 bg-clip-text text-transparent bg-gradient-to-r from-brand-purple via-brand-pink to-brand-blue w-full flex justify-between font-extrabold tracking-widest">
+              <div className="relative z-10 w-full flex justify-between font-extrabold tracking-widest drop-shadow-[0_0_15px_rgba(120,45,255,0.4)]">
                 {"DEFINING THE FUTURE".split('').map((char, index) => (
-                  <motion.span 
+                  <motion.div 
                     key={index}
-                    animate={{ opacity: [0.4, 1, 0.4], scale: [0.95, 1, 0.95] }}
-                    transition={{ duration: 3, repeat: Infinity, delay: index * 0.1, ease: 'easeInOut' }}
+                    animate={{ opacity: [0.3, 1, 0.3] }}
+                    transition={{ duration: 3, repeat: Infinity, delay: index * 0.08, ease: 'easeInOut' }}
                   >
-                    {char === ' ' ? '\u00A0' : char}
-                  </motion.span>
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-purple via-brand-pink to-brand-blue">
+                      {char === ' ' ? '\u00A0' : char}
+                    </span>
+                  </motion.div>
                 ))}
               </div>
             </motion.div>

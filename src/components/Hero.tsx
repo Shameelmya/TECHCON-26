@@ -195,7 +195,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
             transition={{ duration: 0.8, delay: 1.2 }}
             className="w-full max-w-2xl mb-6 relative"
           >
-            <div className="w-full rounded-[32px] p-6 sm:p-8 bg-gradient-to-r from-brand-pink/20 via-brand-purple/20 to-brand-blue/20 backdrop-blur-md bg-[length:200%_auto] animate-[gradient_6s_ease-in-out_infinite] flex flex-col sm:flex-row items-center justify-between gap-6 border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
+            <div className="w-full rounded-[32px] p-6 sm:p-8 bg-gradient-to-r from-brand-pink via-brand-purple to-brand-blue bg-[length:200%_auto] animate-[gradient_6s_ease-in-out_infinite] flex flex-col sm:flex-row items-center justify-between gap-6 shadow-[0_8px_32px_rgba(120,45,255,0.4)]">
               
               <div className="text-center sm:text-left text-white">
                 <h4 className="font-sans font-bold text-xl mb-1 drop-shadow-sm">Secure Your Pass</h4>

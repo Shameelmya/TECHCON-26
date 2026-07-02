@@ -61,6 +61,74 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
         }}
       />
 
+      {/* Embedded CSS for Circuit Animation */}
+      <style>{`
+        .circuit-path {
+          stroke-dasharray: 1000;
+          stroke-dashoffset: 1000;
+          animation: drawCircuit 10s ease-in-out infinite alternate;
+        }
+        .circuit-path-slow {
+          stroke-dasharray: 1000;
+          stroke-dashoffset: 1000;
+          animation: drawCircuit 15s ease-in-out infinite alternate-reverse;
+        }
+        @keyframes drawCircuit {
+          0% {
+            stroke-dashoffset: 1000;
+            opacity: 0.1;
+          }
+          50% {
+            opacity: 1;
+          }
+          100% {
+            stroke-dashoffset: 0;
+            opacity: 0.1;
+          }
+        }
+      `}</style>
+
+      {/* Left Circuit Lines */}
+      <div className="absolute left-0 top-1/4 bottom-1/4 w-48 hidden lg:block pointer-events-none opacity-[0.15] z-[-1]">
+        <svg viewBox="0 0 200 600" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full drop-shadow-[0_0_8px_rgba(120,45,255,0.8)]">
+          <path d="M -10 100 L 60 100 L 90 130 L 90 350 L 130 390 L 220 390" stroke="url(#circuit-grad-left)" strokeWidth="2.5" fill="none" className="circuit-path" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M -10 150 L 30 150 L 60 180 L 60 420 L 40 440 L -10 440" stroke="url(#circuit-grad-left)" strokeWidth="1.5" fill="none" className="circuit-path-slow" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M 20 250 L 50 250 L 80 280 L 80 480 L 110 510 L 220 510" stroke="url(#circuit-grad-left)" strokeWidth="2" fill="none" className="circuit-path" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="60" cy="100" r="4" fill="#E01A8A" />
+          <circle cx="90" cy="130" r="3" fill="#2036F2" />
+          <circle cx="30" cy="150" r="3" fill="#209CFF" />
+          <circle cx="60" cy="180" r="4" fill="#782DFF" />
+          <circle cx="50" cy="250" r="3" fill="#E01A8A" />
+          <circle cx="80" cy="280" r="4" fill="#2036F2" />
+          <defs>
+            <linearGradient id="circuit-grad-left" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#782DFF" />
+              <stop offset="50%" stopColor="#209CFF" />
+              <stop offset="100%" stopColor="#E01A8A" />
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+
+      {/* Right Circuit Lines */}
+      <div className="absolute right-0 top-1/3 bottom-1/4 w-48 hidden lg:block pointer-events-none opacity-[0.15] z-[-1]">
+        <svg viewBox="0 0 200 600" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full drop-shadow-[0_0_8px_rgba(32,156,255,0.8)]">
+          <path d="M 210 120 L 140 120 L 110 150 L 110 400 L 70 440 L -20 440" stroke="url(#circuit-grad-right)" strokeWidth="2.5" fill="none" className="circuit-path" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M 210 200 L 160 200 L 130 230 L 130 460 L 150 480 L 210 480" stroke="url(#circuit-grad-right)" strokeWidth="1.5" fill="none" className="circuit-path-slow" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="140" cy="120" r="4" fill="#209CFF" />
+          <circle cx="110" cy="150" r="3" fill="#E01A8A" />
+          <circle cx="160" cy="200" r="3" fill="#782DFF" />
+          <circle cx="130" cy="230" r="4" fill="#2036F2" />
+          <defs>
+            <linearGradient id="circuit-grad-right" x1="100%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#209CFF" />
+              <stop offset="50%" stopColor="#782DFF" />
+              <stop offset="100%" stopColor="#E01A8A" />
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+
       <div className="relative max-w-7xl mx-auto w-full flex flex-col items-center justify-center z-10">
         
         {/* Headings and copy */}

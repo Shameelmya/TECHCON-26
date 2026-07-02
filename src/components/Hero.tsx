@@ -174,14 +174,32 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent,
           </motion.div>
 
           {/* Brief introduction paragraph */}
-          <motion.p
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            className="text-[14px] sm:text-[16px] md:text-[18px] text-slate-300 font-sans font-medium leading-relaxed mb-10 max-w-4xl mx-auto text-center px-4 tracking-wide"
+            className="mb-10 flex justify-center"
           >
-            Let's build the future together.
-          </motion.p>
+            <div className="relative inline-block text-center px-4">
+              <p className="text-[14px] sm:text-[16px] md:text-[18px] text-slate-200 font-sans font-medium tracking-wide">
+                Let's build the future together!
+              </p>
+              {/* Animated Line */}
+              <motion.div 
+                className="absolute -bottom-3 h-[2px] bg-gradient-to-r from-brand-pink via-brand-purple to-brand-blue rounded-full shadow-[0_0_12px_rgba(120,45,255,0.8)]"
+                animate={{ 
+                  width: ["0%", "100%", "0%"],
+                  left: ["0%", "0%", "100%"]
+                }}
+                transition={{
+                  duration: 2.5,
+                  ease: "easeInOut",
+                  repeat: Infinity,
+                  repeatDelay: 1
+                }}
+              />
+            </div>
+          </motion.div>
 
           {/* Key Metadata Row */}
           <motion.div 

@@ -139,7 +139,7 @@ export default function App() {
 
           {/* 4. Registration Flow Sliding Modal Panel Overlay */}
           <AnimatePresence>
-            {(isRegisterOpen || isRetrieveOpen || isSponsorOpen) && (
+            {(isRegisterOpen || isRetrieveOpen) && (
               <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -166,11 +166,27 @@ export default function App() {
                       onOpenRegister={handleOpenRegister}
                     />
                   )}
-                  {isSponsorOpen && (
-                    <div className="max-w-none w-full xl:min-w-[1000px] flex justify-center -ml-0 xl:-ml-[175px]">
-                      <Sponsorship onClose={() => setIsSponsorOpen(false)} />
-                    </div>
-                  )}
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* 5. Sponsorship Modal Overlay */}
+          <AnimatePresence>
+            {isSponsorOpen && (
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-[60] bg-slate-950/60 backdrop-blur-md flex items-start justify-center p-4 sm:p-6 overflow-y-auto"
+              >
+                <motion.div 
+                  initial={{ scale: 0.95, y: 20 }}
+                  animate={{ scale: 1, y: 0 }}
+                  exit={{ scale: 0.95, y: 20 }}
+                  className="w-full max-w-[95vw] xl:max-w-7xl my-auto py-8 sm:py-0"
+                >
+                  <Sponsorship onClose={() => setIsSponsorOpen(false)} />
                 </motion.div>
               </motion.div>
             )}

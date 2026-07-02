@@ -58,7 +58,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent,
   return (
     <section 
       id="hero" 
-      className="relative min-h-screen flex items-center justify-center px-4 md:px-8 pt-24 md:pt-32 pb-10"
+      className="relative min-h-screen flex flex-col items-center justify-center px-4 md:px-8 pt-24 md:pt-32 pb-10"
     >
       {/* Blurred Soft Light Blobs for Depth */}
       <div className="absolute w-[450px] h-[450px] rounded-full bg-gradient-to-tr from-brand-purple/20 to-brand-pink/20 blur-[120px] -top-20 left-1/4 pointer-events-none animate-[pulse_8s_infinite]" />
@@ -338,11 +338,11 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent,
             </button>
           </motion.div>
         </div>
+      </div>
 
-        {/* Interactive Video Showcase */}
-        <div className="w-full max-w-[600px] aspect-video flex items-center justify-center mt-8 lg:mt-16 relative">
-          <HeroVideos />
-        </div>
+      {/* Interactive Video Showcase - Isolated so screen blend mode works against the background */}
+      <div className="relative z-20 w-full max-w-[300px] sm:max-w-[400px] lg:max-w-[450px] aspect-video flex items-center justify-center mt-6 lg:mt-10 mix-blend-screen pointer-events-none">
+        <HeroVideos />
       </div>
     </section>
   );
@@ -377,8 +377,7 @@ function HeroVideos() {
           playsInline
           className="absolute inset-0 w-full h-full object-contain z-10 transition-opacity duration-1000 ease-in-out pointer-events-none"
           style={{
-            opacity: currentIndex === index ? 1 : 0,
-            mixBlendMode: 'screen', // Instantly removes the black background
+            opacity: currentIndex === index ? 1 : 0
           }}
         />
       ))}

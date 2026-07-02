@@ -378,7 +378,8 @@ function HeroVideos() {
           className="absolute inset-0 w-full h-full object-contain z-10 transition-opacity duration-1000 ease-in-out pointer-events-none"
           style={{
             opacity: currentIndex === index ? 1 : 0,
-            filter: 'contrast(1.4) brightness(1.15) saturate(1.2)'
+            filter: 'contrast(1.4) brightness(1.15) saturate(1.2)',
+            clipPath: 'inset(0 clamp(20px, 15%, 100px))'
           }}
         />
       ))}

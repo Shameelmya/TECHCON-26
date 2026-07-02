@@ -64,7 +64,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
 
       {/* Background Lottie Animation */}
       <div 
-        className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1920px] h-[1100px] z-0 pointer-events-none opacity-50 mix-blend-screen"
+        className="absolute -top-32 left-1/2 -translate-x-1/2 w-full max-w-[1920px] h-[1100px] z-0 pointer-events-none opacity-50 mix-blend-screen blur-xl"
         style={{
           maskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
           WebkitMaskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)'

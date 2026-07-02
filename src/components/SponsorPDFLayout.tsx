@@ -22,7 +22,7 @@ const SponsorPDFLayout = forwardRef<HTMLDivElement>((props, ref) => {
           
           <div className="space-y-6">
             <h3 className="text-2xl font-bold">National Technology Conference</h3>
-            <p className="text-xl text-slate-400">15 July 2026<br/>Ernakulam, Kerala</p>
+            <p className="text-xl text-slate-400">Dates to be Announced<br/>Ernakulam, Kerala</p>
             <div className="pt-6 border-t border-slate-800">
               <p className="text-sm tracking-widest text-slate-500 uppercase">Organised by</p>
               <p className="text-xl font-bold mt-2">MSF TechFed Kerala</p>

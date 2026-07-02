@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { motion } from 'motion/react';
 import { X, CheckCircle2, TrendingUp, Users, Target, Rocket, BookOpen, Briefcase, Lightbulb, Package, Download } from 'lucide-react';
 import html2canvas from 'html2canvas';
@@ -351,17 +352,20 @@ export default function Sponsorship({ onClose }: SponsorshipProps) {
         </button>
       </div>
 
-      {/* Hidden PDF Layout */}
-      <div id="pdf-wrapper" className="absolute top-0 left-0 w-[800px] h-[3150px] -z-50 pointer-events-none opacity-0">
-        <SponsorPDFLayout ref={pdfRef} />
-      </div>
-
       {/* Pop-up form for Sponsor Now */}
       <SponsorMessageWindow 
         isOpen={isPopupOpen} 
         onClose={() => setIsPopupOpen(false)} 
         initialPlan={selectedPlan} 
       />
+
+      {/* Hidden PDF Layout safely Portaled to body to avoid clipping */}
+      {createPortal(
+        <div id="pdf-wrapper" className="absolute top-0 left-0 w-[800px] h-[3150px] pointer-events-none opacity-0" style={{ zIndex: -9999 }}>
+          <SponsorPDFLayout ref={pdfRef} />
+        </div>,
+        document.body
+      )}
     </div>
   );
 }

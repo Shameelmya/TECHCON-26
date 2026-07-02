@@ -104,10 +104,15 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent,
             <motion.img 
               src="/hero-graphic.png" 
               alt="Techcon 26 Graphic" 
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.2 }}
+              initial={{ opacity: 0, y: -20, rotateY: 0 }}
+              animate={{ opacity: 1, y: 0, rotateY: [-35, 35, -35] }}
+              transition={{ 
+                opacity: { duration: 1, delay: 0.2 },
+                y: { duration: 1, delay: 0.2 },
+                rotateY: { duration: 8, repeat: Infinity, ease: "easeInOut" }
+              }}
               className="w-24 sm:w-32 md:w-40 lg:w-48 object-contain mb-8 sm:mb-12 lg:mb-16"
+              style={{ transformPerspective: 1000 }}
             />
             <h1 className="text-[13vw] md:text-[7rem] lg:text-[9.5rem] whitespace-nowrap font-orbitron font-black tracking-tighter leading-none flex items-center justify-center drop-shadow-[0_0_25px_rgba(255,255,255,0.4)]">
               <motion.div 
@@ -185,15 +190,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent,
             transition={{ duration: 0.8, delay: 1 }}
             className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 border-t border-slate-800/50 pt-8 mb-12 w-full max-w-3xl"
           >
-            <div className="flex flex-col items-center text-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center text-brand-purple shrink-0 border border-purple-500/20 shadow-[0_0_15px_rgba(120,45,255,0.2)]">
-                <Calendar size={20} />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[10px] font-mono tracking-widest text-slate-400 uppercase">DATE</span>
-                <span className="text-sm sm:text-base font-sans font-bold text-white">15 July 2026</span>
-              </div>
-            </div>
+            {/* Date block removed as requested */}
 
             <div className="flex flex-col items-center text-center gap-3">
               <div className="w-12 h-12 rounded-2xl bg-pink-500/10 flex items-center justify-center text-brand-pink shrink-0 border border-pink-500/20 shadow-[0_0_15px_rgba(255,32,142,0.2)]">
@@ -290,42 +287,41 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent,
             </button>
           </motion.div>
 
-          {/* Digital Countdown Timer */}
+          {/* Coming Soon Pixel Animation */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.5 }}
-            className="flex items-center gap-3 sm:gap-6 w-fit bg-brand-black/50 p-3 sm:p-4 rounded-2xl border border-slate-800/80"
+            className="flex items-center gap-4 w-fit bg-brand-black/50 p-4 sm:p-5 rounded-2xl border border-slate-800/80 shadow-[0_0_30px_rgba(120,45,255,0.15)] relative overflow-hidden"
           >
-            <div className="flex flex-col items-center min-w-[50px] sm:min-w-[64px]">
-              <span className="font-orbitron text-xl sm:text-2xl font-black text-slate-200 tabular-nums">
-                {String(timeLeft.days).padStart(2, '0')}
-              </span>
-              <span className="text-[9px] font-mono tracking-wider text-slate-400 uppercase mt-1">DAYS</span>
-            </div>
-            <div className="text-slate-300 font-mono text-xl sm:text-2xl font-light animate-pulse">:</div>
+            {/* Animated pixel glitch background */}
+            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDUpIi8+CjxyZWN0IHg9IjQiIHk9IjQiIHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz4KPC9zdmc+')] opacity-50 animate-[pulse_2s_infinite]" />
             
-            <div className="flex flex-col items-center min-w-[50px] sm:min-w-[64px]">
-              <span className="font-orbitron text-xl sm:text-2xl font-black text-brand-purple tabular-nums">
-                {String(timeLeft.hours).padStart(2, '0')}
-              </span>
-              <span className="text-[9px] font-mono tracking-wider text-slate-400 uppercase mt-1">HOURS</span>
+            <div className="flex items-center gap-3 relative z-10">
+              <motion.div 
+                className="w-3 h-3 bg-brand-pink"
+                animate={{ opacity: [1, 0, 1] }}
+                transition={{ duration: 1, repeat: Infinity, ease: "steps(2)" }}
+              />
+              <motion.div 
+                className="w-3 h-3 bg-brand-purple"
+                animate={{ opacity: [1, 0, 1] }}
+                transition={{ duration: 1, repeat: Infinity, delay: 0.3, ease: "steps(2)" }}
+              />
+              <motion.div 
+                className="w-3 h-3 bg-brand-blue"
+                animate={{ opacity: [1, 0, 1] }}
+                transition={{ duration: 1, repeat: Infinity, delay: 0.6, ease: "steps(2)" }}
+              />
             </div>
-            <div className="text-slate-300 font-mono text-xl sm:text-2xl font-light animate-pulse">:</div>
 
-            <div className="flex flex-col items-center min-w-[50px] sm:min-w-[64px]">
-              <span className="font-orbitron text-xl sm:text-2xl font-black text-brand-blue tabular-nums">
-                {String(timeLeft.minutes).padStart(2, '0')}
+            <div className="flex flex-col relative z-10 ml-2">
+              <span className="font-orbitron text-xl sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-pink via-brand-purple to-brand-blue tracking-[0.2em] uppercase drop-shadow-sm">
+                Coming Soon
               </span>
-              <span className="text-[9px] font-mono tracking-wider text-slate-400 uppercase mt-1">MINUTES</span>
-            </div>
-            <div className="text-slate-300 font-mono text-xl sm:text-2xl font-light animate-pulse">:</div>
-
-            <div className="flex flex-col items-center min-w-[50px] sm:min-w-[64px]">
-              <span className="font-orbitron text-xl sm:text-2xl font-black text-brand-pink tabular-nums">
-                {String(timeLeft.seconds).padStart(2, '0')}
+              <span className="text-[10px] font-mono tracking-widest text-slate-400 uppercase mt-1">
+                Loading Next Tech Revolution
               </span>
-              <span className="text-[9px] font-mono tracking-wider text-slate-400 uppercase mt-1">SECONDS</span>
             </div>
           </motion.div>
         </div>

@@ -63,7 +63,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
 
       {/* Background GIF */}
       <div 
-        className="absolute inset-0 z-0 pointer-events-none opacity-50 mix-blend-screen"
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1920px] h-[1100px] z-0 pointer-events-none opacity-50 mix-blend-screen"
         style={{
           backgroundImage: `url('https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjVlMmpzbHZncnBiMTg1ODh2OXdoODg0dGw1dTBnemUwaXVrbWdhZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/i4jKn7itdV2Tvjzj6Y/giphy.gif')`,
           backgroundSize: 'cover',

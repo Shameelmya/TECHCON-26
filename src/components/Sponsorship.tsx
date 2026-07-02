@@ -35,13 +35,19 @@ export default function Sponsorship({ onClose }: SponsorshipProps) {
     try {
       setIsDownloading(true);
       
-      // We don't need to temporarily unhide because it's always rendered but visually hidden
+      // Temporarily make it fully opaque so html2canvas captures it.
+      // Because it's -z-50 it renders behind the modal background and is invisible to the user!
+      const wrapper = document.getElementById('pdf-wrapper');
+      if (wrapper) wrapper.style.opacity = '1';
+      
       const canvas = await html2canvas(pdfRef.current, { 
         scale: 2, 
         useCORS: true, 
         logging: false,
         backgroundColor: '#020617', // force a dark slate-950 background
       });
+
+      if (wrapper) wrapper.style.opacity = '0';
 
       const imgData = canvas.toDataURL('image/png');
       
@@ -93,7 +99,7 @@ export default function Sponsorship({ onClose }: SponsorshipProps) {
   };
 
   return (
-    <div className="w-full h-full min-h-[85vh] mx-auto bg-brand-dark/95 backdrop-blur-2xl border border-slate-800 rounded-[32px] shadow-[0_20px_60px_rgba(0,0,0,0.8)] relative overflow-hidden font-sans flex flex-col">
+    <div className="w-full h-[90vh] max-h-[1200px] mx-auto bg-brand-dark/95 backdrop-blur-2xl border border-slate-800 rounded-[32px] shadow-[0_20px_60px_rgba(0,0,0,0.8)] relative overflow-hidden font-sans flex flex-col">
       
       {/* Background glowing effects */}
       <div className="absolute w-[500px] h-[500px] rounded-full bg-brand-purple/10 blur-[120px] -top-20 -right-20 pointer-events-none" />
@@ -130,7 +136,7 @@ export default function Sponsorship({ onClose }: SponsorshipProps) {
       </div>
 
       {/* Brochure Content */}
-      <div className="flex-1 p-6 sm:p-12 overflow-y-auto space-y-24 scroll-smooth">
+      <div className="flex-1 p-6 sm:p-12 overflow-y-auto space-y-24 scroll-smooth relative z-10">
         
         {/* Cover / Page 2 */}
         <motion.section 
@@ -360,7 +366,7 @@ export default function Sponsorship({ onClose }: SponsorshipProps) {
       </div>
 
       {/* Hidden PDF Layout */}
-      <div className="fixed top-0 left-0 w-[800px] h-[3150px] -translate-x-[5000px] z-[-50]">
+      <div id="pdf-wrapper" className="absolute top-0 left-0 w-[800px] h-[3150px] -z-50 pointer-events-none opacity-0">
         <SponsorPDFLayout ref={pdfRef} />
       </div>
 

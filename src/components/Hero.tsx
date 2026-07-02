@@ -58,7 +58,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent,
   return (
     <section 
       id="hero" 
-      className="relative min-h-screen flex flex-col items-center justify-center px-4 md:px-8 pt-24 md:pt-32 pb-10"
+      className="relative min-h-screen flex flex-col items-center justify-center px-4 md:px-8 pt-24 md:pt-32 pb-0"
     >
       {/* Blurred Soft Light Blobs for Depth */}
       <div className="absolute w-[450px] h-[450px] rounded-full bg-gradient-to-tr from-brand-purple/20 to-brand-pink/20 blur-[120px] -top-20 left-1/4 pointer-events-none animate-[pulse_8s_infinite]" />
@@ -313,7 +313,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent,
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.5 }}
-            className="flex flex-wrap items-center justify-center lg:justify-start gap-4 mb-10"
+            className="flex flex-wrap items-center justify-center lg:justify-start gap-4 mb-2"
           >
             <a
               href="#venue"
@@ -341,7 +341,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent,
       </div>
 
       {/* Interactive Video Showcase - Isolated so screen blend mode works against the background */}
-      <div className="relative z-20 w-full max-w-[400px] sm:max-w-[500px] lg:max-w-[650px] aspect-video flex items-center justify-center mt-6 lg:mt-10 mix-blend-screen pointer-events-none">
+      <div className="relative z-20 w-full max-w-[450px] sm:max-w-[600px] lg:max-w-[800px] aspect-video flex items-center justify-center mt-2 lg:mt-4 -mb-8 lg:-mb-16 mix-blend-screen pointer-events-none">
         <HeroVideos />
       </div>
     </section>

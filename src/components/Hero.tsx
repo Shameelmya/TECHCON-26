@@ -75,7 +75,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent,
 
       {/* Background GIF */}
       <div 
-        className="absolute -top-32 left-1/2 -translate-x-1/2 w-full max-w-[1920px] h-[1100px] z-0 pointer-events-none opacity-50 mix-blend-screen blur-[12px]"
+        className="absolute -top-32 left-1/2 -translate-x-1/2 w-full max-w-[1920px] h-[1100px] z-0 pointer-events-none opacity-50 mix-blend-screen blur-[8px]"
         style={{
           maskImage: 'linear-gradient(to bottom, black 0%, black 50%, transparent 70%)',
           WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 50%, transparent 70%)'

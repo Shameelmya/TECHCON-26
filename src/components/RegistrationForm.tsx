@@ -44,6 +44,8 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
   const [studentLevel, setStudentLevel] = useState('UG'); // Primary, Highschool, Higher secondary, UG, PG, Diploma, Proffesional courses, others
   const [customCourse, setCustomCourse] = useState(''); // course name if UG, PG, or Proffesional
 
+  const [sameAsMobile, setSameAsMobile] = useState(false);
+
   // Conditional Professional fields
   const [jobTitle, setJobTitle] = useState('');
   const [profInstitution, setProfInstitution] = useState('');
@@ -125,7 +127,8 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
       
       setStep(2);
       setTimeout(() => {
-        document.getElementById('register-flow')?.scrollIntoView({ behavior: 'smooth' });
+        document.getElementById('register-flow')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }, 50);
     }
   };
@@ -154,11 +157,17 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
     if (occupation === 'Student') {
       if (!institution.trim()) {
         setErrorMsg('Institution name is required for students.');
+        setTimeout(() => {
+          document.getElementById('institution-field')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
         return;
       }
       const needsCourse = ['UG', 'PG', 'Professional courses'].includes(studentLevel);
       if (needsCourse && !customCourse.trim()) {
         setErrorMsg('Please specify your course.');
+        setTimeout(() => {
+          document.getElementById('course-field')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
         return;
       }
     }
@@ -308,7 +317,15 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
                 <input
                   type="tel"
                   value={mobileNumber}
-                  onChange={(e) => setMobileNumber(e.target.value)}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setMobileNumber(val);
+                    setIsDuplicateMobileFound(false);
+                    setErrorMsg(null);
+                    if (sameAsMobile) {
+                      setWhatsAppNumber(val);
+                    }
+                  }}
                   className="w-full px-4 py-3 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-sm text-slate-800 transition-colors"
                   required
                 />
@@ -348,9 +365,14 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
                       <input 
                         id="same-mobile" 
                         type="checkbox" 
+                        checked={sameAsMobile}
                         className="w-3 h-3 accent-purple-600 rounded cursor-pointer"
                         onChange={(e) => {
-                          if (e.target.checked) setWhatsAppNumber(mobileNumber);
+                          const checked = e.target.checked;
+                          setSameAsMobile(checked);
+                          if (checked) {
+                            setWhatsAppNumber(mobileNumber);
+                          }
                         }}
                       />
                       <label htmlFor="same-mobile" className="text-[9px] font-sans text-purple-600 font-semibold cursor-pointer select-none">
@@ -476,7 +498,7 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
               {/* STUDENT FIELDS */}
               {occupation === 'Student' && (
                 <div className="space-y-4">
-                  <div className="flex flex-col gap-1.5">
+                  <div className="flex flex-col gap-1.5" id="institution-field">
                     <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Institution Name</label>
                     <input
                       type="text"
@@ -508,7 +530,7 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
                     </div>
 
                     {showCourseColumn && (
-                      <div className="flex flex-col gap-1.5">
+                      <div className="flex flex-col gap-1.5" id="course-field">
                         <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Which Course?</label>
                         <input
                           type="text"

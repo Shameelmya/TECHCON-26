@@ -25,6 +25,9 @@ export default function TicketPass({ registration, onBackToHome }: TicketPassPro
   const [showImageOverlay, setShowImageOverlay] = useState(false);
 
   useEffect(() => {
+    // Auto-scroll to top when ticket pass is generated/shown
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
     // Compile QR payload securely
     const qrPayload = JSON.stringify({
       id: registration.id,
@@ -57,7 +60,7 @@ export default function TicketPass({ registration, onBackToHome }: TicketPassPro
         setTimeout(async () => {
           if (!ticketRef.current) return;
           try {
-            const canvas = await html2canvas(ticketRef.current, { scale: 3, useCORS: true, backgroundColor: null });
+            const canvas = await html2canvas(ticketRef.current, { scale: 2, useCORS: true, backgroundColor: null, logging: false });
             const url = canvas.toDataURL('image/png');
             setTicketDataUrl(url);
             canvas.toBlob((blob) => {
@@ -68,9 +71,16 @@ export default function TicketPass({ registration, onBackToHome }: TicketPassPro
             console.error("Failed to pre-generate ticket image", e);
             setIsGenerating(false);
           }
-        }, 500);
+        }, 800);
       });
     }
+
+    // Safety fallback: if html2canvas gets stuck for more than 4 seconds, unlock the buttons
+    const fallbackTimer = setTimeout(() => {
+      setIsGenerating(false);
+    }, 4000);
+
+    return () => clearTimeout(fallbackTimer);
   }, [registration]);
 
   const handleSavePNG = () => {
@@ -133,7 +143,7 @@ export default function TicketPass({ registration, onBackToHome }: TicketPassPro
             <polyline points="20 6 9 17 4 12" />
           </svg>
         </div>
-        <h2 className="text-2xl sm:text-3xl font-orbitron font-bold text-slate-900 tracking-[0.05em] uppercase">
+        <h2 className="text-2xl sm:text-3xl font-orbitron font-bold text-white tracking-[0.05em] uppercase">
           Registration Completed Successfully!
         </h2>
         {/* Unique registration ID shown on top under title */}

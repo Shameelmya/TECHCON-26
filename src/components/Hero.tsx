@@ -17,6 +17,16 @@ interface HeroProps {
 
 export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent }: HeroProps) {
   const [timeLeft, setTimeLeft] = useState({ days: 15, hours: 0, minutes: 0, seconds: 0 });
+  const [gapAnim, setGapAnim] = useState(['0px', '8px', '0px']);
+
+  useEffect(() => {
+    const updateGap = () => {
+      setGapAnim(window.innerWidth < 768 ? ['0px', '1px', '0px'] : ['0px', '8px', '0px']);
+    };
+    updateGap();
+    window.addEventListener('resize', updateGap);
+    return () => window.removeEventListener('resize', updateGap);
+  }, []);
 
   useEffect(() => {
     // Target date: 15 July 2026 UTC
@@ -102,7 +112,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
               <motion.div 
                 className="flex" 
                 style={{ WebkitTextStroke: '2px rgba(255,255,255,0.8)' }}
-                animate={{ gap: ['0px', '8px', '0px'] }}
+                animate={{ gap: gapAnim }}
                 transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
               >
                 {"TECHCON".split('').map((char, index) => (
@@ -120,7 +130,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
               <motion.div 
                 className="flex ml-4 md:ml-8" 
                 style={{ WebkitTextStroke: '1px rgba(120,45,255,0.5)' }}
-                animate={{ gap: ['0px', '8px', '0px'] }}
+                animate={{ gap: gapAnim }}
                 transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
               >
                 {"26".split('').map((char, index) => (

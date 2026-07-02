@@ -25,6 +25,7 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
   const [loginError, setLoginError] = useState('');
   const [isRegOpen, setIsRegOpen] = useState(true);
   const [isTogglingReg, setIsTogglingReg] = useState(false);
+  const [displayCount, setDisplayCount] = useState(50);
 
   // Dashboard Stats
   const [stats, setStats] = useState<AdminStats | null>(null);
@@ -238,24 +239,34 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
   };
 
   const handleCopyCode = () => {
-    navigator.clipboard.writeText(APPS_SCRIPT_CODE);
+    navigator.clipboard.writeText(JSON.stringify(attendees));
     setCopiedCode(true);
     setTimeout(() => setCopiedCode(false), 2000);
   };
 
   // Filter list by query
-  const filteredAttendees = attendees.filter(a => {
-    const query = searchQuery.toLowerCase();
-    return (
-      a.fullName.toLowerCase().includes(query) ||
-      a.email.toLowerCase().includes(query) ||
-      a.id.toLowerCase().includes(query) ||
-      a.mobileNumber.toLowerCase().includes(query) ||
-      a.district.toLowerCase().includes(query) ||
-      a.occupation.toLowerCase().includes(query) ||
-      (a.place && a.place.toLowerCase().includes(query))
-    );
-  });
+  const filteredAttendees = useMemo(() => {
+    return attendees.filter(a => {
+      const query = searchQuery.toLowerCase();
+      if (!query) return true;
+      return (
+        a.fullName.toLowerCase().includes(query) ||
+        a.email.toLowerCase().includes(query) ||
+        a.id.toLowerCase().includes(query) ||
+        a.mobileNumber.toLowerCase().includes(query) ||
+        a.district.toLowerCase().includes(query) ||
+        a.occupation.toLowerCase().includes(query) ||
+        (a.place && a.place.toLowerCase().includes(query))
+      );
+    });
+  }, [attendees, searchQuery]);
+
+  // Reset display count when search changes
+  useEffect(() => {
+    setDisplayCount(50);
+  }, [searchQuery, activeTab]);
+
+  const displayedAttendees = filteredAttendees.slice(0, displayCount);
 
   return (
     <div id="admin-dashboard-root" className="w-full min-h-screen bg-[#f8fafc] text-slate-900 font-sans p-4 sm:p-8 md:p-12 relative overflow-hidden">
@@ -719,8 +730,8 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 text-xs text-slate-700">
-                      {filteredAttendees.length > 0 ? (
-                        filteredAttendees.map((a) => (
+                      {displayedAttendees.length > 0 ? (
+                        displayedAttendees.map((a) => (
                           <tr key={a.id} className="hover:bg-slate-50/50 transition-colors">
                             <td className="p-4 font-mono font-bold text-purple-700">{a.id}</td>
                             <td className="p-4">
@@ -761,6 +772,17 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
                     </tbody>
                   </table>
                 </div>
+                
+                {displayCount < filteredAttendees.length && (
+                  <div className="w-full flex justify-center py-6 border-t border-slate-100">
+                    <button
+                      onClick={() => setDisplayCount(prev => prev + 50)}
+                      className="px-6 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg text-xs font-bold transition-colors"
+                    >
+                      Load More ({filteredAttendees.length - displayCount} remaining)
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           )}

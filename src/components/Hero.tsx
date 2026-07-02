@@ -46,7 +46,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
   return (
     <section 
       id="hero" 
-      className="relative min-h-screen flex items-center justify-center px-4 md:px-8 pt-24 md:pt-32 pb-10"
+      className="relative overflow-hidden min-h-screen flex items-center justify-center px-4 md:px-8 pt-24 md:pt-32 pb-10"
     >
       {/* Blurred Soft Light Blobs for Depth */}
       <div className="absolute w-[450px] h-[450px] rounded-full bg-gradient-to-tr from-brand-purple/20 to-brand-pink/20 blur-[120px] -top-20 left-1/4 pointer-events-none animate-[pulse_8s_infinite]" />
@@ -89,7 +89,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
       `}</style>
 
       {/* Left Circuit Lines */}
-      <div className="absolute left-0 top-1/4 bottom-1/4 w-48 hidden lg:block pointer-events-none opacity-[0.15] z-[-1]">
+      <div className="absolute left-0 top-0 bottom-0 w-48 hidden lg:block pointer-events-none opacity-15 z-10">
         <svg viewBox="0 0 200 600" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full drop-shadow-[0_0_8px_rgba(120,45,255,0.8)]">
           <path d="M -10 100 L 60 100 L 90 130 L 90 350 L 130 390 L 220 390" stroke="url(#circuit-grad-left)" strokeWidth="2.5" fill="none" className="circuit-path" strokeLinecap="round" strokeLinejoin="round" />
           <path d="M -10 150 L 30 150 L 60 180 L 60 420 L 40 440 L -10 440" stroke="url(#circuit-grad-left)" strokeWidth="1.5" fill="none" className="circuit-path-slow" strokeLinecap="round" strokeLinejoin="round" />
@@ -111,7 +111,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
       </div>
 
       {/* Right Circuit Lines */}
-      <div className="absolute right-0 top-1/3 bottom-1/4 w-48 hidden lg:block pointer-events-none opacity-[0.15] z-[-1]">
+      <div className="absolute right-0 top-0 bottom-0 w-48 hidden lg:block pointer-events-none opacity-15 z-10">
         <svg viewBox="0 0 200 600" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full drop-shadow-[0_0_8px_rgba(32,156,255,0.8)]">
           <path d="M 210 120 L 140 120 L 110 150 L 110 400 L 70 440 L -20 440" stroke="url(#circuit-grad-right)" strokeWidth="2.5" fill="none" className="circuit-path" strokeLinecap="round" strokeLinejoin="round" />
           <path d="M 210 200 L 160 200 L 130 230 L 130 460 L 150 480 L 210 480" stroke="url(#circuit-grad-right)" strokeWidth="1.5" fill="none" className="circuit-path-slow" strokeLinecap="round" strokeLinejoin="round" />
@@ -129,7 +129,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
         </svg>
       </div>
 
-      <div className="relative max-w-7xl mx-auto w-full flex flex-col items-center justify-center z-10">
+      <div className="relative z-20 max-w-7xl mx-auto w-full flex flex-col items-center justify-center">
         
         {/* Headings and copy */}
         <div className="flex flex-col justify-center items-center text-center">

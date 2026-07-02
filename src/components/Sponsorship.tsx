@@ -100,59 +100,110 @@ export default function Sponsorship({ onClose }: SponsorshipProps) {
         </section>
 
         {/* Sponsorship Packages */}
-        <section className="space-y-8">
+        <section className="space-y-12">
           <div className="text-center">
-            <h3 className="text-2xl sm:text-3xl font-orbitron font-bold text-white mb-2">Sponsorship Opportunities</h3>
+            <h3 className="text-2xl sm:text-3xl font-orbitron font-bold text-white mb-3">Sponsorship Opportunities</h3>
             <p className="text-slate-400 text-sm">Choose the perfect tier to amplify your brand's presence.</p>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-            {/* Title Sponsor */}
-            <div className="bg-gradient-to-b from-brand-purple/10 to-transparent border border-brand-purple/30 p-6 rounded-2xl flex flex-col">
-              <span className="text-[10px] font-mono font-bold text-brand-purple tracking-widest uppercase mb-1">1 Exclusive Slot</span>
-              <h4 className="text-xl font-bold text-white mb-2">Title Sponsor</h4>
-              <span className="text-2xl font-black text-brand-purple mb-6">₹2,50,000</span>
-              <ul className="space-y-3 flex-1">
-                <li className="text-xs text-slate-300 flex items-start gap-2"><div className="w-1.5 h-1.5 rounded-full bg-brand-purple mt-1.5" />"TECHCON '26 Powered By"</li>
-                <li className="text-xs text-slate-300 flex items-start gap-2"><div className="w-1.5 h-1.5 rounded-full bg-brand-purple mt-1.5" />10-Min Speaking Slot</li>
-                <li className="text-xs text-slate-300 flex items-start gap-2"><div className="w-1.5 h-1.5 rounded-full bg-brand-purple mt-1.5" />Premium Stall (6m×3m)</li>
-                <li className="text-xs text-slate-300 flex items-start gap-2"><div className="w-1.5 h-1.5 rounded-full bg-brand-purple mt-1.5" />Delegate Kit & ID Branding</li>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-end">
+            {/* Title Sponsor - RECOMMENDED */}
+            <div className="relative bg-gradient-to-b from-brand-dark to-slate-950 border-2 border-brand-purple rounded-3xl p-8 flex flex-col h-full transform lg:-translate-y-4 shadow-[0_0_40px_rgba(120,45,255,0.15)] order-1 lg:order-none">
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-brand-pink to-brand-purple px-4 py-1 rounded-full">
+                <span className="text-[10px] font-bold text-white tracking-widest uppercase">Recommended</span>
+              </div>
+              <span className="text-[10px] font-mono font-bold text-brand-purple tracking-widest uppercase mb-1 mt-2">1 Exclusive Slot</span>
+              <h4 className="text-2xl font-bold text-white mb-2">Title Sponsor</h4>
+              <div className="mb-8">
+                <span className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-pink to-brand-purple">₹2,50,000</span>
+              </div>
+              <ul className="space-y-4 flex-1 mb-8">
+                <li className="text-sm text-slate-300 flex items-start gap-3"><CheckCircle2 size={18} className="text-brand-purple shrink-0" /><span>"TECHCON '26 Powered By" Branding</span></li>
+                <li className="text-sm text-slate-300 flex items-start gap-3"><CheckCircle2 size={18} className="text-brand-purple shrink-0" /><span>Prime Logo Placement</span></li>
+                <li className="text-sm text-slate-300 flex items-start gap-3"><CheckCircle2 size={18} className="text-brand-purple shrink-0" /><span>10-Minute Speaking Opportunity</span></li>
+                <li className="text-sm text-slate-300 flex items-start gap-3"><CheckCircle2 size={18} className="text-brand-purple shrink-0" /><span>Premium Exhibition Stall (6m×3m)</span></li>
+                <li className="text-sm text-slate-300 flex items-start gap-3"><CheckCircle2 size={18} className="text-brand-purple shrink-0" /><span>Delegate Kit & ID Branding</span></li>
               </ul>
+              <button 
+                onClick={() => {
+                  setFormData(prev => ({ ...prev, plan: 'Title Sponsor - ₹2.5L' }));
+                  setIsPopupOpen(true);
+                }}
+                className="w-full py-3.5 bg-brand-purple hover:bg-brand-pink text-white rounded-xl font-bold transition-colors shadow-[0_0_15px_rgba(120,45,255,0.4)]"
+              >
+                Select Title Plan
+              </button>
             </div>
 
             {/* Platinum Sponsor */}
-            <div className="bg-slate-900 border border-slate-700 p-6 rounded-2xl flex flex-col">
+            <div className="bg-slate-900/80 border border-slate-700/80 rounded-3xl p-8 flex flex-col h-full hover:border-slate-500 transition-colors order-2 lg:order-none">
               <span className="text-[10px] font-mono font-bold text-slate-400 tracking-widest uppercase mb-1">2 Slots</span>
-              <h4 className="text-xl font-bold text-white mb-2">Platinum</h4>
-              <span className="text-2xl font-black text-white mb-6">₹1,00,000</span>
-              <ul className="space-y-3 flex-1">
-                <li className="text-xs text-slate-300 flex items-start gap-2"><div className="w-1.5 h-1.5 rounded-full bg-slate-600 mt-1.5" />Premium Logo Placement</li>
-                <li className="text-xs text-slate-300 flex items-start gap-2"><div className="w-1.5 h-1.5 rounded-full bg-slate-600 mt-1.5" />Keynote Speaking</li>
-                <li className="text-xs text-slate-300 flex items-start gap-2"><div className="w-1.5 h-1.5 rounded-full bg-slate-600 mt-1.5" />Premium Exhibition Stall</li>
+              <h4 className="text-2xl font-bold text-white mb-2">Platinum</h4>
+              <div className="mb-8">
+                <span className="text-3xl font-black text-white">₹1,00,000</span>
+              </div>
+              <ul className="space-y-4 flex-1 mb-8">
+                <li className="text-sm text-slate-300 flex items-start gap-3"><CheckCircle2 size={18} className="text-slate-500 shrink-0" /><span>Premium Logo Placement</span></li>
+                <li className="text-sm text-slate-300 flex items-start gap-3"><CheckCircle2 size={18} className="text-slate-500 shrink-0" /><span>Keynote Speaking Opportunity</span></li>
+                <li className="text-sm text-slate-300 flex items-start gap-3"><CheckCircle2 size={18} className="text-slate-500 shrink-0" /><span>Premium Exhibition Stall</span></li>
+                <li className="text-sm text-slate-300 flex items-start gap-3"><CheckCircle2 size={18} className="text-slate-500 shrink-0" /><span>Website Branding</span></li>
               </ul>
+              <button 
+                onClick={() => {
+                  setFormData(prev => ({ ...prev, plan: 'Platinum Sponsor - ₹1L' }));
+                  setIsPopupOpen(true);
+                }}
+                className="w-full py-3.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold transition-colors"
+              >
+                Select Platinum
+              </button>
             </div>
 
             {/* Gold Sponsor */}
-            <div className="bg-slate-900 border border-slate-700 p-6 rounded-2xl flex flex-col">
+            <div className="bg-slate-900/80 border border-slate-700/80 rounded-3xl p-8 flex flex-col h-full hover:border-amber-500/50 transition-colors order-3 lg:order-none">
               <span className="text-[10px] font-mono font-bold text-amber-500 tracking-widest uppercase mb-1">5 Slots</span>
-              <h4 className="text-xl font-bold text-white mb-2">Gold</h4>
-              <span className="text-2xl font-black text-amber-500 mb-6">₹50,000</span>
-              <ul className="space-y-3 flex-1">
-                <li className="text-xs text-slate-300 flex items-start gap-2"><div className="w-1.5 h-1.5 rounded-full bg-amber-600 mt-1.5" />Logo Placement</li>
-                <li className="text-xs text-slate-300 flex items-start gap-2"><div className="w-1.5 h-1.5 rounded-full bg-amber-600 mt-1.5" />Exhibition Stall</li>
-                <li className="text-xs text-slate-300 flex items-start gap-2"><div className="w-1.5 h-1.5 rounded-full bg-amber-600 mt-1.5" />Event Branding</li>
+              <h4 className="text-2xl font-bold text-white mb-2">Gold</h4>
+              <div className="mb-8">
+                <span className="text-3xl font-black text-amber-500">₹50,000</span>
+              </div>
+              <ul className="space-y-4 flex-1 mb-8">
+                <li className="text-sm text-slate-300 flex items-start gap-3"><CheckCircle2 size={18} className="text-amber-600 shrink-0" /><span>Logo Placement</span></li>
+                <li className="text-sm text-slate-300 flex items-start gap-3"><CheckCircle2 size={18} className="text-amber-600 shrink-0" /><span>Exhibition Stall</span></li>
+                <li className="text-sm text-slate-300 flex items-start gap-3"><CheckCircle2 size={18} className="text-amber-600 shrink-0" /><span>Event Branding</span></li>
+                <li className="text-sm text-slate-300 flex items-start gap-3"><CheckCircle2 size={18} className="text-amber-600 shrink-0" /><span>Website Branding</span></li>
               </ul>
+              <button 
+                onClick={() => {
+                  setFormData(prev => ({ ...prev, plan: 'Gold Sponsor - ₹50K' }));
+                  setIsPopupOpen(true);
+                }}
+                className="w-full py-3.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold transition-colors"
+              >
+                Select Gold
+              </button>
             </div>
 
             {/* Silver Sponsor */}
-            <div className="bg-slate-900 border border-slate-700 p-6 rounded-2xl flex flex-col">
+            <div className="bg-slate-900/80 border border-slate-700/80 rounded-3xl p-8 flex flex-col h-full hover:border-slate-500 transition-colors order-4 lg:order-none">
               <span className="text-[10px] font-mono font-bold text-slate-400 tracking-widest uppercase mb-1">10 Slots</span>
-              <h4 className="text-xl font-bold text-white mb-2">Silver</h4>
-              <span className="text-2xl font-black text-slate-300 mb-6">₹25,000</span>
-              <ul className="space-y-3 flex-1">
-                <li className="text-xs text-slate-300 flex items-start gap-2"><div className="w-1.5 h-1.5 rounded-full bg-slate-600 mt-1.5" />Event & Website Branding</li>
-                <li className="text-xs text-slate-300 flex items-start gap-2"><div className="w-1.5 h-1.5 rounded-full bg-slate-600 mt-1.5" />Shared Exhibition Counter</li>
+              <h4 className="text-2xl font-bold text-white mb-2">Silver</h4>
+              <div className="mb-8">
+                <span className="text-3xl font-black text-slate-300">₹25,000</span>
+              </div>
+              <ul className="space-y-4 flex-1 mb-8">
+                <li className="text-sm text-slate-300 flex items-start gap-3"><CheckCircle2 size={18} className="text-slate-600 shrink-0" /><span>Event Branding</span></li>
+                <li className="text-sm text-slate-300 flex items-start gap-3"><CheckCircle2 size={18} className="text-slate-600 shrink-0" /><span>Website Branding</span></li>
+                <li className="text-sm text-slate-300 flex items-start gap-3"><CheckCircle2 size={18} className="text-slate-600 shrink-0" /><span>Shared Exhibition Counter</span></li>
               </ul>
+              <button 
+                onClick={() => {
+                  setFormData(prev => ({ ...prev, plan: 'Silver Sponsor - ₹25K' }));
+                  setIsPopupOpen(true);
+                }}
+                className="w-full py-3.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold transition-colors"
+              >
+                Select Silver
+              </button>
             </div>
           </div>
         </section>

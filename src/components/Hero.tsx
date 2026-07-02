@@ -178,9 +178,9 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent,
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            className="text-[13px] sm:text-[14px] md:text-[15px] text-slate-400 font-sans font-light leading-relaxed mb-10 max-w-4xl mx-auto text-center px-4"
+            className="text-[14px] sm:text-[16px] md:text-[18px] text-slate-300 font-sans font-medium leading-relaxed mb-10 max-w-4xl mx-auto text-center px-4 tracking-wide"
           >
-            Kerala's premier technical conference. A dynamic physical conclave where student innovators, researchers, and developers converge to co-create the digital future.
+            Let's build the future together.
           </motion.p>
 
           {/* Key Metadata Row */}

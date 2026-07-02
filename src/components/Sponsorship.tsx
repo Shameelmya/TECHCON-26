@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ChevronRight, Briefcase, Handshake, Users, Sparkles, Megaphone, Send } from 'lucide-react';
+import { X, ChevronRight, Briefcase, Handshake, Users, Sparkles, Megaphone, Send, CheckCircle2 } from 'lucide-react';
 
 interface SponsorshipProps {
   onClose: () => void;

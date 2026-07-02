@@ -319,8 +319,6 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent,
               <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
             </button>
           </motion.div>
-
-          </motion.div>
         </div>
 
         {/* Right column: Interactive Premium Logo Float Visual */}

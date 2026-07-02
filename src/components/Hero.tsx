@@ -339,74 +339,61 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent,
           </motion.div>
         </div>
 
-        {/* Right column: Interactive Premium Logo Float Visual */}
-        <div className="lg:col-span-5 flex items-center justify-center order-1 lg:order-2 h-64 sm:h-96 lg:h-[550px]">
-          <HeroLogos />
+        {/* Interactive Video Showcase */}
+        <div className="w-full max-w-[1200px] aspect-video sm:h-[400px] lg:h-[600px] flex items-center justify-center mt-8 lg:mt-16 relative">
+          <HeroVideos />
         </div>
       </div>
     </section>
   );
 }
 
-const GRAPHICS = ['/hero-graphic.png', '/hero-graphic1.png', '/hero-graphic2.png'];
+const VIDEOS = ['/V1.mp4', '/V2.mp4', '/V3.mp4', '/V4.mp4'];
 
-function HeroLogos() {
+function HeroVideos() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    const graphicInterval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % GRAPHICS.length);
-    }, 4000);
-    return () => clearInterval(graphicInterval);
+    // Cross-fade videos every 6 seconds
+    const videoInterval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % VIDEOS.length);
+    }, 6000);
+    return () => clearInterval(videoInterval);
   }, []);
 
   return (
-    <div className="relative w-64 h-64 sm:w-80 sm:h-80 lg:w-[500px] lg:h-[500px]">
-      {/* Glowing Soft Background Circle blobs behind Logo */}
-      <motion.div
-        className="absolute inset-0 rounded-full bg-gradient-to-tr from-purple-500/25 via-pink-500/10 to-blue-500/20 blur-3xl"
-        animate={{ 
-          scale: [0.85, 1.05, 0.85],
-          opacity: [0.6, 0.9, 0.6]
+    <div className="relative w-full h-full rounded-[32px] overflow-hidden bg-[#02040A] border border-slate-800/60 shadow-[0_0_50px_rgba(0,0,0,0.8)] flex items-center justify-center">
+      
+      {/* Very Dark Radial Gradient Background inside the container to make Screen Blend Pop */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#0f172a] via-[#020617] to-black opacity-90 z-0" />
+      
+      {/* 
+        We render all 4 videos simultaneously so they buffer and play silently.
+        We just fade their opacity to swap them with zero loading delay!
+      */}
+      {VIDEOS.map((src, index) => (
+        <video
+          key={src}
+          src={src}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover z-10 transition-opacity duration-1000 ease-in-out pointer-events-none"
+          style={{
+            opacity: currentIndex === index ? 1 : 0,
+            mixBlendMode: 'screen', // This instantly removes the black background!
+          }}
+        />
+      ))}
+      
+      {/* Optional: subtle scanline overlay to make it look highly technical */}
+      <div className="absolute inset-0 z-20 pointer-events-none opacity-[0.05]" 
+        style={{
+          backgroundImage: 'linear-gradient(transparent 50%, rgba(0, 0, 0, 0.8) 50%)',
+          backgroundSize: '100% 4px'
         }}
-        transition={{
-          duration: 4,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
       />
-
-      {/* Glowing Rings (Orbit Circles) */}
-      <motion.div
-        className="absolute inset-4 rounded-full border border-dashed border-purple-500/15"
-        animate={{ rotate: 360 }}
-        transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-      />
-      <motion.div
-        className="absolute inset-12 rounded-full border border-dotted border-pink-500/15"
-        animate={{ rotate: -360 }}
-        transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-      />
-
-      {/* Floating Logo SVG */}
-      <motion.div
-        className="absolute inset-0 flex items-center justify-center filter drop-shadow-[0_16px_32px_rgba(120,45,255,0.18)]"
-        animate={{ y: [-12, 12, -12] }}
-        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-      >
-        <AnimatePresence mode="popLayout">
-          <motion.img 
-            key={currentIndex}
-            src={GRAPHICS[currentIndex]} 
-            alt="TECHCON Graphic" 
-            className="w-full h-full object-contain absolute" 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.8, ease: "easeInOut" }}
-          />
-        </AnimatePresence>
-      </motion.div>
     </div>
   );
 }

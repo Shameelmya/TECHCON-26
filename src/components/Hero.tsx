@@ -340,7 +340,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent,
         </div>
 
         {/* Interactive Video Showcase */}
-        <div className="w-full max-w-[1200px] aspect-video sm:h-[400px] lg:h-[600px] flex items-center justify-center mt-8 lg:mt-16 relative">
+        <div className="w-full max-w-[600px] aspect-video flex items-center justify-center mt-8 lg:mt-16 relative">
           <HeroVideos />
         </div>
       </div>
@@ -362,11 +362,7 @@ function HeroVideos() {
   }, []);
 
   return (
-    <div className="relative w-full h-full rounded-[32px] overflow-hidden bg-[#02040A] border border-slate-800/60 shadow-[0_0_50px_rgba(0,0,0,0.8)] flex items-center justify-center">
-      
-      {/* Very Dark Radial Gradient Background inside the container to make Screen Blend Pop */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#0f172a] via-[#020617] to-black opacity-90 z-0" />
-      
+    <div className="relative w-full h-full flex items-center justify-center">
       {/* 
         We render all 4 videos simultaneously so they buffer and play silently.
         We just fade their opacity to swap them with zero loading delay!
@@ -379,21 +375,13 @@ function HeroVideos() {
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover z-10 transition-opacity duration-1000 ease-in-out pointer-events-none"
+          className="absolute inset-0 w-full h-full object-contain z-10 transition-opacity duration-1000 ease-in-out pointer-events-none"
           style={{
             opacity: currentIndex === index ? 1 : 0,
-            mixBlendMode: 'screen', // This instantly removes the black background!
+            mixBlendMode: 'screen', // Instantly removes the black background
           }}
         />
       ))}
-      
-      {/* Optional: subtle scanline overlay to make it look highly technical */}
-      <div className="absolute inset-0 z-20 pointer-events-none opacity-[0.05]" 
-        style={{
-          backgroundImage: 'linear-gradient(transparent 50%, rgba(0, 0, 0, 0.8) 50%)',
-          backgroundSize: '100% 4px'
-        }}
-      />
     </div>
   );
 }

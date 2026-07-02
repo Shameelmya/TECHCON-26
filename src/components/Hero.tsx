@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronRight, ArrowRight, Calendar, MapPin, User, ArrowDown } from 'lucide-react';
 import MagneticButton from './MagneticButton';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 interface HeroProps {
   isRegOpen?: boolean;
@@ -61,17 +62,21 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
         }}
       />
 
-      {/* Background GIF */}
+      {/* Background Lottie Animation */}
       <div 
         className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1920px] h-[1100px] z-0 pointer-events-none opacity-50 mix-blend-screen"
         style={{
-          backgroundImage: `url('https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjVlMmpzbHZncnBiMTg1ODh2OXdoODg0dGw1dTBnemUwaXVrbWdhZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/i4jKn7itdV2Tvjzj6Y/giphy.gif')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
           maskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
           WebkitMaskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)'
         }}
-      />
+      >
+        <DotLottieReact
+          src="https://lottie.host/7a65ea9e-fbef-49e4-85b2-a5205e7b2add/QcDlwBIBsk.lottie"
+          loop
+          autoplay
+          className="w-full h-full object-cover"
+        />
+      </div>
 
       <div className="relative z-20 max-w-7xl mx-auto w-full flex flex-col items-center justify-center">
         

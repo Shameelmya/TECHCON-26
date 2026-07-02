@@ -1,10 +1,10 @@
 import React, { useState, useRef } from 'react';
-import { createPortal } from 'react-dom';
-import { motion, AnimatePresence } from 'motion/react';
-import { X, CheckCircle2, TrendingUp, Users, Target, Rocket, BookOpen, Briefcase, Lightbulb, Package, Download, Send } from 'lucide-react';
+import { motion } from 'motion/react';
+import { X, CheckCircle2, TrendingUp, Users, Target, Rocket, BookOpen, Briefcase, Lightbulb, Package, Download } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import SponsorPDFLayout from './SponsorPDFLayout';
+import SponsorMessageWindow from './SponsorMessageWindow';
 
 interface SponsorshipProps {
   onClose: () => void;
@@ -12,23 +12,9 @@ interface SponsorshipProps {
 
 export default function Sponsorship({ onClose }: SponsorshipProps) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState('Title Sponsor - ₹2.5L');
   const [isDownloading, setIsDownloading] = useState(false);
   const pdfRef = useRef<HTMLDivElement>(null);
-  
-  const [formData, setFormData] = useState({
-    companyName: '',
-    contactPerson: '',
-    email: '',
-    phone: '',
-    plan: 'Title Sponsor - ₹2.5L'
-  });
-
-  const handleSend = () => {
-    const text = `Hi Techcon, we are interested in the ${formData.plan} sponsorship plan. Our company is ${formData.companyName}. Contact person: ${formData.contactPerson}, Email: ${formData.email}. Please get back to us.`;
-    const encoded = encodeURIComponent(text);
-    window.open(`https://wa.me/917902993844?text=${encoded}`, '_blank');
-    setIsPopupOpen(false);
-  };
 
   const handleDownloadPDF = async () => {
     if (!pdfRef.current || isDownloading) return;
@@ -237,7 +223,7 @@ export default function Sponsorship({ onClose }: SponsorshipProps) {
               </ul>
               <button 
                 onClick={() => {
-                  setFormData(prev => ({ ...prev, plan: 'Title Sponsor - ₹2.5L' }));
+                  setSelectedPlan('Title Sponsor - ₹2.5L');
                   setIsPopupOpen(true);
                 }}
                 className="w-full py-4 bg-gradient-to-r from-brand-pink to-brand-purple hover:opacity-90 text-white rounded-xl font-bold uppercase tracking-wider text-xs transition-opacity shadow-[0_0_20px_rgba(120,45,255,0.4)]"
@@ -261,7 +247,7 @@ export default function Sponsorship({ onClose }: SponsorshipProps) {
               </ul>
               <button 
                 onClick={() => {
-                  setFormData(prev => ({ ...prev, plan: 'Platinum Sponsor - ₹1L' }));
+                  setSelectedPlan('Platinum Sponsor - ₹1L');
                   setIsPopupOpen(true);
                 }}
                 className="w-full py-4 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold uppercase tracking-wider text-xs transition-colors"
@@ -285,7 +271,7 @@ export default function Sponsorship({ onClose }: SponsorshipProps) {
               </ul>
               <button 
                 onClick={() => {
-                  setFormData(prev => ({ ...prev, plan: 'Gold Sponsor - ₹50K' }));
+                  setSelectedPlan('Gold Sponsor - ₹50K');
                   setIsPopupOpen(true);
                 }}
                 className="w-full py-4 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold uppercase tracking-wider text-xs transition-colors"
@@ -308,7 +294,7 @@ export default function Sponsorship({ onClose }: SponsorshipProps) {
               </ul>
               <button 
                 onClick={() => {
-                  setFormData(prev => ({ ...prev, plan: 'Silver Sponsor - ₹25K' }));
+                  setSelectedPlan('Silver Sponsor - ₹25K');
                   setIsPopupOpen(true);
                 }}
                 className="w-full py-4 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-bold uppercase tracking-wider text-xs transition-colors"
@@ -337,7 +323,7 @@ export default function Sponsorship({ onClose }: SponsorshipProps) {
             ].map((p, i) => (
               <motion.div key={i} variants={fadeUp} className={`bg-gradient-to-br ${p.color} to-slate-900/50 p-6 rounded-[24px] border border-slate-800 hover:border-slate-600 transition-colors group cursor-pointer`}
                 onClick={() => {
-                  setFormData(prev => ({ ...prev, plan: `${p.title} - ${p.price}` }));
+                  setSelectedPlan(`${p.title} - ${p.price}`);
                   setIsPopupOpen(true);
                 }}
               >
@@ -371,114 +357,11 @@ export default function Sponsorship({ onClose }: SponsorshipProps) {
       </div>
 
       {/* Pop-up form for Sponsor Now */}
-      {createPortal(
-        <AnimatePresence>
-          {isPopupOpen && (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[100] bg-slate-950/80 backdrop-blur-xl flex items-center justify-center p-4 sm:p-6"
-            >
-              <motion.div 
-                initial={{ scale: 0.95, y: 15 }}
-                animate={{ scale: 1, y: 0 }}
-                exit={{ scale: 0.95, y: 15 }}
-                className="bg-brand-dark/95 border border-slate-700/80 w-full max-w-lg rounded-[32px] shadow-[0_0_50px_rgba(120,45,255,0.15)] overflow-hidden flex flex-col relative"
-              >
-                {/* Background glows for the popup */}
-                <div className="absolute w-[300px] h-[300px] rounded-full bg-brand-purple/20 blur-[80px] -top-20 -right-20 pointer-events-none" />
-                
-                <div className="px-8 py-6 border-b border-slate-800/80 flex justify-between items-center relative z-10">
-                  <div>
-                    <h3 className="font-orbitron font-bold text-white tracking-wider text-lg">Sponsorship Inquiry</h3>
-                    <p className="text-xs text-slate-400 mt-1">Fill out the details below to proceed.</p>
-                  </div>
-                  <button onClick={() => setIsPopupOpen(false)} className="text-slate-400 hover:text-white transition-colors bg-slate-800/50 hover:bg-slate-800 p-2 rounded-full">
-                    <X size={18} />
-                  </button>
-                </div>
-                
-                <div className="p-8 space-y-6 relative z-10">
-                  <div className="flex flex-col gap-2">
-                    <label className="text-[10px] font-mono text-slate-400 uppercase tracking-widest pl-1">Company Name *</label>
-                    <input 
-                      type="text" 
-                      value={formData.companyName}
-                      onChange={(e) => setFormData({...formData, companyName: e.target.value})}
-                      className="w-full bg-slate-900/50 border border-slate-700 rounded-2xl px-5 py-4 text-sm text-white focus:border-brand-purple focus:ring-1 focus:ring-brand-purple outline-none transition-all placeholder:text-slate-600"
-                      placeholder="Enter your organization name"
-                    />
-                  </div>
-                  
-                  <div className="flex flex-col gap-2">
-                    <label className="text-[10px] font-mono text-slate-400 uppercase tracking-widest pl-1">Contact Person *</label>
-                    <input 
-                      type="text" 
-                      value={formData.contactPerson}
-                      onChange={(e) => setFormData({...formData, contactPerson: e.target.value})}
-                      className="w-full bg-slate-900/50 border border-slate-700 rounded-2xl px-5 py-4 text-sm text-white focus:border-brand-purple focus:ring-1 focus:ring-brand-purple outline-none transition-all placeholder:text-slate-600"
-                      placeholder="John Doe"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="flex flex-col gap-2">
-                      <label className="text-[10px] font-mono text-slate-400 uppercase tracking-widest pl-1">Phone *</label>
-                      <input 
-                        type="tel" 
-                        value={formData.phone}
-                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                        className="w-full bg-slate-900/50 border border-slate-700 rounded-2xl px-5 py-4 text-sm text-white focus:border-brand-purple focus:ring-1 focus:ring-brand-purple outline-none transition-all placeholder:text-slate-600"
-                        placeholder="+91..."
-                      />
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <label className="text-[10px] font-mono text-slate-400 uppercase tracking-widest pl-1">Email *</label>
-                      <input 
-                        type="email" 
-                        value={formData.email}
-                        onChange={(e) => setFormData({...formData, email: e.target.value})}
-                        className="w-full bg-slate-900/50 border border-slate-700 rounded-2xl px-5 py-4 text-sm text-white focus:border-brand-purple focus:ring-1 focus:ring-brand-purple outline-none transition-all placeholder:text-slate-600"
-                        placeholder="john@company.com"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col gap-2 pt-2">
-                    <label className="text-[10px] font-mono text-slate-400 uppercase tracking-widest pl-1">Selected Plan *</label>
-                    <select 
-                      value={formData.plan}
-                      onChange={(e) => setFormData({...formData, plan: e.target.value})}
-                      className="w-full bg-brand-purple/10 border border-brand-purple/30 rounded-2xl px-5 py-4 text-sm font-bold text-white focus:border-brand-purple focus:ring-1 focus:ring-brand-purple outline-none transition-all appearance-none cursor-pointer"
-                    >
-                      <option>Title Sponsor - ₹2.5L</option>
-                      <option>Platinum Sponsor - ₹1L</option>
-                      <option>Gold Sponsor - ₹50K</option>
-                      <option>Silver Sponsor - ₹25K</option>
-                      <option>Knowledge Partner - ₹75K</option>
-                      <option>Recruitment Partner - ₹75K</option>
-                      <option>Innovation Partner - ₹50K</option>
-                      <option>Delegate Kit Sponsor - ₹35K</option>
-                      <option>Other / Custom Plan</option>
-                    </select>
-                  </div>
-
-                  <button 
-                    onClick={handleSend}
-                    disabled={!formData.companyName || !formData.contactPerson}
-                    className="w-full mt-6 bg-gradient-to-r from-brand-pink via-brand-purple to-brand-blue hover:opacity-90 disabled:opacity-50 disabled:grayscale text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-[0_0_20px_rgba(120,45,255,0.3)] hover:shadow-[0_0_30px_rgba(120,45,255,0.5)] transform hover:-translate-y-0.5"
-                  >
-                    <Send size={18} />
-                    <span>Send via WhatsApp</span>
-                  </button>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>,
-        document.body
-      )}
+      <SponsorMessageWindow 
+        isOpen={isPopupOpen} 
+        onClose={() => setIsPopupOpen(false)} 
+        initialPlan={selectedPlan} 
+      />
     </div>
   );
 }

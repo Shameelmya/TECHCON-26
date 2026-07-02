@@ -21,6 +21,7 @@ import RegistrationForm from './components/RegistrationForm';
 import TicketPass from './components/TicketPass';
 import AdminDashboard from './components/AdminDashboard';
 import RetrievePassForm from './components/RetrievePassForm';
+import Sponsorship from './components/Sponsorship';
 import { getRegistrations, fetchAllRegistrations } from './utils/db';
 
 export default function App() {
@@ -32,6 +33,7 @@ export default function App() {
     return false;
   });
   const [isRetrieveOpen, setIsRetrieveOpen] = useState(false);
+  const [isSponsorOpen, setIsSponsorOpen] = useState(false);
   const [activeRegistration, setActiveRegistration] = useState<AttendeeRegistration | null>(null);
   const [activeSection, setActiveSection] = useState('hero');
 
@@ -56,6 +58,7 @@ export default function App() {
   const handleRegisterSuccess = (reg: AttendeeRegistration) => {
     setActiveRegistration(reg);
     setIsRegisterOpen(false);
+    setIsRetrieveOpen(false);
   };
 
   const handleBackToHomeFromPass = () => {
@@ -107,6 +110,7 @@ export default function App() {
               {/* Hero fold */}
               <Hero 
                 onOpenRegister={() => setIsRegisterOpen(true)} 
+                onOpenSponsor={() => setIsSponsorOpen(true)}
                 onExploreEvent={() => {
                   const element = document.getElementById('about');
                   if (element) {
@@ -135,7 +139,7 @@ export default function App() {
 
           {/* 4. Registration Flow Sliding Modal Panel Overlay */}
           <AnimatePresence>
-            {(isRegisterOpen || isRetrieveOpen) && (
+            {(isRegisterOpen || isRetrieveOpen || isSponsorOpen) && (
               <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -148,21 +152,24 @@ export default function App() {
                   exit={{ scale: 0.95, y: 15 }}
                   className="w-full max-w-2xl my-auto py-8 sm:py-0"
                 >
-                  {isRegisterOpen ? (
+                  {isRegisterOpen && (
                     <RegistrationForm 
-                      onSuccess={handleRegisterSuccess}
                       onCancel={() => setIsRegisterOpen(false)}
+                      onSuccess={handleRegisterSuccess}
                       onGetPass={handleGetPass}
                     />
-                  ) : (
-                    <RetrievePassForm
-                      onSuccess={(reg) => {
-                        setActiveRegistration(reg);
-                        setIsRetrieveOpen(false);
-                      }}
+                  )}
+                  {isRetrieveOpen && (
+                    <RetrievePassForm 
                       onCancel={() => setIsRetrieveOpen(false)}
+                      onSuccess={handleRegisterSuccess}
                       onOpenRegister={handleOpenRegister}
                     />
+                  )}
+                  {isSponsorOpen && (
+                    <div className="max-w-none w-full xl:min-w-[1000px] flex justify-center -ml-0 xl:-ml-[175px]">
+                      <Sponsorship onClose={() => setIsSponsorOpen(false)} />
+                    </div>
                   )}
                 </motion.div>
               </motion.div>

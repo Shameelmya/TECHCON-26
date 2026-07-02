@@ -11,11 +11,12 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 interface HeroProps {
   isRegOpen?: boolean;
-  onOpenRegister: () => void;
-  onExploreEvent: () => void;
+  onOpenRegister?: () => void;
+  onExploreEvent?: () => void;
+  onOpenSponsor?: () => void;
 }
 
-export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent }: HeroProps) {
+export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent, onOpenSponsor }: HeroProps) {
   const [timeLeft, setTimeLeft] = useState({ days: 15, hours: 0, minutes: 0, seconds: 0 });
   const [gapAnim, setGapAnim] = useState(['0px', '8px', '0px']);
 
@@ -57,7 +58,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
   return (
     <section 
       id="hero" 
-      className="relative overflow-hidden min-h-screen flex items-center justify-center px-4 md:px-8 pt-24 md:pt-32 pb-10"
+      className="relative min-h-screen flex items-center justify-center px-4 md:px-8 pt-24 md:pt-32 pb-10"
     >
       {/* Blurred Soft Light Blobs for Depth */}
       <div className="absolute w-[450px] h-[450px] rounded-full bg-gradient-to-tr from-brand-purple/20 to-brand-pink/20 blur-[120px] -top-20 left-1/4 pointer-events-none animate-[pulse_8s_infinite]" />
@@ -72,12 +73,12 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
         }}
       />
 
-      {/* Background Lottie Animation */}
+      {/* Background GIF */}
       <div 
-        className="absolute -top-32 left-1/2 -translate-x-1/2 w-full max-w-[1920px] h-[1100px] z-0 pointer-events-none opacity-50 mix-blend-screen blur"
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1920px] h-[1100px] z-0 pointer-events-none opacity-50 mix-blend-screen"
         style={{
-          maskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)',
-          WebkitMaskImage: 'linear-gradient(to bottom, black 60%, transparent 100%)'
+          maskImage: 'linear-gradient(to bottom, black 0%, black 50%, transparent 70%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 50%, transparent 70%)'
         }}
       >
         <DotLottieReact
@@ -225,10 +226,19 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
             <div className="w-full rounded-[32px] p-6 sm:p-8 bg-gradient-to-r from-brand-pink via-brand-purple to-brand-blue bg-[length:200%_auto] animate-[gradient_6s_ease-in-out_infinite] flex flex-col sm:flex-row items-center justify-between gap-6 shadow-[0_8px_32px_rgba(120,45,255,0.4)]">
               
               <div className="text-center sm:text-left text-white">
-                <h4 className="font-sans font-bold text-xl mb-1 drop-shadow-sm">Secure Your Pass</h4>
+                <h4 className="font-sans font-bold text-xl mb-1 drop-shadow-sm">Join the Revolution</h4>
               </div>
               
               <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+                <MagneticButton className="w-full sm:w-auto">
+                  <motion.button
+                    onClick={onOpenSponsor}
+                    className="px-6 py-3.5 bg-brand-dark/90 backdrop-blur-sm text-brand-pink font-sans font-bold text-sm rounded-full w-full sm:w-auto shrink-0 shadow-lg border border-brand-pink/50 hover:shadow-pink-500/40 hover:text-white hover:border-brand-pink transition-all duration-300"
+                  >
+                    <span>BE A SPONSOR</span>
+                  </motion.button>
+                </MagneticButton>
+                
                 <MagneticButton className="w-full sm:w-auto">
                   <motion.button
                     onClick={onOpenRegister}
@@ -242,7 +252,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent 
                     }`}
                   >
                     <span>
-                      {isRegOpen ? "REGISTER NOW" : "REGISTRATION CLOSED"}
+                      {isRegOpen ? "JOIN US" : "REGISTRATION CLOSED"}
                     </span>
                   </motion.button>
                 </MagneticButton>

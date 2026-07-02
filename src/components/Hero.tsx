@@ -211,6 +211,39 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent,
                 <span className="text-sm sm:text-base font-sans font-bold text-white">msf TechFed</span>
               </div>
             </div>
+
+            {/* Coming Soon Pixel Animation in Metadata Row */}
+            <div className="flex items-center gap-3 sm:gap-4 w-fit bg-brand-black/50 p-3 sm:p-4 rounded-2xl border border-slate-800/80 shadow-[0_0_30px_rgba(120,45,255,0.15)] relative overflow-hidden h-[88px]">
+              {/* Animated pixel glitch background */}
+              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDUpIi8+CjxyZWN0IHg9IjQiIHk9IjQiIHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz4KPC9zdmc+')] opacity-50 animate-[pulse_2s_infinite]" />
+              
+              <div className="flex items-center gap-2 relative z-10">
+                <motion.div 
+                  className="w-2 h-2 sm:w-3 sm:h-3 bg-brand-pink"
+                  animate={{ opacity: [1, 0, 1] }}
+                  transition={{ duration: 1, repeat: Infinity, ease: "steps(2)" }}
+                />
+                <motion.div 
+                  className="w-2 h-2 sm:w-3 sm:h-3 bg-brand-purple"
+                  animate={{ opacity: [1, 0, 1] }}
+                  transition={{ duration: 1, repeat: Infinity, delay: 0.3, ease: "steps(2)" }}
+                />
+                <motion.div 
+                  className="w-2 h-2 sm:w-3 sm:h-3 bg-brand-blue"
+                  animate={{ opacity: [1, 0, 1] }}
+                  transition={{ duration: 1, repeat: Infinity, delay: 0.6, ease: "steps(2)" }}
+                />
+              </div>
+
+              <div className="flex flex-col relative z-10 ml-1 text-left justify-center">
+                <span className="font-orbitron text-lg sm:text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-pink via-brand-purple to-brand-blue tracking-widest uppercase drop-shadow-sm leading-tight">
+                  Coming Soon
+                </span>
+                <span className="text-[8px] sm:text-[9px] font-mono tracking-widest text-slate-400 uppercase mt-0.5 whitespace-nowrap">
+                  Next Tech Revolution
+                </span>
+              </div>
+            </div>
           </motion.div>
 
           {/* Minimal Action banner */}
@@ -249,7 +282,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent,
                     }`}
                   >
                     <span>
-                      {isRegOpen ? "JOIN US" : "REGISTRATION CLOSED"}
+                      {isRegOpen ? "REGISTER NOW" : "REGISTRATION CLOSED"}
                     </span>
                   </motion.button>
                 </MagneticButton>
@@ -287,42 +320,6 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent,
             </button>
           </motion.div>
 
-          {/* Coming Soon Pixel Animation */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="flex items-center gap-4 w-fit bg-brand-black/50 p-4 sm:p-5 rounded-2xl border border-slate-800/80 shadow-[0_0_30px_rgba(120,45,255,0.15)] relative overflow-hidden"
-          >
-            {/* Animated pixel glitch background */}
-            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDUpIi8+CjxyZWN0IHg9IjQiIHk9IjQiIHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz4KPC9zdmc+')] opacity-50 animate-[pulse_2s_infinite]" />
-            
-            <div className="flex items-center gap-3 relative z-10">
-              <motion.div 
-                className="w-3 h-3 bg-brand-pink"
-                animate={{ opacity: [1, 0, 1] }}
-                transition={{ duration: 1, repeat: Infinity, ease: "steps(2)" }}
-              />
-              <motion.div 
-                className="w-3 h-3 bg-brand-purple"
-                animate={{ opacity: [1, 0, 1] }}
-                transition={{ duration: 1, repeat: Infinity, delay: 0.3, ease: "steps(2)" }}
-              />
-              <motion.div 
-                className="w-3 h-3 bg-brand-blue"
-                animate={{ opacity: [1, 0, 1] }}
-                transition={{ duration: 1, repeat: Infinity, delay: 0.6, ease: "steps(2)" }}
-              />
-            </div>
-
-            <div className="flex flex-col relative z-10 ml-2">
-              <span className="font-orbitron text-xl sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-pink via-brand-purple to-brand-blue tracking-[0.2em] uppercase drop-shadow-sm">
-                Coming Soon
-              </span>
-              <span className="text-[10px] font-mono tracking-widest text-slate-400 uppercase mt-1">
-                Loading Next Tech Revolution
-              </span>
-            </div>
           </motion.div>
         </div>
 

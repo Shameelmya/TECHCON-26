@@ -341,7 +341,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent,
       </div>
 
       {/* Interactive Video Showcase - Isolated so screen blend mode works against the background */}
-      <div className="relative z-20 w-full max-w-[300px] sm:max-w-[400px] lg:max-w-[450px] aspect-video flex items-center justify-center mt-6 lg:mt-10 mix-blend-screen pointer-events-none">
+      <div className="relative z-20 w-full max-w-[400px] sm:max-w-[500px] lg:max-w-[650px] aspect-video flex items-center justify-center mt-6 lg:mt-10 mix-blend-screen pointer-events-none">
         <HeroVideos />
       </div>
     </section>
@@ -377,7 +377,8 @@ function HeroVideos() {
           playsInline
           className="absolute inset-0 w-full h-full object-contain z-10 transition-opacity duration-1000 ease-in-out pointer-events-none"
           style={{
-            opacity: currentIndex === index ? 1 : 0
+            opacity: currentIndex === index ? 1 : 0,
+            filter: 'contrast(1.4) brightness(1.15) saturate(1.2)'
           }}
         />
       ))}

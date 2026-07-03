@@ -74,8 +74,12 @@ export default function BackgroundAudio() {
       const success = await playAudio();
       if (success) {
         window.removeEventListener('scroll', handleInteraction);
+        window.removeEventListener('wheel', handleInteraction);
+        window.removeEventListener('mousemove', handleInteraction);
         window.removeEventListener('click', handleInteraction);
         window.removeEventListener('touchstart', handleInteraction);
+        window.removeEventListener('touchend', handleInteraction);
+        window.removeEventListener('keydown', handleInteraction);
       }
     };
 
@@ -83,16 +87,24 @@ export default function BackgroundAudio() {
     playAudio().then(success => {
       if (!success) {
         // Only add listeners if autoplay was blocked
-        window.addEventListener('scroll', handleInteraction);
-        window.addEventListener('click', handleInteraction);
-        window.addEventListener('touchstart', handleInteraction);
+        window.addEventListener('scroll', handleInteraction, { passive: true });
+        window.addEventListener('wheel', handleInteraction, { passive: true });
+        window.addEventListener('mousemove', handleInteraction, { passive: true });
+        window.addEventListener('click', handleInteraction, { passive: true });
+        window.addEventListener('touchstart', handleInteraction, { passive: true });
+        window.addEventListener('touchend', handleInteraction, { passive: true });
+        window.addEventListener('keydown', handleInteraction, { passive: true });
       }
     });
 
     return () => {
       window.removeEventListener('scroll', handleInteraction);
+      window.removeEventListener('wheel', handleInteraction);
+      window.removeEventListener('mousemove', handleInteraction);
       window.removeEventListener('click', handleInteraction);
       window.removeEventListener('touchstart', handleInteraction);
+      window.removeEventListener('touchend', handleInteraction);
+      window.removeEventListener('keydown', handleInteraction);
       window.removeEventListener('keydown', handleKeydown);
       if (fader) clearInterval(fader);
     };

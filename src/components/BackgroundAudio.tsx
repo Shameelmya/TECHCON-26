@@ -110,5 +110,21 @@ export default function BackgroundAudio() {
     };
   }, []);
 
-  return <audio ref={audioRef} src="/A1.wav" loop preload="auto" style={{ display: 'none' }} />;
+  return (
+    <audio
+      ref={audioRef}
+      src="/A1.wav"
+      loop
+      preload="auto"
+      style={{ display: 'none' }}
+      onTimeUpdate={(e) => {
+        const audio = e.currentTarget;
+        const buffer = 0.3; // Skip the last 300ms of silence
+        if (audio.duration && audio.currentTime >= audio.duration - buffer) {
+          audio.currentTime = 0.1; // Start slightly after 0 to skip start padding
+          audio.play().catch(() => {});
+        }
+      }}
+    />
+  );
 }

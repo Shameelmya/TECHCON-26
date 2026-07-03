@@ -91,6 +91,36 @@ export default function ContactUs() {
               </a>
             </div>
           </div>
+          {/* Coordinator 3 */}
+          <div className="bg-slate-900/60 backdrop-blur-md border border-slate-800/80 rounded-[24px] p-5 shadow-[0_0_20px_rgba(255,45,120,0.05)] flex items-center justify-between group hover:border-brand-pink/50 transition-colors">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 shrink-0">
+                <User size={24} />
+              </div>
+              <div className="flex flex-col text-left">
+                <h3 className="text-base sm:text-lg font-orbitron font-bold text-white mb-0.5">Name 3</h3>
+                <p className="text-[9px] sm:text-[10px] font-mono text-brand-pink uppercase tracking-widest font-bold mb-1">Operations Head</p>
+                <p className="text-xs sm:text-sm text-slate-400 font-mono">+91 98765 43212</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <a 
+                href="https://wa.me/919876543212"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-slate-800 hover:bg-emerald-500 border border-slate-700 flex items-center justify-center text-white transition-all shadow-md shrink-0"
+              >
+                <MessageCircle size={16} />
+              </a>
+              <a 
+                href="tel:+919876543212"
+                className="w-10 h-10 rounded-full bg-slate-800 hover:bg-brand-pink border border-slate-700 flex items-center justify-center text-white transition-all shadow-md shrink-0"
+              >
+                <Phone size={16} />
+              </a>
+            </div>
+          </div>
         </motion.div>
 
         {/* Socials & Info Card */}

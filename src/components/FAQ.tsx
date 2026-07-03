@@ -25,6 +25,16 @@ const faqs: { question: string; answer: React.ReactNode }[] = [
     )
   },
   {
+    question: "I registered but forgot to get my pass. What should I do?",
+    answer: (
+      <>
+        Don't worry! You can easily retrieve it. Click <strong>Register Now</strong> or click on
+        <a href="#register" className="text-brand-pink font-bold ml-1 hover:underline">Get Pass Now</a> 
+        to access the portal and retrieve your digital ticket.
+      </>
+    )
+  },
+  {
     question: "Who are the organizers?",
     answer: "TECHCON '26 is officially organized by msf TechFed Kerala, aimed at driving technological revolution and student empowerment across the region."
   },

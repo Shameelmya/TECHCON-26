@@ -29,12 +29,7 @@ import { getRegistrations, fetchAllRegistrations } from './utils/db';
 
 export default function App() {
   const [isAdminOpen, setIsAdminOpen] = useState(false);
-  const [isRegisterOpen, setIsRegisterOpen] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return window.location.hash === '#register' || window.location.search.includes('register');
-    }
-    return false;
-  });
+  const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [isRetrieveOpen, setIsRetrieveOpen] = useState(false);
   const [isSponsorOpen, setIsSponsorOpen] = useState(false);
   const [activeRegistration, setActiveRegistration] = useState<AttendeeRegistration | null>(null);
@@ -67,7 +62,15 @@ export default function App() {
       else if (hash === '#retrieve') setIsRetrieveOpen(true);
     };
 
-    handleHashChange(); // Run on mount
+    // Run on mount but if it's register/retrieve, clear it so it doesn't auto-open on future refreshes
+    const initialHash = window.location.hash.toLowerCase();
+    if (initialHash === '#admin') setIsAdminOpen(true);
+    else if (initialHash === '#sponsorship') setIsSponsorOpen(true);
+    
+    // Clear the hash on mount so it doesn't stick around on refresh
+    if (['#register', '#retrieve', '#admin', '#sponsorship'].includes(initialHash)) {
+       window.history.replaceState(null, '', window.location.pathname);
+    }
 
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);

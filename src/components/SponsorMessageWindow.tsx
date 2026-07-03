@@ -72,7 +72,7 @@ export default function SponsorMessageWindow({ isOpen, onClose, initialPlan }: S
             </div>
             
             {/* Scrollable Content */}
-            <div className="p-8 overflow-y-auto relative z-10 flex-1 space-y-8">
+            <div className="p-8 overflow-y-auto relative z-10 flex-1 space-y-8" style={{ WebkitOverflowScrolling: 'touch' }}>
               
               <div className="space-y-5">
                 <div className="flex flex-col gap-2">
@@ -129,22 +129,24 @@ export default function SponsorMessageWindow({ isOpen, onClose, initialPlan }: S
                     <div 
                       key={plan.id}
                       onClick={() => setFormData({...formData, plan: plan.id})}
-                      className={`cursor-pointer rounded-xl p-3 border-2 transition-all relative ${
+                      className={`cursor-pointer rounded-lg p-2 flex items-center gap-2.5 border-2 transition-all relative ${
                         formData.plan === plan.id 
-                          ? 'border-brand-purple shadow-md bg-purple-50' 
+                          ? 'border-brand-purple shadow-sm bg-purple-50' 
                           : 'border-slate-100 bg-white hover:border-brand-purple/50'
                       }`}
                     >
-                      {formData.plan === plan.id && (
-                        <div className="absolute top-2 right-2 text-brand-purple">
-                          <CheckCircle2 size={16} className="fill-brand-purple text-white" />
-                        </div>
-                      )}
-                      <div className={`w-8 h-8 rounded-lg ${plan.color} flex items-center justify-center mb-2 text-xs font-bold`}>
+                      <div className={`w-6 h-6 shrink-0 rounded-md ${plan.color} flex items-center justify-center text-[10px] font-bold`}>
                         {plan.label[0]}
                       </div>
-                      <p className="font-bold text-slate-900 text-sm leading-tight">{plan.label}</p>
-                      <p className="text-xs font-mono text-slate-500 mt-1">{plan.price}</p>
+                      <div className="flex flex-col pr-5">
+                        <p className="font-bold text-slate-900 text-xs leading-tight">{plan.label}</p>
+                        <p className="text-[10px] font-mono text-slate-500">{plan.price}</p>
+                      </div>
+                      {formData.plan === plan.id && (
+                        <div className="absolute top-1/2 -translate-y-1/2 right-2 text-brand-purple">
+                          <CheckCircle2 size={14} className="fill-brand-purple text-white" />
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>

@@ -88,7 +88,7 @@ export default function Sponsorship({ onClose }: SponsorshipProps) {
       <div className="absolute w-[600px] h-[600px] rounded-full bg-brand-pink/5 blur-[150px] bottom-10 -left-20 pointer-events-none fixed" />
       
       {/* Header */}
-      <div className="relative z-40 bg-brand-dark/80 px-6 sm:px-10 py-5 flex items-center justify-between border-b border-slate-800/80">
+      <div className="sticky top-0 z-[100] bg-brand-dark/80 backdrop-blur-md px-6 sm:px-10 py-5 flex items-center justify-between border-b border-slate-800/80">
         <div>
           <span className="text-[10px] font-mono tracking-widest text-brand-pink uppercase font-bold">SPONSORSHIP BROCHURE</span>
           <h2 className="text-xl sm:text-3xl font-orbitron font-bold text-white mt-1">TECHCON '26</h2>
@@ -125,7 +125,7 @@ export default function Sponsorship({ onClose }: SponsorshipProps) {
           initial="hidden" animate="show" variants={staggerContainer}
           className="text-center max-w-4xl mx-auto space-y-8 pt-8"
         >
-          <motion.h1 variants={fadeUp} className="text-4xl sm:text-6xl lg:text-7xl font-orbitron font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-pink via-brand-purple to-brand-blue uppercase tracking-tight leading-tight">
+          <motion.h1 variants={fadeUp} className="text-4xl sm:text-6xl lg:text-5xl font-orbitron font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-pink via-brand-purple to-brand-blue uppercase tracking-tight leading-tight">
             The Future Starts Here.
           </motion.h1>
           <motion.p variants={fadeUp} className="text-slate-300 leading-relaxed text-lg sm:text-2xl font-medium max-w-3xl mx-auto">

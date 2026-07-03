@@ -21,9 +21,9 @@ export default function TechLoadingModal({ isOpen, onClose, title = "System Init
     // Simulate complex tech loading
     const interval = setInterval(() => {
       setProgress(prev => {
-        if (prev >= 100) {
+        if (prev >= 80) {
           clearInterval(interval);
-          return 100;
+          return 80;
         }
         return prev + Math.floor(Math.random() * 15);
       });
@@ -79,7 +79,7 @@ export default function TechLoadingModal({ isOpen, onClose, title = "System Init
 
             <div className="space-y-2">
               <h2 className="text-2xl sm:text-3xl font-orbitron font-bold text-transparent bg-clip-text bg-gradient-to-r from-brand-pink to-brand-blue uppercase tracking-widest">
-                {title}
+                LOADING...
               </h2>
               <p className="text-slate-400 text-sm font-mono tracking-widest">
                 ESTABLISHING SECURE CONNECTION...
@@ -90,13 +90,13 @@ export default function TechLoadingModal({ isOpen, onClose, title = "System Init
             <div className="w-full max-w-md space-y-2">
               <div className="flex justify-between text-[10px] font-mono text-brand-purple font-bold">
                 <span>SYSTEM CORE</span>
-                <span>{Math.min(progress, 100)}%</span>
+                <span>{Math.min(progress, 80)}%</span>
               </div>
               <div className="h-2 w-full bg-slate-900 rounded-full overflow-hidden border border-slate-800">
                 <motion.div 
                   className="h-full bg-gradient-to-r from-brand-purple via-brand-pink to-brand-blue"
                   initial={{ width: 0 }}
-                  animate={{ width: `${Math.min(progress, 100)}%` }}
+                  animate={{ width: `${Math.min(progress, 80)}%` }}
                   transition={{ ease: "easeOut" }}
                 />
               </div>
@@ -118,7 +118,7 @@ export default function TechLoadingModal({ isOpen, onClose, title = "System Init
                   &gt; Fetching neural net assets... SUCCESS
                 </motion.div>
               )}
-              {progress >= 100 && (
+              {progress >= 80 && (
                 <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="text-emerald-400 text-xs font-mono pl-6 font-bold mt-4">
                   &gt; MODULE DEPLOYMENT PENDING. CHECK BACK SOON.
                 </motion.div>

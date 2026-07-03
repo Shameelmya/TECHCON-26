@@ -64,14 +64,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent,
       <div className="absolute w-[450px] h-[450px] rounded-full bg-gradient-to-tr from-brand-purple/20 to-brand-pink/20 blur-[120px] -top-20 left-1/4 pointer-events-none animate-[pulse_8s_infinite]" />
       <div className="absolute w-[550px] h-[550px] rounded-full bg-gradient-to-br from-brand-blue/20 to-brand-purple/20 blur-[130px] bottom-10 right-10 pointer-events-none" />
 
-      {/* Grid Pattern overlay */}
-      <div 
-        className="absolute inset-0 pointer-events-none opacity-[0.02]" 
-        style={{
-          backgroundImage: `radial-gradient(#ffffff 1px, transparent 1px)`,
-          backgroundSize: '30px 30px'
-        }}
-      />
+
 
       {/* Background GIF */}
       <div 
@@ -182,7 +175,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent,
           >
             <div className="relative inline-block text-center px-4">
               <p className="text-[14px] sm:text-[16px] md:text-[18px] text-slate-200 font-sans font-medium tracking-wide">
-                Let's build the future together!
+                Let's build the <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-pink via-brand-purple to-brand-blue font-bold">future</span> together!
               </p>
               {/* Animated Line */}
               <motion.div 
@@ -213,7 +206,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent,
             <div className="w-full rounded-[32px] p-6 sm:p-8 bg-gradient-to-r from-brand-pink via-brand-purple to-brand-blue bg-[length:200%_auto] animate-[gradient_6s_ease-in-out_infinite] flex flex-col sm:flex-row items-center justify-between gap-6 shadow-[0_8px_32px_rgba(120,45,255,0.4)]">
               
               <div className="text-center sm:text-left text-white">
-                <h4 className="font-sans font-bold text-xl mb-1 drop-shadow-sm">Join the Revolution</h4>
+                <h4 className="font-jura font-bold text-xl mb-1 drop-shadow-sm uppercase">Join the Revolution</h4>
               </div>
               
               <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
@@ -255,6 +248,7 @@ const VIDEOS = ['/V1.mp4', '/V2.mp4', '/V3.mp4', '/V4.mp4'];
 
 function HeroVideos() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [clipInset, setClipInset] = useState('inset(0 115px)');
 
   useEffect(() => {
     // Cross-fade videos every 6 seconds
@@ -262,6 +256,15 @@ function HeroVideos() {
       setCurrentIndex((prev) => (prev + 1) % VIDEOS.length);
     }, 6000);
     return () => clearInterval(videoInterval);
+  }, []);
+
+  useEffect(() => {
+    const updateClip = () => {
+      setClipInset(window.innerWidth < 768 ? 'inset(0 30px)' : 'inset(0 115px)');
+    };
+    updateClip();
+    window.addEventListener('resize', updateClip);
+    return () => window.removeEventListener('resize', updateClip);
   }, []);
 
   return (
@@ -282,7 +285,7 @@ function HeroVideos() {
           style={{
             opacity: currentIndex === index ? 1 : 0,
             filter: 'contrast(1.4) brightness(1.15) saturate(1.2)',
-            clipPath: 'inset(0 115px)'
+            clipPath: clipInset
           }}
         />
       ))}

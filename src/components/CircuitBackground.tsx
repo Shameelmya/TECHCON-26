@@ -84,6 +84,15 @@ export default function CircuitBackground() {
         }}
       />
 
+      {/* Infinity Grid overlay */}
+      <div 
+        className="absolute inset-0 pointer-events-none opacity-[0.02] z-10"
+        style={{
+          backgroundImage: `linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)`,
+          backgroundSize: '40px 40px'
+        }}
+      />
+
       {/* Noise Texture Overlay for modern grain */}
       <div 
         className="absolute inset-0 opacity-[0.04] mix-blend-overlay z-20"

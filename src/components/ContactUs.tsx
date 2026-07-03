@@ -90,31 +90,23 @@ export default function ContactUs() {
                 <span className="text-[10px] font-mono tracking-wider font-bold">FB</span>
               </a>
               <a href="#" className="flex flex-col items-center justify-center gap-3 bg-slate-800/50 hover:bg-white text-slate-400 hover:text-black aspect-square rounded-2xl transition-all duration-300 group border border-slate-700/50 hover:border-transparent">
-                <Twitter size={28} className="group-hover:scale-110 transition-transform" />
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16" className="group-hover:scale-110 transition-transform">
+                  <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z" />
+                </svg>
                 <span className="text-[10px] font-mono tracking-wider font-bold">X</span>
               </a>
             </div>
           </div>
 
           {/* Quick Info */}
-          <div className="bg-slate-900/60 backdrop-blur-md border border-slate-800/80 rounded-[32px] p-6 shadow-lg flex flex-col sm:flex-row gap-4 divide-y sm:divide-y-0 sm:divide-x divide-slate-800/80">
-            <div className="flex-1 flex items-center gap-4 pt-2 sm:pt-0">
+          <div className="bg-slate-900/60 backdrop-blur-md border border-slate-800/80 rounded-[32px] p-6 shadow-lg flex items-center justify-center">
+            <div className="flex items-center gap-4">
               <div className="w-10 h-10 rounded-full bg-brand-blue/10 flex items-center justify-center text-brand-blue shrink-0">
                 <Mail size={18} />
               </div>
-              <div className="flex flex-col">
+              <div className="flex flex-col text-left">
                 <span className="text-[10px] font-mono text-slate-500 uppercase tracking-widest font-bold">Email Support</span>
                 <span className="text-sm font-sans font-medium text-slate-300">hello@techcon26.com</span>
-              </div>
-            </div>
-            
-            <div className="flex-1 flex items-center gap-4 pt-4 sm:pt-0 sm:pl-4">
-              <div className="w-10 h-10 rounded-full bg-brand-purple/10 flex items-center justify-center text-brand-purple shrink-0">
-                <MapPin size={18} />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[10px] font-mono text-slate-500 uppercase tracking-widest font-bold">Headquarters</span>
-                <span className="text-sm font-sans font-medium text-slate-300">Ernakulam, Kerala</span>
               </div>
             </div>
           </div>

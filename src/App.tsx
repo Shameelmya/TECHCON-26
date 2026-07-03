@@ -5,7 +5,7 @@
 
 import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { Award, Compass, Shield } from 'lucide-react';
+import { Award, Compass, Shield, X } from 'lucide-react';
 import { AttendeeRegistration } from './types';
 
 // Component Imports
@@ -149,6 +149,12 @@ export default function App() {
                 exit={{ opacity: 0 }}
                 className="fixed inset-0 z-50 bg-slate-950/40 backdrop-blur-md flex items-start justify-center p-4 sm:p-6 overflow-y-auto"
               >
+                <button 
+                  onClick={() => { setIsRegisterOpen(false); setIsRetrieveOpen(false); }}
+                  className="fixed top-4 right-4 sm:top-6 sm:right-6 p-2.5 rounded-full bg-slate-900/90 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors z-[9999] shadow-lg border border-slate-700 backdrop-blur-md"
+                >
+                  <X size={20} />
+                </button>
                 <motion.div 
                   initial={{ scale: 0.95, y: 15 }}
                   animate={{ scale: 1, y: 0 }}
@@ -183,6 +189,12 @@ export default function App() {
                 exit={{ opacity: 0 }}
                 className="fixed inset-0 z-[60] bg-slate-950/60 backdrop-blur-md flex items-start justify-center p-4 sm:p-6 overflow-y-auto"
               >
+                <button 
+                  onClick={() => setIsSponsorOpen(false)}
+                  className="fixed top-4 right-4 sm:top-6 sm:right-6 p-2.5 rounded-full bg-slate-900/90 text-slate-400 hover:text-white hover:bg-slate-800 transition-colors z-[9999] shadow-lg border border-slate-700 backdrop-blur-md"
+                >
+                  <X size={20} />
+                </button>
                 <motion.div 
                   initial={{ scale: 0.95, y: 20 }}
                   animate={{ scale: 1, y: 0 }}
@@ -205,6 +217,12 @@ export default function App() {
                 transition={{ type: 'spring', damping: 25, stiffness: 180 }}
                 className="fixed inset-0 z-50 overflow-y-auto bg-slate-900"
               >
+                <button 
+                  onClick={() => setIsAdminOpen(false)}
+                  className="fixed top-4 right-4 sm:top-6 sm:right-6 p-2.5 rounded-full bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors z-[9999] shadow-lg border border-slate-700"
+                >
+                  <X size={20} />
+                </button>
                 <AdminDashboard onClose={() => setIsAdminOpen(false)} />
               </motion.div>
             )}

@@ -62,13 +62,7 @@ export default function WhyAttend() {
       id="why-attend" 
       className="py-20 sm:py-28 px-6 md:px-12 relative overflow-hidden"
     >
-      <div 
-        className="absolute inset-0 pointer-events-none opacity-[0.02]" 
-        style={{
-          backgroundImage: `linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)`,
-          backgroundSize: '40px 40px'
-        }}
-      />
+
       <div className="absolute w-[400px] h-[400px] rounded-full bg-gradient-to-tr from-brand-purple/10 to-brand-pink/5 blur-[120px] -top-30 -left-20 pointer-events-none" />
       <div className="absolute w-[500px] h-[500px] rounded-full bg-gradient-to-br from-brand-blue/5 to-brand-purple/10 blur-[140px] -bottom-30 -right-20 pointer-events-none" />
 
@@ -205,12 +199,11 @@ export default function WhyAttend() {
           {syllabusSectors.map((sector, idx) => (
             <motion.div
               key={idx}
-              onClick={() => handleOpenModal(sector.label)}
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: idx * 0.05 }}
-              className={`flex flex-col items-center justify-center text-center gap-4 p-6 rounded-[2rem] border bg-slate-900/40 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer group ${sector.bg}`}
+              className={`flex flex-col items-center justify-center text-center gap-4 p-6 rounded-[2rem] border bg-slate-900/40 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group ${sector.bg}`}
             >
               <div className="w-16 h-16 rounded-2xl bg-brand-navy border border-slate-700 flex items-center justify-center shrink-0 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-inner">
                 {sector.icon}

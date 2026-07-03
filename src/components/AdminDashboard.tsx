@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Lock, CheckCircle, XCircle, Search, LogOut, Download, 
@@ -719,8 +719,8 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
               <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
                 <div className="overflow-x-auto">
                   <table className="w-full border-collapse text-left">
-                    <thead>
-                      <tr className="bg-slate-50 border-b border-slate-200">
+                    <thead className="sticky top-0 z-[100] bg-slate-50">
+                      <tr className="border-b border-slate-200">
                         <th className="p-4 text-[10px] font-mono text-slate-400 uppercase font-bold tracking-wider">Registration ID</th>
                         <th className="p-4 text-[10px] font-mono text-slate-400 uppercase font-bold tracking-wider">Full Name</th>
                         <th className="p-4 text-[10px] font-mono text-slate-400 uppercase font-bold tracking-wider">Contact Credentials</th>

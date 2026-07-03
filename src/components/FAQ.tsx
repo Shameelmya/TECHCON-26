@@ -29,7 +29,7 @@ const faqs: { question: string; answer: React.ReactNode }[] = [
     answer: (
       <>
         Don't worry! You can easily retrieve it. Click <strong>Register Now</strong> or click on
-        <a href="#register" className="text-brand-pink font-bold ml-1 hover:underline">Get Pass Now</a> 
+        <a href="#retrieve" className="text-brand-pink font-bold ml-1 hover:underline">Get Pass Now</a> 
         to access the portal and retrieve your digital ticket.
       </>
     )

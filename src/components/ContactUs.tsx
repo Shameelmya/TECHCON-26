@@ -153,17 +153,17 @@ export default function ContactUs() {
           </div>
 
           {/* Quick Info */}
-          <div className="bg-slate-900/60 backdrop-blur-md border border-slate-800/80 rounded-[32px] p-6 shadow-lg flex items-center justify-center">
+          <a href="mailto:hello@techcon26.com" className="bg-slate-900/60 backdrop-blur-md border border-slate-800/80 rounded-[32px] p-6 shadow-lg flex items-center justify-center hover:bg-slate-800/80 transition-colors cursor-pointer group hover:border-brand-blue/50">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-full bg-brand-blue/10 flex items-center justify-center text-brand-blue shrink-0">
+              <div className="w-10 h-10 rounded-full bg-brand-blue/10 flex items-center justify-center text-brand-blue shrink-0 group-hover:scale-110 transition-transform">
                 <Mail size={18} />
               </div>
               <div className="flex flex-col text-left">
                 <span className="text-[10px] font-mono text-slate-500 uppercase tracking-widest font-bold">Email Support</span>
-                <span className="text-sm font-sans font-medium text-slate-300">hello@techcon26.com</span>
+                <span className="text-sm font-sans font-medium text-slate-300 group-hover:text-white transition-colors">hello@techcon26.com</span>
               </div>
             </div>
-          </div>
+          </a>
         </motion.div>
       </div>
 

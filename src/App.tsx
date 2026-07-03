@@ -64,6 +64,7 @@ export default function App() {
       if (hash === '#admin') setIsAdminOpen(true);
       else if (hash === '#sponsorship') setIsSponsorOpen(true);
       else if (hash === '#register') setIsRegisterOpen(true);
+      else if (hash === '#retrieve') setIsRetrieveOpen(true);
     };
 
     handleHashChange(); // Run on mount

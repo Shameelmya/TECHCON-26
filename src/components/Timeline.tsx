@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronDown, ChevronUp, Clock } from 'lucide-react';
 
-const loadingTexts = ["loading...", "writing...", "thinking..."];
+const loadingTexts = ["thinking...", "writing...", "loading..."];
 
 export default function Timeline() {
   const [isScheduleOpen, setIsScheduleOpen] = useState(false);

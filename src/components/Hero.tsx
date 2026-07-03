@@ -201,15 +201,27 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent,
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.2 }}
-            className="w-full max-w-2xl mb-6 relative"
+            className="w-full max-w-4xl mb-6 relative"
           >
             <div className="w-full rounded-[32px] p-6 sm:p-8 bg-gradient-to-r from-brand-pink via-brand-purple to-brand-blue bg-[length:200%_auto] animate-[gradient_6s_ease-in-out_infinite] flex flex-col sm:flex-row items-center justify-between gap-6 shadow-[0_8px_32px_rgba(120,45,255,0.4)]">
               
-              <div className="text-center sm:text-left text-white">
+              <div className="text-center sm:text-left text-white shrink-0">
                 <h4 className="font-jura font-bold text-xl mb-1 drop-shadow-sm">Join The Revolution</h4>
               </div>
               
-              <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+              <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto justify-end">
+                <button
+                  onClick={onOpenRegister}
+                  disabled={!isRegOpen}
+                  className={`px-8 py-3.5 bg-brand-dark/90 backdrop-blur-sm text-slate-200 font-sans font-bold text-sm rounded-full w-full sm:w-auto shrink-0 border border-slate-700/50 ${
+                    isRegOpen 
+                      ? 'hover:bg-brand-purple hover:text-white hover:border-brand-purple transition-colors duration-300' 
+                      : 'opacity-80 cursor-not-allowed bg-slate-800'
+                  }`}
+                >
+                  {isRegOpen ? "REGISTER NOW" : "REGISTRATION CLOSED"}
+                </button>
+
                 <button
                   onClick={onOpenSponsor}
                   className="px-6 py-3.5 bg-brand-dark/90 backdrop-blur-sm text-brand-pink font-sans font-bold text-sm rounded-full w-full sm:w-auto shrink-0 border border-brand-pink/50 hover:bg-brand-pink hover:text-white transition-colors duration-300"
@@ -222,18 +234,6 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent,
                   className="px-6 py-3.5 bg-brand-dark/90 backdrop-blur-sm text-brand-blue font-sans font-bold text-sm rounded-full w-full sm:w-auto shrink-0 border border-brand-blue/50 hover:bg-brand-blue hover:text-white transition-colors duration-300"
                 >
                   GET PASS
-                </button>
-
-                <button
-                  onClick={onOpenRegister}
-                  disabled={!isRegOpen}
-                  className={`px-8 py-3.5 bg-brand-dark/90 backdrop-blur-sm text-slate-200 font-sans font-bold text-sm rounded-full w-full sm:w-auto shrink-0 border border-slate-700/50 ${
-                    isRegOpen 
-                      ? 'hover:bg-brand-purple hover:text-white hover:border-brand-purple transition-colors duration-300' 
-                      : 'opacity-80 cursor-not-allowed bg-slate-800'
-                  }`}
-                >
-                  {isRegOpen ? "REGISTER NOW" : "REGISTRATION CLOSED"}
                 </button>
               </div>
             </div>

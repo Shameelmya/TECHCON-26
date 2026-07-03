@@ -77,12 +77,19 @@ export default function Timeline() {
                 <AnimatePresence mode="wait">
                   <motion.h4
                     key={textIndex}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="text-2xl sm:text-3xl font-orbitron font-bold text-transparent bg-clip-text bg-gradient-to-r from-brand-pink to-brand-blue uppercase tracking-widest absolute"
+                    className="text-2xl sm:text-3xl font-orbitron font-bold text-transparent bg-clip-text bg-gradient-to-r from-brand-pink to-brand-blue uppercase tracking-widest absolute flex"
                   >
-                    {loadingTexts[textIndex]}
+                    {loadingTexts[textIndex].split('').map((char, i) => (
+                      <motion.span
+                        key={i}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.1, delay: i * 0.1 }}
+                      >
+                        {char === ' ' ? '\u00A0' : char}
+                      </motion.span>
+                    ))}
                   </motion.h4>
                 </AnimatePresence>
               </div>
@@ -92,7 +99,7 @@ export default function Timeline() {
               </p>
               
               <p className="text-sm text-slate-400 font-sans max-w-sm mx-auto mb-8">
-                We are finalizing the timeline. Check back soon for the complete itinerary!
+                Check back soon for the complete itinerary!
               </p>
 
               <div className="w-full max-w-sm space-y-2">

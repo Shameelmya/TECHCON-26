@@ -1,13 +1,22 @@
+import { useState } from 'react';
 import { motion } from 'motion/react';
 import { 
   Brain, ShieldCheck, Network, Cpu, Compass, 
   Sparkles, Award, Star, Gamepad2, ArrowUpRight, Cloud, Atom, Blocks
 } from 'lucide-react';
+import TechLoadingModal from './TechLoadingModal';
 
 export default function WhyAttend() {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalTitle, setModalTitle] = useState("");
+
+  const handleOpenModal = (title: string) => {
+    setModalTitle(title);
+    setModalOpen(true);
+  };
+
   const sessions = [
     {
-      tag: "SESSION 1",
       title: "AI Summit",
       description: "Smart village assistant with AI minister. Dive deep into the future of governance and AI integration.",
       icon: <Brain size={24} className="text-white" />,
@@ -15,7 +24,6 @@ export default function WhyAttend() {
       shadow: "shadow-brand-pink/20",
     },
     {
-      tag: "SESSION 2",
       title: "Industry & Skill Workshop",
       description: "General discussion: World tech industry & growth + AI Camera workshop for students to build real-world vision models.",
       icon: <Sparkles size={24} className="text-white" />,
@@ -23,7 +31,6 @@ export default function WhyAttend() {
       shadow: "shadow-brand-purple/20",
     },
     {
-      tag: "SESSION 3",
       title: "Career Accelerator",
       description: "LinkedIn Optimization & Professional placement drive preparation with top-tier HR industry veterans.",
       icon: <Compass size={24} className="text-white" />,
@@ -31,7 +38,6 @@ export default function WhyAttend() {
       shadow: "shadow-brand-blue/20",
     },
     {
-      tag: "SESSION 4",
       title: "Innovation Hub",
       description: "Hackathon & specialized engineering workshop for college students. Build hardware and software prototypes in hours.",
       icon: <Cpu size={24} className="text-white" />,
@@ -78,10 +84,10 @@ export default function WhyAttend() {
           </div>
           
           <h2 className="text-3xl sm:text-4xl font-orbitron font-bold tracking-[0.06em] text-white mb-4 uppercase">
-            Sessions & Events
+            Events
           </h2>
           <p className="text-xs sm:text-sm font-sans text-slate-400 leading-relaxed max-w-lg mx-auto">
-            Experience our highly interactive technical sessions. Four beautifully crafted knowledge tracks augmented by highlight events.
+            Experience our highly interactive technical events. Four beautifully crafted knowledge tracks augmented by highlight events.
           </p>
         </div>
 
@@ -95,6 +101,7 @@ export default function WhyAttend() {
               transition={{ duration: 0.6, delay: i * 0.1, ease: 'easeOut' }}
             >
               <motion.div
+                onClick={() => handleOpenModal(session.title)}
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: i * 0.2 }}
                 className={`h-full relative p-8 rounded-3xl overflow-hidden group cursor-pointer border border-slate-800/50 shadow-2xl ${session.shadow}`}
@@ -112,9 +119,6 @@ export default function WhyAttend() {
                   <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${session.gradient} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-500`}>
                     {session.icon}
                   </div>
-                  <span className="font-mono text-[10px] font-bold text-slate-400 bg-slate-900/50 px-3 py-1 rounded-full border border-slate-700">
-                    {session.tag}
-                  </span>
                 </div>
                 <div className="mb-4 inline-flex flex-col relative w-max">
                   <h3 className="text-xl font-orbitron font-bold text-white uppercase tracking-wide group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-slate-400 transition-all duration-300">
@@ -144,6 +148,7 @@ export default function WhyAttend() {
             initial={{ opacity: 0, scale: 0.98 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
+            onClick={() => handleOpenModal("Pro Night")}
             className="p-6 bg-gradient-to-r from-brand-purple/20 to-brand-pink/10 rounded-3xl border border-brand-purple/30 flex items-center justify-between group hover:border-brand-pink/50 transition-all cursor-pointer shadow-[0_0_20px_rgba(120,45,255,0.1)] hover:shadow-[0_0_30px_rgba(120,45,255,0.2)]"
           >
             <div className="flex items-center gap-4">
@@ -163,6 +168,7 @@ export default function WhyAttend() {
             initial={{ opacity: 0, scale: 0.98 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
+            onClick={() => handleOpenModal("Exhibition & Games")}
             className="p-6 bg-gradient-to-r from-brand-blue/20 to-brand-purple/10 rounded-3xl border border-brand-blue/30 flex items-center justify-between group hover:border-brand-purple/50 transition-all cursor-pointer shadow-[0_0_20px_rgba(32,156,255,0.1)] hover:shadow-[0_0_30px_rgba(32,156,255,0.2)]"
           >
             <div className="flex items-center gap-4">
@@ -199,6 +205,7 @@ export default function WhyAttend() {
           {syllabusSectors.map((sector, idx) => (
             <motion.div
               key={idx}
+              onClick={() => handleOpenModal(sector.label)}
               initial={{ opacity: 0, y: 15 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -216,6 +223,12 @@ export default function WhyAttend() {
         </div>
 
       </div>
+      
+      <TechLoadingModal 
+        isOpen={modalOpen} 
+        onClose={() => setModalOpen(false)} 
+        title={modalTitle}
+      />
     </section>
   );
 }

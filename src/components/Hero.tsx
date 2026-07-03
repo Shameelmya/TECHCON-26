@@ -201,68 +201,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent,
             </div>
           </motion.div>
 
-          {/* Key Metadata Row */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 1 }}
-            className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 border-t border-slate-800/50 pt-8 mb-12 w-full max-w-3xl"
-          >
-            {/* Date block removed as requested */}
 
-            <div className="flex flex-col items-center text-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-pink-500/10 flex items-center justify-center text-brand-pink shrink-0 border border-pink-500/20 shadow-[0_0_15px_rgba(255,32,142,0.2)]">
-                <MapPin size={20} />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[10px] font-mono tracking-widest text-slate-400 uppercase">VENUE</span>
-                <span className="text-sm sm:text-base font-sans font-bold text-white">Ernakulam</span>
-              </div>
-            </div>
-
-            <div className="flex flex-col items-center text-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-brand-blue shrink-0 border border-blue-500/20 shadow-[0_0_15px_rgba(32,156,255,0.2)]">
-                <User size={20} />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-[10px] font-mono tracking-widest text-slate-400 uppercase">ORGANIZER</span>
-                <span className="text-sm sm:text-base font-sans font-bold text-white">msf TechFed</span>
-              </div>
-            </div>
-
-            {/* Coming Soon Pixel Animation in Metadata Row */}
-            <div className="flex items-center gap-3 sm:gap-4 w-fit bg-brand-black/50 p-3 sm:p-4 rounded-2xl border border-slate-800/80 shadow-[0_0_30px_rgba(120,45,255,0.15)] relative overflow-hidden h-[88px]">
-              {/* Animated pixel glitch background */}
-              <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDUpIi8+CjxyZWN0IHg9IjQiIHk9IjQiIHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz4KPC9zdmc+')] opacity-50 animate-[pulse_2s_infinite]" />
-              
-              <div className="flex items-center gap-2 relative z-10">
-                <motion.div 
-                  className="w-2 h-2 sm:w-3 sm:h-3 bg-brand-pink"
-                  animate={{ opacity: [1, 0, 1] }}
-                  transition={{ duration: 1, repeat: Infinity, ease: "steps(2)" }}
-                />
-                <motion.div 
-                  className="w-2 h-2 sm:w-3 sm:h-3 bg-brand-purple"
-                  animate={{ opacity: [1, 0, 1] }}
-                  transition={{ duration: 1, repeat: Infinity, delay: 0.3, ease: "steps(2)" }}
-                />
-                <motion.div 
-                  className="w-2 h-2 sm:w-3 sm:h-3 bg-brand-blue"
-                  animate={{ opacity: [1, 0, 1] }}
-                  transition={{ duration: 1, repeat: Infinity, delay: 0.6, ease: "steps(2)" }}
-                />
-              </div>
-
-              <div className="flex flex-col relative z-10 ml-1 text-left justify-center">
-                <span className="font-orbitron text-lg sm:text-xl font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-pink via-brand-purple to-brand-blue tracking-widest uppercase drop-shadow-sm leading-tight">
-                  Coming Soon
-                </span>
-                <span className="text-[8px] sm:text-[9px] font-mono tracking-widest text-slate-400 uppercase mt-0.5 whitespace-nowrap">
-                  Next Tech Revolution
-                </span>
-              </div>
-            </div>
-          </motion.div>
 
           {/* Minimal Action banner */}
           <motion.div
@@ -278,65 +217,29 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent,
               </div>
               
               <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
-                <MagneticButton className="w-full sm:w-auto">
-                  <motion.button
-                    onClick={onOpenSponsor}
-                    className="px-6 py-3.5 bg-brand-dark/90 backdrop-blur-sm text-brand-pink font-sans font-bold text-sm rounded-full w-full sm:w-auto shrink-0 shadow-lg border border-brand-pink/50 hover:shadow-pink-500/40 hover:text-white hover:border-brand-pink transition-all duration-300"
-                  >
-                    <span>BE A SPONSOR</span>
-                  </motion.button>
-                </MagneticButton>
+                <button
+                  onClick={onOpenSponsor}
+                  className="px-6 py-3.5 bg-brand-dark/90 backdrop-blur-sm text-brand-pink font-sans font-bold text-sm rounded-full w-full sm:w-auto shrink-0 border border-brand-pink/50 hover:bg-brand-pink hover:text-white transition-colors duration-300"
+                >
+                  BE A SPONSOR
+                </button>
                 
-                <MagneticButton className="w-full sm:w-auto">
-                  <motion.button
-                    onClick={onOpenRegister}
-                    disabled={!isRegOpen}
-                    animate={isRegOpen ? { scale: [1, 1.05, 1] } : {}}
-                    transition={isRegOpen ? { repeat: Infinity, duration: 3, ease: "easeInOut" } : {}}
-                    className={`px-8 py-3.5 bg-brand-dark/90 backdrop-blur-sm text-slate-200 font-sans font-bold text-sm rounded-full w-full sm:w-auto shrink-0 shadow-lg border border-slate-700/50 ${
-                      isRegOpen 
-                        ? 'shadow-purple-500/20 hover:shadow-purple-500/40 hover:text-white hover:border-brand-purple/50 transition-all duration-300' 
-                        : 'opacity-80 cursor-not-allowed shadow-slate-200'
-                    }`}
-                  >
-                    <span>
-                      {isRegOpen ? "REGISTER NOW" : "REGISTRATION CLOSED"}
-                    </span>
-                  </motion.button>
-                </MagneticButton>
+                <button
+                  onClick={onOpenRegister}
+                  disabled={!isRegOpen}
+                  className={`px-8 py-3.5 bg-brand-dark/90 backdrop-blur-sm text-slate-200 font-sans font-bold text-sm rounded-full w-full sm:w-auto shrink-0 border border-slate-700/50 ${
+                    isRegOpen 
+                      ? 'hover:bg-brand-purple hover:text-white hover:border-brand-purple transition-colors duration-300' 
+                      : 'opacity-80 cursor-not-allowed bg-slate-800'
+                  }`}
+                >
+                  {isRegOpen ? "REGISTER NOW" : "REGISTRATION CLOSED"}
+                </button>
               </div>
             </div>
           </motion.div>
 
-          {/* Under banner buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="flex flex-wrap items-center justify-center lg:justify-start gap-4 mb-2"
-          >
-            <a
-              href="#venue"
-              className="px-5 py-2.5 bg-brand-black border border-slate-800 text-slate-300 font-sans font-medium text-xs rounded-full hover:bg-slate-100 transition-colors flex items-center gap-2"
-            >
-              <MapPin size={14} className="text-brand-pink" />
-              <span>Location</span>
-            </a>
-            <a
-              href="#calendar"
-              className="px-5 py-2.5 bg-brand-black border border-slate-800 text-slate-300 font-sans font-medium text-xs rounded-full hover:bg-slate-100 transition-colors flex items-center gap-2"
-            >
-              <Calendar size={14} className="text-brand-purple" />
-              <span>Add to Calendar</span>
-            </a>
-            <button
-              onClick={onExploreEvent}
-              className="group px-5 py-2.5 bg-transparent border border-slate-300 text-slate-300 font-sans font-medium text-xs rounded-full hover:bg-brand-black transition-colors flex items-center gap-1.5"
-            >
-              <span>Explore Event</span>
-              <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
-            </button>
-          </motion.div>
+
         </div>
       </div>
 
@@ -379,7 +282,7 @@ function HeroVideos() {
           style={{
             opacity: currentIndex === index ? 1 : 0,
             filter: 'contrast(1.4) brightness(1.15) saturate(1.2)',
-            clipPath: 'inset(0 clamp(20px, 15%, 100px))'
+            clipPath: 'inset(0 115px)'
           }}
         />
       ))}

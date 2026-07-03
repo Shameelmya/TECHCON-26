@@ -21,11 +21,8 @@ export default function Sponsorship({ onClose }: SponsorshipProps) {
     if (!pdfRef.current || isDownloading) return;
     try {
       setIsDownloading(true);
-      
-      // Temporarily make it fully opaque so html2canvas captures it.
-      // Because it's -z-50 it renders behind the modal background and is invisible to the user!
-      const wrapper = document.getElementById('pdf-wrapper');
-      if (wrapper) wrapper.style.opacity = '1';
+      // The PDF wrapper is now rendered permanently offscreen with left: -9999px.
+      // This avoids html2canvas issues with opacity=0 or overflow hidden.
       
       const canvas = await html2canvas(pdfRef.current, { 
         scale: 2, 
@@ -33,8 +30,6 @@ export default function Sponsorship({ onClose }: SponsorshipProps) {
         logging: false,
         backgroundColor: '#020617', // force a dark slate-950 background
       });
-
-      if (wrapper) wrapper.style.opacity = '0';
 
       const imgData = canvas.toDataURL('image/png');
       
@@ -86,14 +81,14 @@ export default function Sponsorship({ onClose }: SponsorshipProps) {
   };
 
   return (
-    <div className="w-full h-[90vh] max-h-[1200px] mx-auto bg-brand-dark/95 backdrop-blur-2xl border border-slate-800 rounded-[32px] shadow-[0_20px_60px_rgba(0,0,0,0.8)] relative overflow-hidden font-sans flex flex-col">
+    <div className="w-full h-[90vh] max-h-[1200px] mx-auto bg-brand-dark/95 backdrop-blur-2xl border border-slate-800 rounded-[32px] shadow-[0_20px_60px_rgba(0,0,0,0.8)] relative font-sans overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
       
       {/* Background glowing effects */}
       <div className="absolute w-[500px] h-[500px] rounded-full bg-brand-purple/10 blur-[120px] -top-20 -right-20 pointer-events-none" />
-      <div className="absolute w-[600px] h-[600px] rounded-full bg-brand-pink/5 blur-[150px] bottom-10 -left-20 pointer-events-none" />
+      <div className="absolute w-[600px] h-[600px] rounded-full bg-brand-pink/5 blur-[150px] bottom-10 -left-20 pointer-events-none fixed" />
       
       {/* Header */}
-      <div className="shrink-0 z-40 bg-brand-dark/80 backdrop-blur-xl border-b border-slate-800/80 px-6 sm:px-10 py-5 flex items-center justify-between">
+      <div className="relative z-40 bg-brand-dark/80 px-6 sm:px-10 py-5 flex items-center justify-between border-b border-slate-800/80">
         <div>
           <span className="text-[10px] font-mono tracking-widest text-brand-pink uppercase font-bold">SPONSORSHIP BROCHURE</span>
           <h2 className="text-xl sm:text-3xl font-orbitron font-bold text-white mt-1">TECHCON '26</h2>
@@ -123,7 +118,7 @@ export default function Sponsorship({ onClose }: SponsorshipProps) {
       </div>
 
       {/* Brochure Content */}
-      <div className="flex-1 p-6 sm:p-12 overflow-y-auto space-y-24 scroll-smooth relative z-10">
+      <div className="p-6 sm:p-12 space-y-24 relative z-10">
         
         {/* Cover / Page 2 */}
         <motion.section 
@@ -133,13 +128,41 @@ export default function Sponsorship({ onClose }: SponsorshipProps) {
           <motion.h1 variants={fadeUp} className="text-4xl sm:text-6xl lg:text-7xl font-orbitron font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-pink via-brand-purple to-brand-blue uppercase tracking-tight leading-tight">
             The Future Starts Here.
           </motion.h1>
-          <motion.p variants={fadeUp} className="text-slate-400 leading-relaxed font-light text-lg sm:text-xl max-w-2xl mx-auto">
-            Technology has become the driving force behind every industry, every business, and every society. The organizations shaping tomorrow are those investing in innovation today.
+          <motion.p variants={fadeUp} className="text-slate-300 leading-relaxed text-lg sm:text-2xl font-medium max-w-3xl mx-auto">
+            Partnering with TECHCON means <br/>
+            <span className="text-white font-black block mt-2 text-2xl sm:text-3xl">Positioning your brand where innovation begins!</span>
           </motion.p>
-          <motion.p variants={fadeUp} className="text-slate-300 leading-relaxed text-lg sm:text-xl font-medium">
-            When you partner with TECHCON, you don't simply support an event.<br/>
-            <span className="text-white font-black block mt-2 text-2xl">You become part of Kerala's technology revolution.</span>
-          </motion.p>
+        </motion.section>
+
+        {/* Info Accordions (Open by default) */}
+        <motion.section initial="hidden" whileInView="show" viewport={{ once: true }} variants={staggerContainer} className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+          <details open className="bg-slate-900/50 border border-slate-800 rounded-[24px] overflow-hidden group">
+            <summary className="p-6 flex items-center justify-between cursor-pointer list-none">
+              <h3 className="text-xl font-orbitron font-bold text-white">Why sponsor Techcon?</h3>
+              <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 group-open:rotate-180 transition-transform">▼</div>
+            </summary>
+            <div className="px-6 pb-6 pt-2">
+              <ul className="space-y-3">
+                {['Premium Brand Visibility', 'Product Demonstrations', 'Lead Generation', 'Recruitment Opportunities', 'Direct Customer Engagement', 'Industry Recognition', 'Startup Networking', 'Digital Media Exposure', 'Long-term Brand Recall'].map((item, i) => (
+                  <li key={i} className="flex items-start gap-3 text-slate-300"><CheckCircle2 size={18} className="text-brand-pink shrink-0 mt-0.5" /> <span>{item}</span></li>
+                ))}
+              </ul>
+            </div>
+          </details>
+
+          <details open className="bg-slate-900/50 border border-slate-800 rounded-[24px] overflow-hidden group">
+            <summary className="p-6 flex items-center justify-between cursor-pointer list-none">
+              <h3 className="text-xl font-orbitron font-bold text-white">Audience</h3>
+              <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 group-open:rotate-180 transition-transform">▼</div>
+            </summary>
+            <div className="px-6 pb-6 pt-2">
+              <ul className="space-y-3">
+                {['Engineering Students', 'University Researchers', 'Startup Founders', 'Software Developers', 'Technology Professionals', 'Faculty Members', 'Corporate Executives', 'Investors', 'Government Representatives', 'Innovation Enthusiasts'].map((item, i) => (
+                  <li key={i} className="flex items-start gap-3 text-slate-300"><Users size={18} className="text-brand-blue shrink-0 mt-0.5" /> <span>{item}</span></li>
+                ))}
+              </ul>
+            </div>
+          </details>
         </motion.section>
 
         {/* Why Partner Bento Grid */}
@@ -361,7 +384,7 @@ export default function Sponsorship({ onClose }: SponsorshipProps) {
 
       {/* Hidden PDF Layout safely Portaled to body to avoid clipping */}
       {createPortal(
-        <div id="pdf-wrapper" className="absolute top-0 left-0 w-[800px] h-[3150px] pointer-events-none opacity-0" style={{ zIndex: -9999 }}>
+        <div id="pdf-wrapper" className="absolute top-0 pointer-events-none" style={{ left: '-9999px', zIndex: -10 }}>
           <SponsorPDFLayout ref={pdfRef} />
         </div>,
         document.body

@@ -22,6 +22,8 @@ import TicketPass from './components/TicketPass';
 import AdminDashboard from './components/AdminDashboard';
 import RetrievePassForm from './components/RetrievePassForm';
 import Sponsorship from './components/Sponsorship';
+import ContactUs from './components/ContactUs';
+import BackgroundAudio from './components/BackgroundAudio';
 import { getRegistrations, fetchAllRegistrations } from './utils/db';
 
 export default function App() {
@@ -81,6 +83,8 @@ export default function App() {
           
           {/* Subtle canvas circuit backgrounds */}
           <CircuitBackground />
+          
+          <BackgroundAudio />
 
           {/* 2. Glassmorphic Sticky Navigation */}
           <Navbar 
@@ -112,27 +116,26 @@ export default function App() {
                 onOpenRegister={() => setIsRegisterOpen(true)} 
                 onOpenSponsor={() => setIsSponsorOpen(true)}
                 onExploreEvent={() => {
-                  const element = document.getElementById('about');
+                  const element = document.getElementById('why-attend');
                   if (element) {
                     element.scrollIntoView({ behavior: 'smooth' });
                   }
                 }}
               />
 
-              {/* About text fold */}
-              <About />
-
-              {/* Collaborators logo marquee */}
-              <Collaborators />
-
-              {/* Grid cards fold */}
+              {/* Events & Schedule */}
               <WhyAttend />
-
-              {/* Dynamic Timeline Schedule fold */}
               <Timeline />
 
-              {/* Geographic Venue Transit fold */}
-              <Venue />
+              {/* Contact Us */}
+              <ContactUs />
+
+              {/* About fold */}
+              <About />
+
+              {/* Hidden/Future components */}
+              {/* <Collaborators /> */}
+              {/* <Venue /> */}
 
             </main>
           )}

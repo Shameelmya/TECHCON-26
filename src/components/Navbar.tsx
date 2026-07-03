@@ -5,7 +5,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Instagram, Facebook, Twitter } from 'lucide-react';
 import MagneticButton from './MagneticButton';
 
 interface NavbarProps {
@@ -29,10 +29,9 @@ export default function Navbar({ onNavigate, activeSection, onOpenAdmin, onOpenR
 
   const navItems = [
     { id: 'hero', label: 'Home' },
+    { id: 'why-attend', label: 'Events' },
+    { id: 'contact-us', label: 'Contact Us' },
     { id: 'about', label: 'About' },
-    { id: 'why-attend', label: 'Why Attend' },
-    { id: 'timeline', label: 'Schedule' },
-    { id: 'venue', label: 'Venue' },
   ];
 
   const handleItemClick = (id: string) => {
@@ -81,8 +80,14 @@ export default function Navbar({ onNavigate, activeSection, onOpenAdmin, onOpenR
           })}
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex items-center gap-2 md:gap-3">
+        {/* Action Buttons & Socials */}
+        <div className="flex items-center gap-3 md:gap-5">
+          
+          <div className="hidden md:flex items-center gap-3 text-slate-400 mr-2 border-r border-slate-800 pr-5">
+            <a href="#" className="hover:text-brand-pink transition-colors"><Instagram size={18} /></a>
+            <a href="#" className="hover:text-brand-blue transition-colors"><Facebook size={18} /></a>
+            <a href="#" className="hover:text-white transition-colors"><Twitter size={18} /></a>
+          </div>
           
           {/* Primary CTA */}
           <MagneticButton onClick={onOpenRegister}>

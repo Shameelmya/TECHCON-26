@@ -24,6 +24,7 @@ const DISTRICTS_KERALA = [
 export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: RegistrationFormProps) {
   const [step, setStep] = useState(1);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [isDuplicateMobileFound, setIsDuplicateMobileFound] = useState(false);
 
   // Form Field States
@@ -111,40 +112,36 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
     }
   }, [mobileNumber]);
 
-  const handleNextStep = () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isSubmitting) return;
     setErrorMsg(null);
+    setErrors({});
 
-    // Validation for Step 1
+    // Step 1 Validation
     if (step === 1) {
-      if (!fullName.trim()) return setErrorMsg('Please enter your full name');
-      if (email.trim() && !email.includes('@')) return setErrorMsg('Please enter a valid email address');
-      if (!mobileNumber.trim()) return setErrorMsg('Please enter your mobile number');
-      if (isDuplicateMobileFound) {
-        return setErrorMsg('This mobile number is already registered. Please use another mobile number.');
+      if (email.trim() && !email.includes('@')) {
+        setErrors({ email: 'Please enter a valid email address' });
+        document.getElementById('email-field')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
       }
-      if (!whatsAppNumber.trim()) return setErrorMsg('Please enter your WhatsApp number');
-      if (!place.trim()) return setErrorMsg('Please enter your Place of residence');
+      if (isDuplicateMobileFound) {
+        setErrors({ mobileNumber: 'This mobile number is already registered. Please use another mobile number.' });
+        document.getElementById('mobileNumber-field')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
       
       setStep(2);
       setTimeout(() => {
         document.getElementById('register-flow')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }, 50);
+      return;
     }
-  };
 
-  const handlePrevStep = () => {
-    setErrorMsg(null);
-    setStep(1);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (isSubmitting) return;
-    setErrorMsg(null);
-
+    // Step 2 Validation
     if (isDuplicateMobileFound) {
-      setErrorMsg('Cannot register. This mobile number is already registered.');
+      setErrors({ mobileNumber: 'Cannot register. This mobile number is already registered.' });
       return;
     }
 
@@ -156,18 +153,14 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
     // Role-specific validations
     if (occupation === 'Student') {
       if (!institution.trim()) {
-        setErrorMsg('Institution name is required for students.');
-        setTimeout(() => {
-          document.getElementById('institution-field')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }, 100);
+        setErrors({ institution: 'Institution name is required for students.' });
+        setTimeout(() => document.getElementById('institution-field')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
         return;
       }
       const needsCourse = ['UG', 'PG', 'Professional courses'].includes(studentLevel);
       if (needsCourse && !customCourse.trim()) {
-        setErrorMsg('Please specify your course.');
-        setTimeout(() => {
-          document.getElementById('course-field')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }, 100);
+        setErrors({ customCourse: 'Please specify your course.' });
+        setTimeout(() => document.getElementById('course-field')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
         return;
       }
     }
@@ -175,25 +168,12 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
     setIsSubmitting(true);
     try {
       const payload: any = {
-        fullName,
-        email,
-        mobileNumber,
-        whatsAppNumber,
-        age,
-        gender,
-        district,
-        place,
-        state: 'Kerala',
-        country,
-        occupation,
-        consent,
-        technologyInterests: ['AI', 'Development'], // default interests
-        emergencyContact: whatsAppNumber,
-        foodPreference: 'Veg',
-        accessibilityRequirement: 'None',
+        fullName, email, mobileNumber, whatsAppNumber, age, gender,
+        district, place, state: 'Kerala', country, occupation, consent,
+        technologyInterests: ['AI', 'Development'],
+        emergencyContact: whatsAppNumber, foodPreference: 'Veg', accessibilityRequirement: 'None',
       };
 
-      // Set role-specific conditional variables
       if (occupation === 'Student') {
         payload.institution = institution;
         payload.level = studentLevel;
@@ -311,8 +291,8 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               
-              {/* Mobile Phone Number - Entered first to allow auto-fill triggers */}
-              <div className="flex flex-col gap-1.5">
+              {/* Mobile Phone Number */}
+              <div className="flex flex-col gap-1.5" id="mobileNumber-field">
                 <label className="text-[11px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Mobile Number</label>
                 <input
                   type="tel"
@@ -322,17 +302,19 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
                     setMobileNumber(val);
                     setIsDuplicateMobileFound(false);
                     setErrorMsg(null);
+                    setErrors(prev => ({...prev, mobileNumber: ''}));
                     if (sameAsMobile) {
                       setWhatsAppNumber(val);
                     }
                   }}
-                  className="w-full px-4 py-3 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-sm text-slate-800 transition-colors"
+                  className={`w-full px-4 py-3 border ${errors.mobileNumber ? 'border-red-500 bg-red-50/50' : 'border-slate-200'} focus:border-purple-500 rounded-xl outline-none font-sans text-sm text-slate-800 transition-colors`}
                   required
                 />
+                {errors.mobileNumber && <span className="text-red-500 text-[10px] font-sans font-medium px-1">{errors.mobileNumber}</span>}
               </div>
 
               {/* Full Name */}
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col gap-1.5" id="fullName-field">
                 <label className="text-[11px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Full Name</label>
                 <input
                   type="text"
@@ -345,15 +327,16 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
               </div>
 
               {/* Email Address */}
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col gap-1.5" id="email-field">
                 <label className="text-[11px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Email Address (Optional)</label>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-sm text-slate-800 transition-colors"
+                  className={`w-full px-4 py-3 border ${errors.email ? 'border-red-500 bg-red-50/50' : 'border-slate-200'} focus:border-purple-500 rounded-xl outline-none font-sans text-sm text-slate-800 transition-colors`}
                   disabled={isDuplicateMobileFound}
                 />
+                {errors.email && <span className="text-red-500 text-[10px] font-sans font-medium px-1">{errors.email}</span>}
               </div>
 
               {/* WhatsApp Number */}
@@ -506,6 +489,7 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
                       onChange={(e) => setInstitution(e.target.value)}
                       className="w-full px-4 py-2.5 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-xs text-slate-800 bg-white"
                       disabled={isDuplicateMobileFound}
+                      required
                     />
                   </div>
 
@@ -534,10 +518,11 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
                         <label className="text-[10px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Which Course?</label>
                         <input
                           type="text"
-                                  value={customCourse}
+                          value={customCourse}
                           onChange={(e) => setCustomCourse(e.target.value)}
                           className="w-full px-4 py-2.5 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-xs text-slate-800 bg-white"
                           disabled={isDuplicateMobileFound}
+                          required
                         />
                       </div>
                     )}
@@ -675,8 +660,7 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
 
           {step === 1 ? (
             <button
-              type="button"
-              onClick={handleNextStep}
+              type="submit"
               className="px-8 py-2.5 bg-slate-950 hover:bg-purple-600 text-white font-sans font-medium text-xs rounded-full shadow-md transition-all duration-300 disabled:opacity-50"
               disabled={isDuplicateMobileFound}
             >

@@ -72,23 +72,28 @@ export default function Timeline() {
           >
             <div className="bg-slate-900/50 backdrop-blur-sm border border-slate-800/80 rounded-2xl p-8 sm:p-12 w-full shadow-lg relative overflow-hidden flex flex-col items-center text-center">
               <Clock size={40} className="text-slate-600 mb-6 animate-pulse" />
-              <h4 className="text-xl font-orbitron font-bold text-transparent bg-clip-text bg-gradient-to-r from-brand-pink to-brand-blue uppercase tracking-widest mb-4">
-                PREPARING SCHEDULE
-              </h4>
               
-              <div className="h-8 relative overflow-hidden flex items-center justify-center mb-6 w-full">
+              <div className="h-10 relative overflow-hidden flex items-center justify-center mb-2 w-full">
                 <AnimatePresence mode="wait">
-                  <motion.p
+                  <motion.h4
                     key={textIndex}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="text-sm font-brand-purple font-mono tracking-widest absolute text-brand-purple"
+                    className="text-2xl sm:text-3xl font-orbitron font-bold text-transparent bg-clip-text bg-gradient-to-r from-brand-pink to-brand-blue uppercase tracking-widest absolute"
                   >
                     {loadingTexts[textIndex]}
-                  </motion.p>
+                  </motion.h4>
                 </AnimatePresence>
               </div>
+
+              <p className="text-xs font-mono font-bold tracking-[0.25em] text-brand-purple uppercase mb-4">
+                PREPARING SCHEDULE
+              </p>
+              
+              <p className="text-sm text-slate-400 font-sans max-w-sm mx-auto mb-8">
+                We are finalizing the timeline. Check back soon for the complete itinerary!
+              </p>
 
               <div className="w-full max-w-sm space-y-2">
                 <div className="flex justify-between text-[10px] font-mono text-brand-purple font-bold">

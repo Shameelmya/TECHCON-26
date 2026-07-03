@@ -62,15 +62,23 @@ export default function RetrievePassForm({ onSuccess, onCancel, onOpenRegister }
 
       {/* Header Info */}
       <div className="mb-8 select-none">
-        <div className="flex items-center justify-between text-xs font-mono text-slate-400 mb-4">
-          <span className="text-purple-600 font-semibold uppercase">RETRIEVE ENTRY PASS</span>
-          <button 
-            type="button" 
-            onClick={onCancel}
-            className="p-1 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-slate-600 -mr-2"
-          >
-            <X size={18} />
-          </button>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs font-mono text-slate-400 mb-4 gap-4">
+          <span className="text-purple-600 font-semibold uppercase">FOR REGISTERED USERS ONLY</span>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={onOpenRegister}
+              className="px-4 py-1.5 bg-brand-purple/10 text-brand-purple hover:bg-brand-purple hover:text-white transition-colors rounded-full font-bold text-[10px] tracking-wider uppercase shrink-0"
+            >
+              Register Now
+            </button>
+            <button 
+              type="button" 
+              onClick={onCancel}
+              className="p-1.5 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-slate-600 shrink-0"
+            >
+              <X size={18} />
+            </button>
+          </div>
         </div>
       </div>
 

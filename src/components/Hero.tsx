@@ -16,7 +16,7 @@ interface HeroProps {
   onOpenSponsor?: () => void;
 }
 
-export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent, onOpenSponsor }: HeroProps) {
+export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent, onOpenSponsor, onGetPass }: HeroProps & { onGetPass?: () => void }) {
   const [timeLeft, setTimeLeft] = useState({ days: 15, hours: 0, minutes: 0, seconds: 0 });
   const [gapAnim, setGapAnim] = useState(['0px', '8px', '0px']);
 
@@ -174,8 +174,8 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent,
             className="mb-10 flex justify-center"
           >
             <div className="relative inline-block text-center px-4">
-              <p className="text-[14px] sm:text-[16px] md:text-[18px] text-slate-200 font-sans font-medium tracking-wide">
-                Let's build the <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-pink via-brand-purple to-brand-blue font-bold">future</span> together!
+              <p className="text-[14px] sm:text-[16px] md:text-[18px] text-slate-200 font-jura font-medium tracking-wide">
+                Let's Build The <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-pink via-brand-purple to-brand-blue font-bold">Future</span> Together!
               </p>
               {/* Animated Line */}
               <motion.div 
@@ -206,7 +206,7 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent,
             <div className="w-full rounded-[32px] p-6 sm:p-8 bg-gradient-to-r from-brand-pink via-brand-purple to-brand-blue bg-[length:200%_auto] animate-[gradient_6s_ease-in-out_infinite] flex flex-col sm:flex-row items-center justify-between gap-6 shadow-[0_8px_32px_rgba(120,45,255,0.4)]">
               
               <div className="text-center sm:text-left text-white">
-                <h4 className="font-jura font-bold text-xl mb-1 drop-shadow-sm uppercase">Join the Revolution</h4>
+                <h4 className="font-jura font-bold text-xl mb-1 drop-shadow-sm">Join The Revolution</h4>
               </div>
               
               <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
@@ -217,6 +217,13 @@ export default function Hero({ isRegOpen = true, onOpenRegister, onExploreEvent,
                   BE A SPONSOR
                 </button>
                 
+                <button
+                  onClick={onGetPass}
+                  className="px-6 py-3.5 bg-brand-dark/90 backdrop-blur-sm text-brand-blue font-sans font-bold text-sm rounded-full w-full sm:w-auto shrink-0 border border-brand-blue/50 hover:bg-brand-blue hover:text-white transition-colors duration-300"
+                >
+                  GET PASS
+                </button>
+
                 <button
                   onClick={onOpenRegister}
                   disabled={!isRegOpen}

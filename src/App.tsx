@@ -130,6 +130,7 @@ export default function App() {
               <Hero 
                 onOpenRegister={() => setIsRegisterOpen(true)} 
                 onOpenSponsor={() => setIsSponsorOpen(true)}
+                onGetPass={() => setIsRetrieveOpen(true)}
                 onExploreEvent={() => {
                   const element = document.getElementById('why-attend');
                   if (element) {

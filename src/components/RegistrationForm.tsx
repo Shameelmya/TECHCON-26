@@ -34,7 +34,7 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
   const [whatsAppNumber, setWhatsAppNumber] = useState('');
   const [age, setAge] = useState<number | ''>('');
   const [gender, setGender] = useState('Male');
-  const [district, setDistrict] = useState('Ernakulam');
+  const [district, setDistrict] = useState('');
   const [place, setPlace] = useState('');
   const [country, setCountry] = useState('India');
   
@@ -112,6 +112,14 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
     }
   }, [mobileNumber]);
 
+  const handlePrevStep = () => {
+    setStep(1);
+    setTimeout(() => {
+      document.getElementById('register-flow')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 50);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting) return;
@@ -120,6 +128,10 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
 
     // Step 1 Validation
     if (step === 1) {
+      if (!district) {
+        setErrors({ district: 'Please select a district' });
+        return;
+      }
       if (email.trim() && !email.includes('@')) {
         setErrors({ email: 'Please enter a valid email address' });
         document.getElementById('email-field')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -392,14 +404,20 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
                 <label className="text-[11px] font-mono tracking-wider text-slate-400 uppercase font-semibold">District</label>
                 <select
                   value={district}
-                  onChange={(e) => setDistrict(e.target.value)}
-                  className="w-full px-4 py-3 border border-slate-200 focus:border-purple-500 rounded-xl outline-none bg-white font-sans text-sm text-slate-800 transition-colors"
+                  onChange={(e) => {
+                    setDistrict(e.target.value);
+                    setErrors(prev => ({...prev, district: ''}));
+                  }}
+                  className={`w-full px-4 py-3 border ${errors.district ? 'border-red-500 bg-red-50/50' : 'border-slate-200'} focus:border-purple-500 rounded-xl outline-none bg-white font-sans text-sm text-slate-800 transition-colors`}
                   disabled={isDuplicateMobileFound}
+                  required
                 >
+                  <option value="" disabled>Select District</option>
                   {DISTRICTS_KERALA.map(d => (
                     <option key={d} value={d}>{d}</option>
                   ))}
                 </select>
+                {errors.district && <span className="text-red-500 text-[10px] font-sans font-medium px-1">{errors.district}</span>}
               </div>
 
               {/* Age */}

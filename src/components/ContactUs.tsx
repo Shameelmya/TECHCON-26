@@ -37,7 +37,7 @@ export default function ContactUs() {
                 <User size={24} />
               </div>
               <div className="flex flex-col text-left">
-                <h3 className="text-base sm:text-lg font-orbitron font-bold text-white mb-0.5">John Doe</h3>
+                <h3 className="text-base sm:text-lg font-orbitron font-bold text-white mb-0.5">Name 1</h3>
                 <p className="text-[9px] sm:text-[10px] font-mono text-brand-pink uppercase tracking-widest font-bold mb-1">Event Coordinator</p>
                 <p className="text-xs sm:text-sm text-slate-400 font-mono">+91 98765 43210</p>
               </div>
@@ -68,7 +68,7 @@ export default function ContactUs() {
                 <User size={24} />
               </div>
               <div className="flex flex-col text-left">
-                <h3 className="text-base sm:text-lg font-orbitron font-bold text-white mb-0.5">Jane Smith</h3>
+                <h3 className="text-base sm:text-lg font-orbitron font-bold text-white mb-0.5">Name 2</h3>
                 <p className="text-[9px] sm:text-[10px] font-mono text-brand-blue uppercase tracking-widest font-bold mb-1">Program Director</p>
                 <p className="text-xs sm:text-sm text-slate-400 font-mono">+91 98765 43211</p>
               </div>

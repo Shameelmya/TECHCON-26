@@ -58,6 +58,20 @@ export default function App() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.toLowerCase();
+      if (hash === '#admin') setIsAdminOpen(true);
+      else if (hash === '#sponsorship') setIsSponsorOpen(true);
+      else if (hash === '#register') setIsRegisterOpen(true);
+    };
+
+    handleHashChange(); // Run on mount
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
   const handleRegisterSuccess = (reg: AttendeeRegistration) => {
     setActiveRegistration(reg);
     setIsRegisterOpen(false);
@@ -247,7 +261,7 @@ export default function App() {
                 </p>
                 <div className="flex items-center gap-2 text-[10px] font-mono text-purple-400 bg-purple-500/10 border border-purple-500/20 px-3 py-1 rounded-full w-fit">
                   <Award size={12} />
-                  <span>CUSAT CAMPUS KOCHI, KERALA</span>
+                  <span>ERNAKULAM, KERALA</span>
                 </div>
               </div>
 

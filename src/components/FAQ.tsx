@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronDown, MessageSquare } from 'lucide-react';
 
-const faqs = [
+const faqs: { question: string; answer: React.ReactNode }[] = [
   {
     question: "What is TECHCON '26?",
     answer: "TECHCON '26 is a premier national technology conference organized by msf TechFed, bringing together students, professionals, and industry leaders to explore the latest advancements in AI, networking, and software engineering."
@@ -16,12 +16,31 @@ const faqs = [
     answer: "Not necessarily! While some technical workshops (like the Hackathon) require coding skills, many sessions are beginner-friendly and designed to introduce you to new concepts."
   },
   {
-    question: "Are meals and accommodation provided?",
-    answer: "Yes, registered delegates will be provided with meals during the event. Accommodation details and options will be shared closer to the event date for out-of-town participants."
+    question: "Do I need registration?",
+    answer: (
+      <>
+        Yes, you must be a registered delegate to attend the conference. Registration is fast and easy. 
+        <a href="#register" className="text-brand-blue font-bold ml-1 hover:underline">Register Now</a>
+      </>
+    )
   },
   {
-    question: "How do I register for the Hackathon?",
-    answer: "You can register for the hackathon by getting a Delegate Pass. Once registered, you will receive an email with instructions on how to form a team and submit your hackathon ideas."
+    question: "Who are the organizers?",
+    answer: "TECHCON '26 is officially organized by msf TechFed Kerala, aimed at driving technological revolution and student empowerment across the region."
+  },
+  {
+    question: "How can I sponsor the event?",
+    answer: (
+      <>
+        We offer various sponsorship tiers with immense brand visibility. To learn more, check out our 
+        <a href="#sponsorship" className="text-brand-pink font-bold mx-1 hover:underline">Sponsorship Brochure</a> 
+        or contact our coordinators directly.
+      </>
+    )
+  },
+  {
+    question: "When and where is the event?",
+    answer: "July 2026, Ernakulam. The specific date and exact venue will be announced soon. Please check back here later for detailed updates!"
   }
 ];
 

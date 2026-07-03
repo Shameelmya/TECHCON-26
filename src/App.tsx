@@ -123,15 +123,15 @@ export default function App() {
                 }}
               />
 
+              {/* About fold */}
+              <About />
+
               {/* Events & Schedule */}
               <WhyAttend />
               <Timeline />
 
               {/* Contact Us */}
               <ContactUs />
-
-              {/* About fold */}
-              <About />
 
               {/* Hidden/Future components */}
               {/* <Collaborators /> */}

@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Phone, MessageCircle, Instagram, Facebook, Twitter, Mail, MapPin } from 'lucide-react';
+import { Phone, MessageCircle, Instagram, Facebook, Mail, User } from 'lucide-react';
 
 export default function ContactUs() {
   return (
@@ -23,49 +23,73 @@ export default function ContactUs() {
 
       <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 relative z-10">
         
-        {/* Contact Person Card */}
+        {/* Contact Directory */}
         <motion.div 
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          className="bg-slate-900/60 backdrop-blur-md border border-slate-800/80 rounded-[32px] p-8 shadow-[0_0_40px_rgba(120,45,255,0.1)] flex flex-col items-center text-center relative overflow-hidden group hover:border-brand-purple/50 transition-colors"
+          className="flex flex-col gap-4 justify-center"
         >
-          {/* Subtle gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-br from-brand-purple/5 to-transparent pointer-events-none" />
-          
-          <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-slate-800 shadow-xl mb-6 group-hover:border-brand-purple transition-colors relative z-10">
-            {/* Fallback avatar if no photo is provided */}
-            <img 
-              src="https://api.dicebear.com/9.x/avataaars/svg?seed=Felix&backgroundColor=782dff" 
-              alt="Coordinator" 
-              className="w-full h-full object-cover"
-            />
+          {/* Coordinator 1 */}
+          <div className="bg-slate-900/60 backdrop-blur-md border border-slate-800/80 rounded-[24px] p-5 shadow-[0_0_20px_rgba(120,45,255,0.05)] flex items-center justify-between group hover:border-brand-purple/50 transition-colors">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 shrink-0">
+                <User size={24} />
+              </div>
+              <div className="flex flex-col text-left">
+                <h3 className="text-base sm:text-lg font-orbitron font-bold text-white mb-0.5">John Doe</h3>
+                <p className="text-[9px] sm:text-[10px] font-mono text-brand-pink uppercase tracking-widest font-bold mb-1">Event Coordinator</p>
+                <p className="text-xs sm:text-sm text-slate-400 font-mono">+91 98765 43210</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <a 
+                href="https://wa.me/919876543210"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-slate-800 hover:bg-emerald-500 border border-slate-700 flex items-center justify-center text-white transition-all shadow-md shrink-0"
+              >
+                <MessageCircle size={16} />
+              </a>
+              <a 
+                href="tel:+919876543210"
+                className="w-10 h-10 rounded-full bg-slate-800 hover:bg-brand-purple border border-slate-700 flex items-center justify-center text-white transition-all shadow-md shrink-0"
+              >
+                <Phone size={16} />
+              </a>
+            </div>
           </div>
-          
-          <h3 className="text-2xl font-orbitron font-bold text-white mb-1 relative z-10">John Doe</h3>
-          <p className="text-brand-pink font-mono text-xs uppercase tracking-widest font-bold mb-6 relative z-10">Event Coordinator</p>
-          
-          <p className="text-slate-300 text-lg font-bold font-mono mb-8 relative z-10 tracking-wider">
-            +91 98765 43210
-          </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 w-full relative z-10">
-            <a 
-              href="tel:+919876543210"
-              className="flex-1 flex items-center justify-center gap-2 bg-slate-800 hover:bg-brand-purple text-white py-3.5 px-6 rounded-full transition-all duration-300 shadow-lg font-bold font-sans text-sm"
-            >
-              <Phone size={18} />
-              <span>Call Now</span>
-            </a>
-            <a 
-              href="https://wa.me/919876543210"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-1 flex items-center justify-center gap-2 bg-emerald-600/20 hover:bg-emerald-500 text-emerald-400 hover:text-white border border-emerald-500/30 py-3.5 px-6 rounded-full transition-all duration-300 shadow-lg font-bold font-sans text-sm"
-            >
-              <MessageCircle size={18} />
-              <span>WhatsApp</span>
-            </a>
+          {/* Coordinator 2 */}
+          <div className="bg-slate-900/60 backdrop-blur-md border border-slate-800/80 rounded-[24px] p-5 shadow-[0_0_20px_rgba(32,156,255,0.05)] flex items-center justify-between group hover:border-brand-blue/50 transition-colors">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 shrink-0">
+                <User size={24} />
+              </div>
+              <div className="flex flex-col text-left">
+                <h3 className="text-base sm:text-lg font-orbitron font-bold text-white mb-0.5">Jane Smith</h3>
+                <p className="text-[9px] sm:text-[10px] font-mono text-brand-blue uppercase tracking-widest font-bold mb-1">Program Director</p>
+                <p className="text-xs sm:text-sm text-slate-400 font-mono">+91 98765 43211</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <a 
+                href="https://wa.me/919876543211"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-slate-800 hover:bg-emerald-500 border border-slate-700 flex items-center justify-center text-white transition-all shadow-md shrink-0"
+              >
+                <MessageCircle size={16} />
+              </a>
+              <a 
+                href="tel:+919876543211"
+                className="w-10 h-10 rounded-full bg-slate-800 hover:bg-brand-blue border border-slate-700 flex items-center justify-center text-white transition-all shadow-md shrink-0"
+              >
+                <Phone size={16} />
+              </a>
+            </div>
           </div>
         </motion.div>
 

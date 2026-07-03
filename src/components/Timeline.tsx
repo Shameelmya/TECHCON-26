@@ -1,9 +1,39 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronDown, ChevronUp, Clock } from 'lucide-react';
 
+const loadingTexts = ["loading...", "writing...", "thinking..."];
+
 export default function Timeline() {
   const [isScheduleOpen, setIsScheduleOpen] = useState(false);
+  const [textIndex, setTextIndex] = useState(0);
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    if (isScheduleOpen) {
+      const textInterval = setInterval(() => {
+        setTextIndex(prev => (prev + 1) % loadingTexts.length);
+      }, 2000);
+      
+      const progressInterval = setInterval(() => {
+        setProgress(prev => {
+          if (prev >= 80) { // user said 8 percentage or 80, capping at 80% as is standard for our "loading soon"
+            clearInterval(progressInterval);
+            return 80;
+          }
+          return prev + Math.floor(Math.random() * 5) + 1;
+        });
+      }, 100);
+
+      return () => {
+        clearInterval(textInterval);
+        clearInterval(progressInterval);
+      };
+    } else {
+      setProgress(0);
+      setTextIndex(0);
+    }
+  }, [isScheduleOpen]);
 
   return (
     <section 
@@ -42,12 +72,38 @@ export default function Timeline() {
           >
             <div className="bg-slate-900/50 backdrop-blur-sm border border-slate-800/80 rounded-2xl p-8 sm:p-12 w-full shadow-lg relative overflow-hidden flex flex-col items-center text-center">
               <Clock size={40} className="text-slate-600 mb-6 animate-pulse" />
-              <h4 className="text-xl font-orbitron font-bold text-transparent bg-clip-text bg-gradient-to-r from-brand-pink to-brand-blue uppercase tracking-widest mb-2">
+              <h4 className="text-xl font-orbitron font-bold text-transparent bg-clip-text bg-gradient-to-r from-brand-pink to-brand-blue uppercase tracking-widest mb-4">
                 PREPARING SCHEDULE
               </h4>
-              <p className="text-sm font-sans text-slate-400 leading-relaxed max-w-md">
-                We are finalizing the detailed timeline for all exciting events and sessions. Check back soon for the complete itinerary!
-              </p>
+              
+              <div className="h-8 relative overflow-hidden flex items-center justify-center mb-6 w-full">
+                <AnimatePresence mode="wait">
+                  <motion.p
+                    key={textIndex}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="text-sm font-brand-purple font-mono tracking-widest absolute text-brand-purple"
+                  >
+                    {loadingTexts[textIndex]}
+                  </motion.p>
+                </AnimatePresence>
+              </div>
+
+              <div className="w-full max-w-sm space-y-2">
+                <div className="flex justify-between text-[10px] font-mono text-brand-purple font-bold">
+                  <span>SYSTEM PROGRESS</span>
+                  <span>{progress}%</span>
+                </div>
+                <div className="h-2 w-full bg-slate-900 rounded-full overflow-hidden border border-slate-800">
+                  <motion.div 
+                    className="h-full bg-gradient-to-r from-brand-purple via-brand-pink to-brand-blue"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${progress}%` }}
+                    transition={{ ease: "easeOut", duration: 0.2 }}
+                  />
+                </div>
+              </div>
             </div>
           </motion.div>
         )}

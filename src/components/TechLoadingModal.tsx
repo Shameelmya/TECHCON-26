@@ -119,7 +119,12 @@ export default function TechLoadingModal({ isOpen, onClose, title = "System Init
                 </motion.div>
               )}
               {progress >= 80 && (
-                <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="text-emerald-400 text-xs font-mono pl-6 font-bold mt-4 animate-pulse">
+                <motion.div 
+                  initial={{ opacity: 0, x: -10 }} 
+                  animate={{ opacity: [0, 1, 0], x: 0 }} 
+                  transition={{ opacity: { repeat: Infinity, duration: 3, ease: "easeInOut" } }}
+                  className="text-emerald-400 text-xs font-mono pl-6 font-bold mt-4"
+                >
                   &gt; MODULE DEPLOYMENT PENDING. CHECK BACK SOON.
                 </motion.div>
               )}

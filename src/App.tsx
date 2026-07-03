@@ -5,7 +5,7 @@
 
 import { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { Award, Compass, Shield, X } from 'lucide-react';
+import { Award, Compass, Shield, X, Instagram, Facebook } from 'lucide-react';
 import { AttendeeRegistration } from './types';
 
 // Component Imports
@@ -23,6 +23,7 @@ import AdminDashboard from './components/AdminDashboard';
 import RetrievePassForm from './components/RetrievePassForm';
 import Sponsorship from './components/Sponsorship';
 import ContactUs from './components/ContactUs';
+import FAQ from './components/FAQ';
 import BackgroundAudio from './components/BackgroundAudio';
 import { getRegistrations, fetchAllRegistrations } from './utils/db';
 
@@ -130,8 +131,9 @@ export default function App() {
               <WhyAttend />
               <Timeline />
 
-              {/* Contact Us */}
+              {/* Contact Us & FAQ */}
               <ContactUs />
+              <FAQ />
 
               {/* Hidden/Future components */}
               {/* <Collaborators /> */}
@@ -253,10 +255,10 @@ export default function App() {
               <div className="md:col-span-3 space-y-3">
                 <h4 className="text-xs font-mono font-bold text-white uppercase tracking-widest">NAVIGATION</h4>
                 <div className="flex flex-col gap-2 text-xs">
-                  <a href="#about" className="hover:text-white transition-colors">About Conference</a>
-                  <a href="#whyattend" className="hover:text-white transition-colors">Core Experience</a>
-                  <a href="#timeline" className="hover:text-white transition-colors">Program Schedule</a>
-                  <a href="#venue" className="hover:text-white transition-colors">Location Transit</a>
+                  <a href="#about" className="hover:text-white transition-colors">About</a>
+                  <a href="#whyattend" className="hover:text-white transition-colors">Events</a>
+                  <a href="#timeline" className="hover:text-white transition-colors">The Schedule</a>
+                  <a href="#contact-us" className="hover:text-white transition-colors">Contact Us</a>
                 </div>
               </div>
 
@@ -269,6 +271,21 @@ export default function App() {
                 <div className="text-[10px] font-mono text-slate-500 mt-2 space-y-1">
                   <div>EMAIL: contact@msftechfed.org</div>
                   <div>OFFICIAL WEBSITE: www.techcon.org</div>
+                </div>
+                
+                {/* Social Media */}
+                <div className="flex items-center gap-4 mt-6 pt-4 border-t border-slate-800/50">
+                  <a href="#" className="text-slate-500 hover:text-brand-pink transition-colors">
+                    <Instagram size={18} />
+                  </a>
+                  <a href="#" className="text-slate-500 hover:text-brand-blue transition-colors">
+                    <Facebook size={18} />
+                  </a>
+                  <a href="#" className="text-slate-500 hover:text-white transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                      <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z" />
+                    </svg>
+                  </a>
                 </div>
               </div>
 

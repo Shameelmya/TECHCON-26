@@ -31,7 +31,16 @@ export default function VolunteerIDCard({ volunteer, onClose }: VolunteerIDCardP
   }, []);
 
   useEffect(() => {
-    QRCode.toDataURL(`https://techcon26.org/verify/${volunteer.id}`, {
+    const qrData = `TECHCON 26 VERIFIED VOLUNTEER
+Name: ${volunteer.fullName}
+ID: ${volunteer.id}
+Age: ${volunteer.age}
+Gender: ${volunteer.gender}
+Institution: ${volunteer.institution}
+Phone: ${volunteer.mobileNumber}
+Address: ${volunteer.address}, ${volunteer.district}`;
+
+    QRCode.toDataURL(qrData, {
       margin: 0,
       width: 220,
       color: { dark: '#000000', light: '#ffffff' },
@@ -126,19 +135,39 @@ export default function VolunteerIDCard({ volunteer, onClose }: VolunteerIDCardP
             {volunteer.id}
           </div>
 
+          {/* Full Name positioned above photo */}
+          <div
+            style={{
+              position: 'absolute',
+              left: '442px',
+              top: '250px',
+              width: '950px',
+              fontFamily: '"Jura", sans-serif',
+              fontWeight: 800,
+              fontSize: '60px',
+              lineHeight: '68px',
+              color: '#000000',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            {displayName}
+          </div>
+
           {/* Main Content Flex Container for Bottom Alignment */}
           <div
             style={{
               position: 'absolute',
               left: '442px',
-              top: '330px',
+              top: '360px',
               display: 'flex',
               alignItems: 'flex-end',
               gap: '53px'
             }}
           >
             {/* Passport Photo */}
-            <div style={{ width: '320px', height: '411px', flexShrink: 0 }}>
+            <div style={{ width: '280px', height: '360px', flexShrink: 0 }}>
               {volunteer.photoUrl && (
                 <img 
                   src={volunteer.photoUrl}
@@ -157,29 +186,13 @@ export default function VolunteerIDCard({ volunteer, onClose }: VolunteerIDCardP
             {/* Details Container */}
             <div
               style={{
-                width: '560px',
+                width: '430px',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '8px',
+                gap: '12px',
                 paddingBottom: '0px'
               }}
             >
-              {/* Full Name */}
-              <div
-                style={{
-                  fontFamily: '"Jura", sans-serif',
-                  fontWeight: 800,
-                  fontSize: '60px',
-                  lineHeight: '68px',
-                  color: '#000000',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  marginBottom: '12px'
-                }}
-              >
-                {displayName}
-              </div>
 
               {/* Age | Gender */}
               <div style={{ fontFamily: '"Nexa Book", "Montserrat", sans-serif', fontSize: '32px', color: '#000000', display: 'flex', alignItems: 'center' }}>

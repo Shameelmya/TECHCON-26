@@ -122,7 +122,7 @@ export const saveRegistration = async (reg: Omit<AttendeeRegistration, 'id' | 't
   return optimisticReg;
 };
 
-export const checkInAttendee = async (ticketNumberOrId: string, password: string): Promise<AttendeeRegistration> => {
+export const checkInAttendee = async (ticketNumberOrId: string, password: string, sessionName?: string): Promise<AttendeeRegistration> => {
   const list = getRegistrations();
   const cleanedInput = ticketNumberOrId.trim().toUpperCase();
   
@@ -136,12 +136,21 @@ export const checkInAttendee = async (ticketNumberOrId: string, password: string
     throw new Error(`No attendee found with ID, Ticket, or Token "${ticketNumberOrId}".`);
   }
 
-  if (list[index].checkedIn) {
-    throw new Error(`Attendee ${list[index].fullName} is ALREADY checked in at ${new Date(list[index].checkInTime!).toLocaleTimeString()}`);
+  if (sessionName) {
+    if (!list[index].sessionCheckIns) {
+      list[index].sessionCheckIns = {};
+    }
+    if (list[index].sessionCheckIns[sessionName]) {
+      throw new Error(`Attendee ${list[index].fullName} is ALREADY checked in for ${sessionName}.`);
+    }
+    list[index].sessionCheckIns[sessionName] = new Date().toISOString();
+  } else {
+    if (list[index].checkedIn) {
+      throw new Error(`Attendee ${list[index].fullName} is ALREADY checked in at ${new Date(list[index].checkInTime!).toLocaleTimeString()}`);
+    }
+    list[index].checkedIn = true;
+    list[index].checkInTime = new Date().toISOString();
   }
-
-  list[index].checkedIn = true;
-  list[index].checkInTime = new Date().toISOString();
 
   localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
 
@@ -149,7 +158,7 @@ export const checkInAttendee = async (ticketNumberOrId: string, password: string
     await fetch(SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ action: 'checkin', id: list[index].id, password })
+      body: JSON.stringify({ action: 'checkin', id: list[index].id, sessionName, password })
     });
   } catch (err) {
     console.error("Failed to sync check-in to Google Sheets:", err);
@@ -158,13 +167,17 @@ export const checkInAttendee = async (ticketNumberOrId: string, password: string
   return list[index];
 };
 
-export const revertCheckIn = async (id: string, password: string): Promise<AttendeeRegistration> => {
+export const revertCheckIn = async (id: string, password: string, sessionName?: string): Promise<AttendeeRegistration> => {
   const list = getRegistrations();
   const index = list.findIndex(item => item.id === id);
   if (index === -1) throw new Error("Attendee not found");
   
-  list[index].checkedIn = false;
-  list[index].checkInTime = null;
+  if (sessionName && list[index].sessionCheckIns) {
+    delete list[index].sessionCheckIns[sessionName];
+  } else {
+    list[index].checkedIn = false;
+    list[index].checkInTime = null;
+  }
   localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
   
   // Sync revert to Google Sheets
@@ -172,7 +185,7 @@ export const revertCheckIn = async (id: string, password: string): Promise<Atten
     await fetch(SCRIPT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ action: 'revertCheckin', id: list[index].id, password })
+      body: JSON.stringify({ action: 'revertCheckin', id: list[index].id, sessionName, password })
     });
   } catch (err) {
     console.error("Failed to sync revert check-in to Google Sheets:", err);
@@ -200,6 +213,8 @@ export const getStats = (): AdminStats => {
   const occupationReport: { [occupation: string]: number } = {};
   const genderReport: { [gender: string]: number } = {};
   const interestsReport: { [interest: string]: number } = {};
+  const sessionRegistrations: { [sessionName: string]: number } = {};
+  const sessionCheckIns: { [sessionName: string]: number } = {};
 
   list.forEach(item => {
     // District
@@ -220,6 +235,19 @@ export const getStats = (): AdminStats => {
         interestsReport[interest] = (interestsReport[interest] || 0) + 1;
       });
     }
+
+    // Sessions / Programs Registration
+    const allSessions = [...(item.sessions || []), ...(item.specialPrograms || [])];
+    allSessions.forEach(s => {
+      sessionRegistrations[s] = (sessionRegistrations[s] || 0) + 1;
+    });
+
+    // Session Check-ins
+    if (item.sessionCheckIns) {
+      Object.keys(item.sessionCheckIns).forEach(s => {
+        sessionCheckIns[s] = (sessionCheckIns[s] || 0) + 1;
+      });
+    }
   });
 
   return {
@@ -229,7 +257,9 @@ export const getStats = (): AdminStats => {
     districtReport,
     occupationReport,
     genderReport,
-    interestsReport
+    interestsReport,
+    sessionRegistrations,
+    sessionCheckIns
   };
 };
 
@@ -288,6 +318,7 @@ export const exportToCSV = (data: AttendeeRegistration[]) => {
       String(row.consent),
       String(row.checkedIn),
       row.checkInTime || '',
+      row.sessionCheckIns ? JSON.stringify(row.sessionCheckIns) : '{}',
       row.verificationToken
     ].map(v => `"${String(v).replace(/"/g, '""')}"`));
   }
@@ -343,6 +374,73 @@ export const toggleRegistrationStatus = async (isOpen: boolean, password: string
     console.error("Failed to toggle registration:", err);
     return false;
   }
+};
+
+export const getProgramSettings = async (): Promise<{ [key: string]: boolean }> => {
+  try {
+    const docRef = doc(db, "settings", "programs");
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      return docSnap.data();
+    }
+    return {};
+  } catch (err) {
+    return {};
+  }
+};
+
+export const toggleProgramSetting = async (programName: string, isOpen: boolean): Promise<boolean> => {
+  try {
+    const docRef = doc(db, "settings", "programs");
+    await setDoc(docRef, { [programName]: isOpen }, { merge: true });
+    return true;
+  } catch (err) {
+    return false;
+  }
+};
+
+export const addEventToRegistration = async (id: string, mobileNumber: string, eventName: string, isSpecial: boolean = false, feeReceiptUrl?: string): Promise<AttendeeRegistration> => {
+  const list = getRegistrations();
+  const index = list.findIndex(item => item.id.toUpperCase() === id.toUpperCase() && item.mobileNumber === mobileNumber);
+  
+  if (index === -1) {
+    throw new Error("Invalid Registration ID or Mobile Number.");
+  }
+
+  const attendee = list[index];
+  
+  if (isSpecial) {
+    if (!attendee.specialPrograms) attendee.specialPrograms = [];
+    if (attendee.specialPrograms.includes(eventName)) throw new Error("Already registered for this event.");
+    attendee.specialPrograms.push(eventName);
+    if (feeReceiptUrl) attendee.feeReceiptUrl = feeReceiptUrl;
+  } else {
+    if (!attendee.sessions) attendee.sessions = [];
+    if (attendee.sessions.includes(eventName)) throw new Error("Already registered for this event.");
+    attendee.sessions.push(eventName);
+  }
+
+  // Sync with Google Sheets
+  try {
+    const res = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ 
+        action: 'addEvent', 
+        id: attendee.id, 
+        eventName, 
+        isSpecial, 
+        feeReceiptUrl 
+      })
+    });
+    const data = await res.json();
+    if (data.status === 'error') throw new Error(data.message);
+  } catch (err: any) {
+    throw new Error(err.message || "Failed to update registration on the server.");
+  }
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+  return attendee;
 };
 
 export const fetchPass = async (fullName: string, mobileNumber: string): Promise<any> => {

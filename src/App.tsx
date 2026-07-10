@@ -28,6 +28,7 @@ import FAQ from './components/FAQ';
 import VolunteerRegistrationForm from './components/VolunteerRegistrationForm';
 import VolunteerIDCard from './components/VolunteerIDCard';
 import RegistrationHubModal from './components/RegistrationHubModal';
+import AddOnRegistrationModal from './components/AddOnRegistrationModal';
 import { getSettings, getVolunteerSettings } from './utils/db';
 import { VolunteerRegistration } from './types';
 
@@ -47,6 +48,10 @@ export default function App() {
   const [isVolunteerRegOpen, setIsVolunteerRegOpen] = useState(false);
   const [isVolunteerClosedPopupOpen, setIsVolunteerClosedPopupOpen] = useState(false);
   const [isHubOpen, setIsHubOpen] = useState(false);
+
+  // AddOn Event states
+  const [addOnEventName, setAddOnEventName] = useState<string | null>(null);
+  const [isAddOnSpecial, setIsAddOnSpecial] = useState(false);
 
   useEffect(() => {
     // Fetch settings on mount to check if registration is open
@@ -109,6 +114,14 @@ export default function App() {
       }
       else if (hash === '#register') handleOpenRegister();
       else if (hash === '#retrieve') setIsRetrieveOpen(true);
+      else if (hash === '#aisummit') { setAddOnEventName("Presentation and discussion on AI smart village"); setIsAddOnSpecial(false); }
+      else if (hash === '#industry') { setAddOnEventName("Workshop on The imapct of technology on global industrials"); setIsAddOnSpecial(false); }
+      else if (hash === '#careers') { setAddOnEventName("Workshop on Building tomorrow’s careers thriving the age of AI"); setIsAddOnSpecial(false); }
+      else if (hash === '#cybershield') { setAddOnEventName("Workshop on Cybersecurity Shield a secure digital future"); setIsAddOnSpecial(false); }
+      else if (hash === '#hackathon') { setAddOnEventName("Hackathon"); setIsAddOnSpecial(true); }
+      else if (hash === '#projectcomp') { setAddOnEventName("Project Competition"); setIsAddOnSpecial(true); }
+      else if (hash === '#ambassador') { setAddOnEventName("Campus Ambassadors."); setIsAddOnSpecial(true); }
+      else if (hash === '#pronight') { setAddOnEventName("Pro Night"); setIsAddOnSpecial(true); }
       else if (hash === '#pass') {
         // If there's no active registration but we hit #pass, go home
         if (!activeRegistration) {
@@ -124,6 +137,7 @@ export default function App() {
         setIsRegistrationClosedPopupOpen(false);
         setIsVolunteerClosedPopupOpen(false);
         setIsHubOpen(false);
+        setAddOnEventName(null);
         setActiveRegistration(null);
         setActiveVolunteer(null);
       }
@@ -138,6 +152,14 @@ export default function App() {
     }
     else if (initialHash === '#register') handleOpenRegister();
     else if (initialHash === '#retrieve') setIsRetrieveOpen(true);
+    else if (initialHash === '#aisummit') { setAddOnEventName("Presentation and discussion on AI smart village."); setIsAddOnSpecial(false); }
+    else if (initialHash === '#industry') { setAddOnEventName("Workshop on The imapct of technology on global industrials"); setIsAddOnSpecial(false); }
+    else if (initialHash === '#careers') { setAddOnEventName("Workshop on Building tomorrow’s careers thriving the age of AI"); setIsAddOnSpecial(false); }
+    else if (initialHash === '#cybershield') { setAddOnEventName("Workshop on Cybersecurity Shield a secure digital future"); setIsAddOnSpecial(false); }
+    else if (initialHash === '#hackathon') { setAddOnEventName("Hackathon"); setIsAddOnSpecial(true); }
+    else if (initialHash === '#projectcomp') { setAddOnEventName("Project Competition"); setIsAddOnSpecial(true); }
+    else if (initialHash === '#ambassador') { setAddOnEventName("Campus Ambassadors."); setIsAddOnSpecial(true); }
+    else if (initialHash === '#pronight') { setAddOnEventName("Pro Night"); setIsAddOnSpecial(true); }
     
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
@@ -605,6 +627,17 @@ export default function App() {
           </footer>
 
         </div>
+      
+      {/* Add-On Registration Modal */}
+      <AnimatePresence>
+        {addOnEventName && (
+          <AddOnRegistrationModal 
+            eventName={addOnEventName} 
+            isSpecialProgram={isAddOnSpecial} 
+            onClose={() => window.location.hash = ''} 
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 }

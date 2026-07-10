@@ -7,7 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { User, Phone, Mail, Award, BookOpen, AlertCircle, Check, MapPin, X, Upload } from 'lucide-react';
 import { AttendeeRegistration } from '../types';
-import { saveRegistration, getRegistrations } from '../utils/db';
+import { saveRegistration, getRegistrations, getProgramSettings } from '../utils/db';
 
 interface RegistrationFormProps {
   onSuccess: (reg: AttendeeRegistration) => void;
@@ -107,6 +107,12 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
       };
     }
   };
+
+  const [programSettings, setProgramSettings] = useState<{ [key: string]: boolean }>({});
+
+  useEffect(() => {
+    getProgramSettings().then(setProgramSettings);
+  }, []);
 
   // Auto-fill duplicate detector on mobile number entry
   useEffect(() => {
@@ -836,7 +842,7 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
                   "Workshop on The imapct of technology on global industrials",
                   "Workshop on Building tomorrow’s careers thriving the age of AI",
                   "Presentation and discussion on AI smart village"
-                ].map((sessionName) => {
+                ].filter(sessionName => programSettings[sessionName] !== false).map((sessionName) => {
                   const isMega = sessionName === "Mega Conference";
                   return (
                     <label key={sessionName} className={`flex items-start gap-3 p-3 rounded-xl border ${sessions.includes(sessionName) ? 'border-purple-300 bg-purple-50/50' : 'border-slate-100 bg-white hover:bg-slate-50'} cursor-pointer transition-colors`}>
@@ -871,8 +877,13 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
                 {[
                   "Hackathon",
                   "Project Competition",
-                  "Campus Ambassadors"
-                ].map((programName) => (
+                  "Campus Ambassadors",
+                  "Pro Night"
+                ].filter(programName => {
+                  if (programSettings[programName] === false) return false;
+                  if (programName === "Pro Night" && (typeof age !== 'number' || age < 16)) return false;
+                  return true;
+                }).map((programName) => (
                   <label key={programName} className={`flex items-start gap-3 p-3 rounded-xl border ${specialPrograms.includes(programName) ? 'border-brand-pink/50 bg-pink-50/30' : 'border-slate-100 bg-white hover:bg-slate-50'} cursor-pointer transition-colors`}>
                     <input 
                       type="checkbox"

@@ -45,19 +45,22 @@ export interface AttendeeRegistration {
 
   // Administrative / System fields
   verificationToken: string;
-  checkedIn: boolean;
+  checkedIn: boolean; // Global check-in
   checkInTime: string | null;
+  sessionCheckIns?: { [sessionName: string]: string }; // Map of session/program name to ISO timestamp
   createdAt: string;
 }
 
 export interface AdminStats {
   totalRegistrations: number;
   todaysRegistrations: number;
-  checkedInCount: number;
+  checkedInCount: number; // Global check-in count
   districtReport: { [district: string]: number };
   occupationReport: { [occupation: string]: number };
   genderReport: { [gender: string]: number };
   interestsReport: { [interest: string]: number };
+  sessionRegistrations: { [sessionName: string]: number };
+  sessionCheckIns: { [sessionName: string]: number };
 }
 
 export interface TimelineEvent {

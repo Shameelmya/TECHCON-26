@@ -11,7 +11,7 @@ import {
   FileSpreadsheet, FileText, Check, AlertCircle, Copy, HelpCircle, User, Trash2, FileSearch, Settings
 } from 'lucide-react';
 import { AttendeeRegistration, AdminStats, VolunteerRegistration } from '../types';
-import { getRegistrations, fetchAllRegistrations, getStats, checkInAttendee, revertCheckIn, exportToCSV, loginAdmin, getSettings, toggleRegistrationStatus, fetchVolunteers, getVolunteerSettings, toggleVolunteerRegistrationStatus, deleteVolunteer, updateVolunteer } from '../utils/db';
+import { getRegistrations, fetchAllRegistrations, getStats, checkInAttendee, revertCheckIn, exportToCSV, loginAdmin, getSettings, toggleRegistrationStatus, fetchVolunteers, getVolunteerSettings, toggleVolunteerRegistrationStatus, deleteVolunteer, updateVolunteer, getProgramSettings, toggleProgramSetting } from '../utils/db';
 import { Html5QrcodeScanner, Html5Qrcode } from 'html5-qrcode';
 import VolunteerIDCard from './VolunteerIDCard';
 import VolunteerEditModal from './VolunteerEditModal';
@@ -28,6 +28,7 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
   const [isRegOpen, setIsRegOpen] = useState(true);
   const [isTogglingReg, setIsTogglingReg] = useState(false);
   const [displayCount, setDisplayCount] = useState(50);
+  const [programSettings, setProgramSettings] = useState<{ [key: string]: boolean }>({});
 
   // Dashboard Stats
   const [stats, setStats] = useState<AdminStats | null>(null);
@@ -76,8 +77,10 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
       setVolunteers(volList);
       const volRegState = await getVolunteerSettings();
       setIsVolRegOpen(volRegState);
+      const progSettings = await getProgramSettings();
+      setProgramSettings(progSettings);
     } catch (e) {
-      console.error("Failed to load volunteers", e);
+      console.error("Failed to load volunteers or program settings", e);
     }
   };
 
@@ -127,17 +130,16 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
     }
   };
 
-  const handleConfirmCheckIn = async () => {
+  const handleConfirmCheckIn = async (sessionName?: string) => {
     if (!foundAttendee || isProcessingAttendance) return;
     setIsProcessingAttendance(true);
     try {
-      const attendee = await checkInAttendee(foundAttendee.id, password);
+      const attendee = await checkInAttendee(foundAttendee.id, password, sessionName);
       setScannerResult({
         success: true,
-        msg: `SUCCESS: Checked in ${attendee.fullName} (${attendee.occupation}) at ${new Date(attendee.checkInTime!).toLocaleTimeString()}`
+        msg: `SUCCESS: Checked in ${attendee.fullName} for ${sessionName || 'Main Event'}!`
       });
-      setFoundAttendee(null);
-      setScannerInput('');
+      setFoundAttendee(attendee);
       loadData();
     } catch (e: any) {
       setScannerResult({ success: false, msg: `FAILED: ${e.message || 'Check-in Error'}` });
@@ -683,6 +685,39 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
                 </div>
               </div>
 
+              {/* Event / Session breakdown */}
+              <div className="bg-white border border-slate-200 p-6 sm:p-8 rounded-3xl space-y-6 shadow-sm md:col-span-2">
+                <div>
+                  <span className="text-[10px] font-mono tracking-widest text-brand-blue uppercase font-bold">// EVENT ATTENDANCE</span>
+                  <h3 className="text-base font-orbitron font-bold text-slate-900 uppercase mt-1">Sessions & Programs Metrics</h3>
+                  <p className="text-xs text-slate-400 font-sans mt-0.5">Registration vs Actual Check-in for individual events</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                  {Object.entries(stats.sessionRegistrations || {}).map(([session, regCount]) => {
+                    const checkCount = stats.sessionCheckIns?.[session] || 0;
+                    const pct = Math.round((checkCount / regCount) * 100) || 0;
+                    return (
+                      <div key={session} className="space-y-1 p-4 rounded-xl border border-slate-100 bg-slate-50/50">
+                        <div className="flex justify-between items-start text-xs font-sans">
+                          <span className="font-semibold text-slate-700 max-w-[70%]">{session}</span>
+                          <div className="text-right">
+                            <span className="block font-mono text-slate-900 font-bold">{checkCount} / {regCount}</span>
+                            <span className="text-[10px] text-slate-500">Checked In</span>
+                          </div>
+                        </div>
+                        <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden mt-2">
+                          <div 
+                            className="h-full bg-gradient-to-r from-brand-blue to-emerald-400 transition-all duration-500"
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
             </div>
           )}
 
@@ -754,19 +789,45 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
                       </div>
                     </div>
                     
-                    {!foundAttendee.checkedIn && (
-                      <button 
-                        onClick={handleConfirmCheckIn}
-                        disabled={isProcessingAttendance}
-                        className={`w-full py-3 rounded-xl font-bold font-sans text-sm transition-all shadow-sm active:scale-95 ${
-                          isProcessingAttendance 
-                            ? 'bg-green-400 opacity-80 cursor-not-allowed text-white' 
-                            : 'bg-green-600 hover:bg-green-700 text-white'
-                        }`}
-                      >
-                        {isProcessingAttendance ? 'PROCESSING...' : 'MARK ATTENDANCE'}
-                      </button>
-                    )}
+                    <div className="space-y-3 pt-3 border-t border-purple-200/50">
+                      
+                      {/* Main Entry */}
+                      <div className="flex justify-between items-center p-3 bg-white/60 rounded-xl border border-purple-100">
+                        <span className="font-sans font-bold text-slate-800">Main Convention Entry</span>
+                        {foundAttendee.checkedIn ? (
+                          <span className="text-[10px] font-mono bg-green-100 text-green-700 px-2 py-1 rounded-full font-bold">IN at {new Date(foundAttendee.checkInTime!).toLocaleTimeString()}</span>
+                        ) : (
+                          <button 
+                            onClick={() => handleConfirmCheckIn()}
+                            disabled={isProcessingAttendance}
+                            className="text-xs bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-lg font-bold transition-all disabled:opacity-50"
+                          >
+                            CHECK IN
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Sessions & Special Programs */}
+                      {[...(foundAttendee.sessions || []), ...(foundAttendee.specialPrograms || [])].map(sessionName => {
+                        const isCheckedIn = foundAttendee.sessionCheckIns?.[sessionName];
+                        return (
+                          <div key={sessionName} className="flex justify-between items-center p-3 bg-white/60 rounded-xl border border-purple-100">
+                            <span className="font-sans font-bold text-slate-800">{sessionName}</span>
+                            {isCheckedIn ? (
+                              <span className="text-[10px] font-mono bg-green-100 text-green-700 px-2 py-1 rounded-full font-bold">IN at {new Date(isCheckedIn).toLocaleTimeString()}</span>
+                            ) : (
+                              <button 
+                                onClick={() => handleConfirmCheckIn(sessionName)}
+                                disabled={isProcessingAttendance}
+                                className="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg font-bold transition-all disabled:opacity-50"
+                              >
+                                CHECK IN
+                              </button>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 )}
 
@@ -1111,6 +1172,44 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
                       <span className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${isVolRegOpen ? 'translate-x-7' : 'translate-x-1'}`} />
                     </button>
                   </div>
+                </div>
+              </div>
+
+              <div className="bg-slate-800 p-6 rounded-2xl border border-slate-700">
+                <h3 className="font-orbitron font-bold text-white text-xl mb-1">Session & Program Controls</h3>
+                <p className="text-slate-400 text-sm mb-6">Enable or disable specific sessions in the registration form.</p>
+                
+                <div className="space-y-4">
+                  {[
+                    "Workshop on Cybersecurity Shield a secure digital future",
+                    "Workshop on The imapct of technology on global industrials",
+                    "Workshop on Building tomorrow’s careers thriving the age of AI",
+                    "Presentation and discussion on AI smart village.",
+                    "Hackathon",
+                    "Project Competition",
+                    "Campus Ambassadors.",
+                    "Pro Night"
+                  ].map(prog => {
+                    // Default to true if not explicitly set to false
+                    const isOpen = programSettings[prog] !== false;
+                    return (
+                      <div key={prog} className="flex items-center justify-between p-4 bg-slate-900 rounded-xl border border-slate-700">
+                        <div className="pr-4">
+                          <h4 className="font-bold text-white text-sm">{prog}</h4>
+                        </div>
+                        <button 
+                          onClick={async () => {
+                            const newState = !isOpen;
+                            setProgramSettings(prev => ({...prev, [prog]: newState}));
+                            await toggleProgramSetting(prog, newState);
+                          }}
+                          className={`relative inline-flex h-8 w-14 shrink-0 items-center rounded-full transition-colors ${isOpen ? 'bg-emerald-500' : 'bg-slate-600'}`}
+                        >
+                          <span className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${isOpen ? 'translate-x-7' : 'translate-x-1'}`} />
+                        </button>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </motion.div>

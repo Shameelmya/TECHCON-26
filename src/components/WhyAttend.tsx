@@ -10,23 +10,15 @@ export default function WhyAttend() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
 
-  useEffect(() => {
-    const handleHash = () => {
-      if (window.location.hash.toLowerCase() === '#feature') {
-        setModalOpen(true);
-      } else {
-        setModalOpen(false);
-      }
-    };
-    
-    handleHash();
-    window.addEventListener('hashchange', handleHash);
-    return () => window.removeEventListener('hashchange', handleHash);
-  }, []);
-
   const handleOpenModal = (title: string) => {
-    setModalTitle(title);
-    window.location.hash = 'feature';
+    let hash = '';
+    if (title === 'AI Summit') hash = 'aisummit';
+    else if (title === 'Industry & Skill') hash = 'industry';
+    else if (title === 'Career Accelerator') hash = 'careers';
+    else if (title === 'Innovation Hub') hash = 'projectcomp';
+    else if (title === 'Hackathon') hash = 'hackathon';
+    else if (title === 'Cyber Shield') hash = 'cybershield';
+    window.location.hash = hash;
   };
 
   const sessions = [
@@ -294,12 +286,6 @@ export default function WhyAttend() {
         </div>
 
       </div>
-      
-      <TechLoadingModal 
-        isOpen={modalOpen} 
-        onClose={() => window.location.hash = ''} 
-        title={modalTitle}
-      />
     </section>
   );
 }

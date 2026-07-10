@@ -39,19 +39,17 @@
         TECHCON '26
       </div>
 
-      <!-- Photo -->
-      <img id="pic" src="" alt="Volunteer Photo" class="w-36 h-36 rounded-2xl object-cover border-2 border-slate-700 shadow-2xl mb-5 bg-slate-800" onerror="this.src='https://via.placeholder.com/150?text=No+Photo'">
-      
       <!-- Details -->
-      <div class="flex items-center justify-center gap-2 mb-1 w-full">
-        <h2 id="name" class="text-2xl font-bold truncate text-slate-100">Name</h2>
+      <div class="flex items-center justify-center gap-2 mb-1 w-full flex-wrap">
+        <h2 id="name" class="text-2xl font-bold text-slate-100 text-center leading-tight">Name</h2>
         <!-- Verified Blue Check -->
         <svg class="text-blue-500 w-6 h-6 shrink-0" fill="currentColor" viewBox="0 0 20 20">
           <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
         </svg>
       </div>
       
-      <p id="id" class="text-fuchsia-400 font-mono text-sm mb-6 bg-fuchsia-500/10 px-3 py-1 rounded-md border border-fuchsia-500/20">TCVOL-000</p>
+      <p id="id" class="text-fuchsia-400 font-mono text-sm mt-2 bg-fuchsia-500/10 px-3 py-1 rounded-md border border-fuchsia-500/20">TCVOL-000</p>
+      <p id="phone" class="text-slate-300 font-mono text-sm mt-2 mb-6">Phone</p>
       
       <!-- Status Badge -->
       <div class="bg-emerald-500/20 text-emerald-400 px-4 py-3 rounded-xl font-bold text-sm tracking-widest w-full border border-emerald-500/30 flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(16,185,129,0.15)]">
@@ -67,18 +65,12 @@
     const params = new URLSearchParams(window.location.search);
     const nameStr = params.get('name');
     const idStr = params.get('id');
-    const picStr = params.get('pic');
+    const phoneStr = params.get('phone');
 
     // Display Data
     document.getElementById('name').textContent = nameStr ? nameStr : 'Unknown';
     document.getElementById('id').textContent = idStr ? idStr : 'ID NOT FOUND';
-    
-    const picEl = document.getElementById('pic');
-    if (picStr) {
-      picEl.src = picStr;
-    } else {
-      picEl.src = 'https://via.placeholder.com/150/0f172a/ffffff?text=No+Photo';
-    }
+    document.getElementById('phone').textContent = phoneStr ? phoneStr : '';
   </script>
 </body>
 </html>

@@ -31,15 +31,13 @@ export default function VolunteerIDCard({ volunteer, onClose }: VolunteerIDCardP
   }, []);
 
   useEffect(() => {
-    const qrData = `BEGIN:VCARD
-VERSION:3.0
-FN:${volunteer.fullName}
-ORG:TECHCON 26 VERIFIED VOLUNTEER
-TITLE:Volunteer (${volunteer.id})
-TEL;TYPE=CELL:${volunteer.mobileNumber}
-ADR;TYPE=HOME:;;${volunteer.address};${volunteer.district};;;
-NOTE:Age: ${volunteer.age} | Gender: ${volunteer.gender} | Institution: ${volunteer.institution}
-END:VCARD`;
+    const qrData = `TECHCON 26 VERIFIED VOLUNTEER
+Name: ${volunteer.fullName}
+ID: ${volunteer.id}
+Age: ${volunteer.age} | Gender: ${volunteer.gender}
+Institution: ${volunteer.institution}
+Phone: ${volunteer.mobileNumber}
+Address: ${volunteer.address}, ${volunteer.district}`;
 
     QRCode.toDataURL(qrData.trim(), {
       margin: 0,
@@ -238,7 +236,7 @@ END:VCARD`;
               alt="QR Code" 
               style={{
                 position: 'absolute',
-                left: '1212px',
+                left: '1260px',
                 top: '660px',
                 width: '220px',
                 height: '220px'

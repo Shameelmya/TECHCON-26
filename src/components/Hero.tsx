@@ -12,11 +12,12 @@ import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 interface HeroProps {
   onOpenRegister: () => void;
   onOpenSponsor: () => void;
+  onOpenVolunteer: () => void;
   onGetPass: () => void;
   onExploreEvent: () => void;
 }
 
-export default function Hero({ onOpenRegister, onOpenSponsor, onGetPass, onExploreEvent }: HeroProps) {
+export default function Hero({ onOpenRegister, onOpenSponsor, onOpenVolunteer, onGetPass, onExploreEvent }: HeroProps) {
   const [timeLeft, setTimeLeft] = useState({ days: 15, hours: 0, minutes: 0, seconds: 0 });
   const [gapAnim, setGapAnim] = useState(['0px', '8px', '0px']);
 
@@ -229,6 +230,17 @@ export default function Hero({ onOpenRegister, onOpenSponsor, onGetPass, onExplo
                   <span className="text-center sm:text-left leading-tight sm:leading-normal">
                     <span className="sm:hidden text-[10px]">Be a<br/>Sponsor</span>
                     <span className="hidden sm:inline">BE A SPONSOR</span>
+                  </span>
+                </button>
+
+                <button
+                  onClick={onOpenVolunteer}
+                  className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 py-1.5 px-2 sm:px-6 sm:py-3.5 bg-brand-dark/90 backdrop-blur-sm text-brand-blue font-sans font-bold text-[10px] sm:text-sm rounded-[14px] sm:rounded-full flex-1 sm:flex-none aspect-square sm:aspect-auto shrink-0 border border-brand-blue/50 hover:bg-brand-blue hover:text-white transition-colors duration-300"
+                >
+                  <User className="w-6 h-6 sm:hidden mb-0.5" strokeWidth={1.5} />
+                  <span className="text-center sm:text-left leading-tight sm:leading-normal">
+                    <span className="sm:hidden text-[10px]">Be a<br/>Volunteer</span>
+                    <span className="hidden sm:inline">BE A VOLUNTEER</span>
                   </span>
                 </button>
 

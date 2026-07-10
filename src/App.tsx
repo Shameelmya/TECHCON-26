@@ -208,6 +208,7 @@ export default function App() {
               <Hero 
                 onOpenRegister={() => window.location.hash = 'register'} 
                 onOpenSponsor={() => window.location.hash = 'sponsorship'}
+                onOpenVolunteer={() => window.location.hash = 'volunteer'}
                 onGetPass={() => window.location.hash = 'retrieve'}
                 onExploreEvent={() => {
                   const element = document.getElementById('why-attend');

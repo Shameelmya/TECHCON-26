@@ -106,7 +106,7 @@ export default function AddOnRegistrationModal({ eventName, isSpecialProgram, on
         <div className="p-6 bg-slate-900 flex justify-between items-center text-white">
           <div>
             <h3 className="font-orbitron font-bold text-xl uppercase text-brand-pink">{eventName}</h3>
-            <p className="text-xs text-slate-400 font-mono mt-1">Add-on Event Registration</p>
+            <p className="text-xs text-slate-400 font-mono mt-1">For those who registered for event</p>
           </div>
           <button onClick={onClose} className="p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors">
             <X size={20} />
@@ -129,7 +129,6 @@ export default function AddOnRegistrationModal({ eventName, isSpecialProgram, on
                   type="text" 
                   value={id}
                   onChange={e => setId(e.target.value)}
-                  placeholder="TC26A001"
                   className="w-full px-4 py-3 border border-slate-200 focus:border-brand-purple rounded-xl outline-none font-mono text-sm uppercase"
                 />
               </div>
@@ -139,7 +138,6 @@ export default function AddOnRegistrationModal({ eventName, isSpecialProgram, on
                   type="tel" 
                   value={mobile}
                   onChange={e => setMobile(e.target.value)}
-                  placeholder="10-digit mobile number"
                   className="w-full px-4 py-3 border border-slate-200 focus:border-brand-purple rounded-xl outline-none font-mono text-sm"
                 />
               </div>
@@ -154,7 +152,7 @@ export default function AddOnRegistrationModal({ eventName, isSpecialProgram, on
               <div className="text-center pt-4 border-t border-slate-100">
                 <p className="text-xs text-slate-500">Not registered for TECHCON '26 yet?</p>
                 <a href="#register" onClick={onClose} className="text-sm font-bold text-brand-purple mt-1 inline-block hover:underline">
-                  Register for Main Event
+                  Register for Event
                 </a>
               </div>
             </div>

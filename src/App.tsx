@@ -112,7 +112,7 @@ export default function App() {
       else if (hash === '#volunteer') {
         handleOpenVolunteerRegistration();
       }
-      else if (hash === '#register') handleOpenRegister();
+      else if (hash === '#register') { setAddOnEventName(null); handleOpenRegister(); }
       else if (hash === '#retrieve') setIsRetrieveOpen(true);
       else if (hash === '#aisummit') { setAddOnEventName("Presentation and discussion on AI smart village"); setIsAddOnSpecial(false); }
       else if (hash === '#industry') { setAddOnEventName("Workshop on The imapct of technology on global industrials"); setIsAddOnSpecial(false); }
@@ -150,7 +150,7 @@ export default function App() {
     else if (initialHash === '#volunteer') {
       handleOpenVolunteerRegistration();
     }
-    else if (initialHash === '#register') handleOpenRegister();
+    else if (initialHash === '#register') { setAddOnEventName(null); handleOpenRegister(); }
     else if (initialHash === '#retrieve') setIsRetrieveOpen(true);
     else if (initialHash === '#aisummit') { setAddOnEventName("Presentation and discussion on AI smart village."); setIsAddOnSpecial(false); }
     else if (initialHash === '#industry') { setAddOnEventName("Workshop on The imapct of technology on global industrials"); setIsAddOnSpecial(false); }

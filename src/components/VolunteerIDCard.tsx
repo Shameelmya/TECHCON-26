@@ -40,12 +40,13 @@ Institution: ${volunteer.institution}
 Phone: ${volunteer.mobileNumber}
 Address: ${volunteer.address}, ${volunteer.district}`;
 
-    QRCode.toDataURL(qrData, {
+    QRCode.toDataURL(qrData.trim(), {
       margin: 0,
       width: 220,
       color: { dark: '#000000', light: '#ffffff' },
-      errorCorrectionLevel: 'H'
+      errorCorrectionLevel: 'M'
     }, (err, url) => {
+      if (err) console.error('QR Code Generation Error:', err);
       if (!err && url) setQrUrl(url);
     });
   }, [volunteer]);
@@ -101,7 +102,7 @@ Address: ${volunteer.address}, ${volunteer.district}`;
         <div style={{ width: 1619 * scale, height: 972 * scale, position: 'relative' }}>
           {/* ID CARD CONTAINER */}
           <div 
-            className="relative origin-top-left bg-white shadow-2xl rounded-[32px] overflow-hidden shrink-0 transition-transform duration-300"
+            className="relative origin-top-left bg-white shadow-2xl rounded-[64px] overflow-hidden shrink-0 transition-transform duration-300"
             ref={cardRef}
             style={{ 
               width: '1619px', 

@@ -318,8 +318,8 @@ export const exportToCSV = (data: AttendeeRegistration[]) => {
       String(row.consent),
       String(row.checkedIn),
       row.checkInTime || '',
-      row.sessionCheckIns ? JSON.stringify(row.sessionCheckIns) : '{}',
-      row.verificationToken
+      row.sessionCheckIns ? Object.entries(row.sessionCheckIns).map(([s, time]) => `${s}: ${new Date(time as string).toLocaleTimeString()}`).join(" | ") : '',
+      row.verificationToken || ''
     ].map(v => `"${String(v).replace(/"/g, '""')}"`));
   }
 

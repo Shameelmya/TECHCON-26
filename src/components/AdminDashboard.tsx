@@ -148,6 +148,24 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
     }
   };
 
+  const handleRevertScannerCheckIn = async (sessionName?: string) => {
+    if (!foundAttendee || isProcessingAttendance) return;
+    setIsProcessingAttendance(true);
+    try {
+      const attendee = await revertCheckIn(foundAttendee.id, password, sessionName);
+      setScannerResult({
+        success: true,
+        msg: `REVERTED: Check-in removed for ${sessionName || 'Main Event'}.`
+      });
+      setFoundAttendee(attendee);
+      loadData();
+    } catch (e: any) {
+      setScannerResult({ success: false, msg: `FAILED: ${e.message || 'Revert Error'}` });
+    } finally {
+      setIsProcessingAttendance(false);
+    }
+  };
+
   const handleToggleCheckInTable = async (attendee: AttendeeRegistration) => {
     const isCurrentlyCheckedIn = attendee.checkedIn;
     if (isCurrentlyCheckedIn) {
@@ -795,7 +813,32 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
                       <div className="flex justify-between items-center p-3 bg-white/60 rounded-xl border border-purple-100">
                         <span className="font-sans font-bold text-slate-800">Main Convention Entry</span>
                         {foundAttendee.checkedIn ? (
-                          <span className="text-[10px] font-mono bg-green-100 text-green-700 px-2 py-1 rounded-full font-bold">IN at {new Date(foundAttendee.checkInTime!).toLocaleTimeString()}</span>
+                          <button
+                            onPointerDown={(e) => {
+                              e.preventDefault();
+                              const target = e.currentTarget;
+                              const timer = setTimeout(() => {
+                                if (window.confirm("Are you sure you want to REVERT this main check-in?")) {
+                                  handleRevertScannerCheckIn();
+                                }
+                                target.removeAttribute('data-timer');
+                              }, 3000);
+                              target.setAttribute('data-timer', timer.toString());
+                            }}
+                            onPointerUp={(e) => {
+                              const timer = e.currentTarget.getAttribute('data-timer');
+                              if (timer) { clearTimeout(parseInt(timer)); e.currentTarget.removeAttribute('data-timer'); }
+                            }}
+                            onPointerLeave={(e) => {
+                              const timer = e.currentTarget.getAttribute('data-timer');
+                              if (timer) { clearTimeout(parseInt(timer)); e.currentTarget.removeAttribute('data-timer'); }
+                            }}
+                            onContextMenu={(e) => e.preventDefault()}
+                            className="text-[10px] font-mono bg-green-100 text-green-700 px-2 py-1 rounded-full font-bold cursor-pointer transition-colors active:bg-amber-100 active:text-amber-700 select-none touch-none"
+                            title="Hold for 3 seconds to revert check-in"
+                          >
+                            IN at {new Date(foundAttendee.checkInTime!).toLocaleTimeString()}
+                          </button>
                         ) : (
                           <button 
                             onClick={() => handleConfirmCheckIn()}
@@ -814,7 +857,32 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
                           <div key={sessionName} className="flex justify-between items-center p-3 bg-white/60 rounded-xl border border-purple-100">
                             <span className="font-sans font-bold text-slate-800">{sessionName}</span>
                             {isCheckedIn ? (
-                              <span className="text-[10px] font-mono bg-green-100 text-green-700 px-2 py-1 rounded-full font-bold">IN at {new Date(isCheckedIn).toLocaleTimeString()}</span>
+                              <button
+                                onPointerDown={(e) => {
+                                  e.preventDefault();
+                                  const target = e.currentTarget;
+                                  const timer = setTimeout(() => {
+                                    if (window.confirm(`Are you sure you want to REVERT check-in for ${sessionName}?`)) {
+                                      handleRevertScannerCheckIn(sessionName);
+                                    }
+                                    target.removeAttribute('data-timer');
+                                  }, 3000);
+                                  target.setAttribute('data-timer', timer.toString());
+                                }}
+                                onPointerUp={(e) => {
+                                  const timer = e.currentTarget.getAttribute('data-timer');
+                                  if (timer) { clearTimeout(parseInt(timer)); e.currentTarget.removeAttribute('data-timer'); }
+                                }}
+                                onPointerLeave={(e) => {
+                                  const timer = e.currentTarget.getAttribute('data-timer');
+                                  if (timer) { clearTimeout(parseInt(timer)); e.currentTarget.removeAttribute('data-timer'); }
+                                }}
+                                onContextMenu={(e) => e.preventDefault()}
+                                className="text-[10px] font-mono bg-green-100 text-green-700 px-2 py-1 rounded-full font-bold cursor-pointer transition-colors active:bg-amber-100 active:text-amber-700 select-none touch-none"
+                                title="Hold for 3 seconds to revert check-in"
+                              >
+                                IN at {new Date(isCheckedIn).toLocaleTimeString()}
+                              </button>
                             ) : (
                               <button 
                                 onClick={() => handleConfirmCheckIn(sessionName)}

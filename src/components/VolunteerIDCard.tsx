@@ -31,13 +31,8 @@ export default function VolunteerIDCard({ volunteer, onClose }: VolunteerIDCardP
   }, []);
 
   useEffect(() => {
-    const qrData = `TECHCON 26 VERIFIED VOLUNTEER
-Name: ${volunteer.fullName}
-ID: ${volunteer.id}
-Age: ${volunteer.age} | Gender: ${volunteer.gender}
-Institution: ${volunteer.institution}
-Phone: ${volunteer.mobileNumber}
-Address: ${volunteer.address}, ${volunteer.district}`;
+    const baseUrl = 'https://techcon26.org'; // Force production URL so scanners open the live site
+    const qrData = `${baseUrl}/verify.html?id=${encodeURIComponent(volunteer.id)}&name=${encodeURIComponent(volunteer.fullName)}&pic=${encodeURIComponent(volunteer.photoUrl || '')}`;
 
     QRCode.toDataURL(qrData.trim(), {
       margin: 0,

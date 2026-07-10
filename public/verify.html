@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Volunteer Verification | TECHCON 26</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@400;600;700&display=swap');
+    
+    body { 
+      background-color: #020617; 
+      color: white; 
+      font-family: 'Inter', sans-serif; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      min-height: 100vh; 
+      margin: 0; 
+      background-image: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #020617 100%);
+    }
+    .glass { 
+      background: rgba(15, 23, 42, 0.6); 
+      backdrop-filter: blur(12px); 
+      border: 1px solid rgba(255, 255, 255, 0.1); 
+    }
+    .font-orbitron { font-family: 'Orbitron', sans-serif; }
+  </style>
+</head>
+<body>
+  <div class="glass rounded-[32px] p-8 max-w-sm w-full mx-4 text-center shadow-[0_0_40px_rgba(0,0,0,0.5)] relative overflow-hidden">
+    <!-- Decorative background glow -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-fuchsia-600 rounded-full blur-[70px] opacity-40 pointer-events-none"></div>
+    <div class="absolute bottom-0 right-0 w-32 h-32 bg-blue-600 rounded-full blur-[60px] opacity-30 pointer-events-none"></div>
+    
+    <div class="relative z-10 flex flex-col items-center">
+      <!-- Logo -->
+      <div class="text-xs font-orbitron text-slate-400 tracking-[0.3em] mb-6 border-b border-slate-700 pb-2">
+        TECHCON '26
+      </div>
+
+      <!-- Photo -->
+      <img id="pic" src="" alt="Volunteer Photo" class="w-36 h-36 rounded-2xl object-cover border-2 border-slate-700 shadow-2xl mb-5 bg-slate-800" onerror="this.src='https://via.placeholder.com/150?text=No+Photo'">
+      
+      <!-- Details -->
+      <div class="flex items-center justify-center gap-2 mb-1 w-full">
+        <h2 id="name" class="text-2xl font-bold truncate text-slate-100">Name</h2>
+        <!-- Verified Blue Check -->
+        <svg class="text-blue-500 w-6 h-6 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+        </svg>
+      </div>
+      
+      <p id="id" class="text-fuchsia-400 font-mono text-sm mb-6 bg-fuchsia-500/10 px-3 py-1 rounded-md border border-fuchsia-500/20">TCVOL-000</p>
+      
+      <!-- Status Badge -->
+      <div class="bg-emerald-500/20 text-emerald-400 px-4 py-3 rounded-xl font-bold text-sm tracking-widest w-full border border-emerald-500/30 flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(16,185,129,0.15)]">
+        <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        VERIFIED VOLUNTEER
+      </div>
+      
+    </div>
+  </div>
+
+  <script>
+    // Read URL Parameters
+    const params = new URLSearchParams(window.location.search);
+    const nameStr = params.get('name');
+    const idStr = params.get('id');
+    const picStr = params.get('pic');
+
+    // Display Data
+    document.getElementById('name').textContent = nameStr ? nameStr : 'Unknown';
+    document.getElementById('id').textContent = idStr ? idStr : 'ID NOT FOUND';
+    
+    const picEl = document.getElementById('pic');
+    if (picStr) {
+      picEl.src = picStr;
+    } else {
+      picEl.src = 'https://via.placeholder.com/150/0f172a/ffffff?text=No+Photo';
+    }
+  </script>
+</body>
+</html>

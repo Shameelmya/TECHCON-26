@@ -32,7 +32,7 @@ export default function VolunteerIDCard({ volunteer, onClose }: VolunteerIDCardP
 
   useEffect(() => {
     const baseUrl = 'https://techcon26.org'; // Force production URL so scanners open the live site
-    const qrData = `${baseUrl}/verify.html?id=${encodeURIComponent(volunteer.id)}&name=${encodeURIComponent(volunteer.fullName)}&pic=${encodeURIComponent(volunteer.photoUrl || '')}`;
+    const qrData = `${baseUrl}/verify.html?id=${encodeURIComponent(volunteer.id)}&name=${encodeURIComponent(volunteer.fullName)}`;
 
     QRCode.toDataURL(qrData.trim(), {
       margin: 0,

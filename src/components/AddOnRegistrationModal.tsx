@@ -3,15 +3,15 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, CheckCircle, AlertCircle, Upload } from 'lucide-react';
 import { getRegistrations, addEventToRegistration } from '../utils/db';
 import { AttendeeRegistration } from '../types';
-import TicketPass from './TicketPass';
 
 interface AddOnRegistrationModalProps {
   eventName: string;
   isSpecialProgram: boolean;
   onClose: () => void;
+  onSuccess?: (reg: AttendeeRegistration) => void;
 }
 
-export default function AddOnRegistrationModal({ eventName, isSpecialProgram, onClose }: AddOnRegistrationModalProps) {
+export default function AddOnRegistrationModal({ eventName, isSpecialProgram, onClose, onSuccess }: AddOnRegistrationModalProps) {
   const [id, setId] = useState('');
   const [mobile, setMobile] = useState('');
   const [feeReceiptUrl, setFeeReceiptUrl] = useState<string | null>(null);
@@ -19,7 +19,6 @@ export default function AddOnRegistrationModal({ eventName, isSpecialProgram, on
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const [foundAttendee, setFoundAttendee] = useState<AttendeeRegistration | null>(null);
-  const [alreadyRegistered, setAlreadyRegistered] = useState(false);
 
   const needsFee = isSpecialProgram && eventName === 'Hackathon';
 
@@ -44,7 +43,7 @@ export default function AddOnRegistrationModal({ eventName, isSpecialProgram, on
       : attendee.sessions?.includes(eventName);
       
     if (hasEvent) {
-      setAlreadyRegistered(true);
+      setErrorMsg("You are already registered for this event.");
     }
   };
 
@@ -85,8 +84,8 @@ export default function AddOnRegistrationModal({ eventName, isSpecialProgram, on
     setErrorMsg(null);
     try {
       const updated = await addEventToRegistration(id, mobile, eventName, isSpecialProgram, feeReceiptUrl || undefined);
-      setFoundAttendee(updated);
-      setAlreadyRegistered(true);
+      if (onSuccess) onSuccess(updated);
+      onClose();
     } catch (e: any) {
       setErrorMsg(e.message || "Failed to register for the event.");
     } finally {
@@ -158,58 +157,40 @@ export default function AddOnRegistrationModal({ eventName, isSpecialProgram, on
             </div>
           ) : (
             <div className="space-y-6">
-              {!alreadyRegistered ? (
-                <>
-                  <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                    <p className="text-xs text-slate-500 font-mono uppercase mb-1">Participant Details</p>
-                    <h4 className="font-bold text-slate-900 text-lg">{foundAttendee.fullName}</h4>
-                    <p className="text-sm text-slate-600">{foundAttendee.place}, {foundAttendee.district}</p>
-                  </div>
-                  
-                  {needsFee && (
-                    <div className="bg-orange-50 border border-orange-100 p-4 rounded-xl">
-                      <label className="text-[11px] font-mono tracking-wider text-orange-600 uppercase font-bold block mb-2">
-                        Hackathon Fee Receipt (Rs. 500) *
-                      </label>
-                      <div className="flex items-center gap-4">
-                        <div className="h-20 w-20 bg-white rounded-lg border-2 border-orange-200 border-dashed shrink-0 flex items-center justify-center relative overflow-hidden">
-                          {feeReceiptUrl ? (
-                            <img src={feeReceiptUrl} alt="Receipt" className="w-full h-full object-cover" />
-                          ) : (
-                            <Upload size={20} className="text-orange-300" />
-                          )}
-                          <input type="file" accept="image/*" onChange={handleReceiptChange} className="absolute inset-0 opacity-0 cursor-pointer" />
-                        </div>
-                        <div className="text-xs text-slate-600">
-                          Upload payment receipt to proceed.
-                        </div>
-                      </div>
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                <p className="text-xs text-slate-500 font-mono uppercase mb-1">Participant Details</p>
+                <h4 className="font-bold text-slate-900 text-lg">{foundAttendee.fullName}</h4>
+                <p className="text-sm text-slate-600">{foundAttendee.place}, {foundAttendee.district}</p>
+              </div>
+              
+              {needsFee && (
+                <div className="bg-orange-50 border border-orange-100 p-4 rounded-xl">
+                  <label className="text-[11px] font-mono tracking-wider text-orange-600 uppercase font-bold block mb-2">
+                    Hackathon Fee Receipt (Rs. 500) *
+                  </label>
+                  <div className="flex items-center gap-4">
+                    <div className="h-20 w-20 bg-white rounded-lg border-2 border-orange-200 border-dashed shrink-0 flex items-center justify-center relative overflow-hidden">
+                      {feeReceiptUrl ? (
+                        <img src={feeReceiptUrl} alt="Receipt" className="w-full h-full object-cover" />
+                      ) : (
+                        <Upload size={20} className="text-orange-300" />
+                      )}
+                      <input type="file" accept="image/*" onChange={handleReceiptChange} className="absolute inset-0 opacity-0 cursor-pointer" />
                     </div>
-                  )}
-
-                  <button 
-                    onClick={handleRegister}
-                    disabled={isSubmitting}
-                    className="w-full py-4 rounded-xl bg-brand-pink hover:bg-brand-purple text-white font-orbitron font-bold uppercase tracking-wider transition-colors text-sm disabled:opacity-50"
-                  >
-                    {isSubmitting ? 'Registering...' : `Register for ${eventName}`}
-                  </button>
-                </>
-              ) : (
-                <div className="text-center space-y-4">
-                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto text-green-500 mb-2">
-                    <CheckCircle size={32} />
+                    <div className="text-xs text-slate-600">
+                      Upload payment receipt to proceed.
+                    </div>
                   </div>
-                  <h4 className="font-bold text-slate-900 text-lg">You are Registered!</h4>
-                  <p className="text-sm text-slate-500 max-w-xs mx-auto">
-                    You have successfully registered for <strong>{eventName}</strong>. Your updated entry pass is below.
-                  </p>
-                  <div className="mt-6 transform scale-90 origin-top">
-                    <TicketPass registration={foundAttendee} onBackToHome={onClose} />
-                  </div>
-                  <button onClick={onClose} className="text-sm font-bold text-slate-500 hover:text-slate-900">Close</button>
                 </div>
               )}
+
+              <button 
+                onClick={handleRegister}
+                disabled={isSubmitting}
+                className="w-full py-4 rounded-xl bg-brand-pink hover:bg-brand-purple text-white font-orbitron font-bold uppercase tracking-wider transition-colors text-sm disabled:opacity-50"
+              >
+                {isSubmitting ? 'Registering...' : `Register for ${eventName}`}
+              </button>
             </div>
           )}
         </div>

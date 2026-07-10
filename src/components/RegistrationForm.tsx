@@ -63,6 +63,10 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
   // Consent
   const [consent, setConsent] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const [techInterests, setTechInterests] = useState<string[]>([]);
+
+  const TECH_OPTIONS = ['AI & ML', 'Cyber Security', 'Web/Mobile Dev', 'Cloud Computing', 'Data Science', 'IoT & Hardware', 'UI/UX Design', 'Blockchain'];
 
   // Stage 3 Fields
   const [sessions, setSessions] = useState<string[]>(['Mega Conference']);
@@ -304,7 +308,7 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
       const payload: any = {
         fullName, email, mobileNumber, whatsAppNumber, age, gender,
         district, place, state: 'Kerala', country, occupation, consent,
-        technologyInterests: ['AI', 'Development'],
+        technologyInterests: techInterests,
         emergencyContact: whatsAppNumber, foodPreference: 'Veg', accessibilityRequirement: 'None',
         sessions, specialPrograms, feeReceiptBase64: specialPrograms.includes('Hackathon') ? feeReceiptUrl : null
       };
@@ -814,6 +818,35 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
               )}
 
             </div>
+
+            {/* Technology Interests Fields */}
+            <div className="flex flex-col gap-2 mt-6">
+              <label className="text-[11px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Technology Interests (Select multiple)</label>
+              <div className="flex flex-wrap gap-2">
+                {TECH_OPTIONS.map((tech) => (
+                  <button
+                    key={tech}
+                    type="button"
+                    onClick={() => {
+                      if (!isDuplicateMobileFound) {
+                        setTechInterests(prev => 
+                          prev.includes(tech) ? prev.filter(t => t !== tech) : [...prev, tech]
+                        );
+                      }
+                    }}
+                    disabled={isDuplicateMobileFound}
+                    className={`py-2 px-3 border rounded-xl text-[10px] font-sans font-semibold tracking-wide transition-all duration-300 ${
+                      techInterests.includes(tech)
+                        ? 'bg-purple-100 border-purple-400 text-purple-700 shadow-sm'
+                        : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300 disabled:opacity-50'
+                    }`}
+                  >
+                    {tech}
+                  </button>
+                ))}
+              </div>
+            </div>
+
           </motion.div>
         )}
 

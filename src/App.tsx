@@ -633,6 +633,7 @@ export default function App() {
             eventName={addOnEventName} 
             isSpecialProgram={isAddOnSpecial} 
             onClose={() => window.location.hash = ''} 
+            onSuccess={handleRegisterSuccess}
           />
         )}
       </AnimatePresence>

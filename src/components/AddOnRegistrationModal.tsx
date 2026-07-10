@@ -204,7 +204,7 @@ export default function AddOnRegistrationModal({ eventName, isSpecialProgram, on
                   <p className="text-sm text-slate-500 max-w-xs mx-auto">
                     You have successfully registered for <strong>{eventName}</strong>. Your updated entry pass is below.
                   </p>
-                  <div className="mt-6 pointer-events-none transform scale-90 origin-top">
+                  <div className="mt-6 transform scale-90 origin-top">
                     <TicketPass registration={foundAttendee} onBackToHome={onClose} />
                   </div>
                   <button onClick={onClose} className="text-sm font-bold text-slate-500 hover:text-slate-900">Close</button>

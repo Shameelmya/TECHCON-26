@@ -123,10 +123,8 @@ export default function App() {
       else if (hash === '#ambassador') { setAddOnEventName("Campus Ambassadors."); setIsAddOnSpecial(true); }
       else if (hash === '#pronight') { setAddOnEventName("Pro Night"); setIsAddOnSpecial(true); }
       else if (hash === '#pass') {
-        // If there's no active registration but we hit #pass, go home
-        if (!activeRegistration) {
-          window.location.hash = '';
-        }
+        // Allow the pass component to handle missing registration gracefully
+        // or just let it stay on #pass.
       }
       else if (hash === '' || hash === '#') {
         setIsAdminOpen(false);

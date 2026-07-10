@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { User, Phone, Mail, Award, BookOpen, AlertCircle, Check, MapPin, X } from 'lucide-react';
+import { User, Phone, Mail, Award, BookOpen, AlertCircle, Check, MapPin, X, Upload } from 'lucide-react';
 import { AttendeeRegistration } from '../types';
 import { saveRegistration, getRegistrations } from '../utils/db';
 
@@ -63,6 +63,50 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
   // Consent
   const [consent, setConsent] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Stage 3 Fields
+  const [sessions, setSessions] = useState<string[]>(['Mega Conference']);
+  const [specialPrograms, setSpecialPrograms] = useState<string[]>([]);
+  const [feeReceiptUrl, setFeeReceiptUrl] = useState<string | null>(null);
+  const [feeReceiptPreview, setFeeReceiptPreview] = useState<string | null>(null);
+
+  const handleReceiptChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      if (file.size > 5 * 1024 * 1024) {
+        setErrors({ feeReceiptUrl: 'File must be less than 5MB' });
+        return;
+      }
+      if (!file.type.startsWith('image/')) {
+        setErrors({ feeReceiptUrl: 'Must be an image file' });
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 800;
+          let scaleSize = MAX_WIDTH / img.width;
+          if (scaleSize > 1) scaleSize = 1;
+          
+          canvas.width = img.width * scaleSize;
+          canvas.height = img.height * scaleSize;
+          
+          const ctx = canvas.getContext('2d');
+          ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+          
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.6); // heavily compress
+          setFeeReceiptUrl(dataUrl);
+          setFeeReceiptPreview(dataUrl);
+          setErrors(prev => ({...prev, feeReceiptUrl: ''}));
+        };
+      };
+    }
+  };
 
   // Auto-fill duplicate detector on mobile number entry
   useEffect(() => {
@@ -179,7 +223,60 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
       return;
     }
 
-    // Step 2 Validation
+    // Step 2 Validation (Role Details)
+    if (step === 2) {
+      if (isDuplicateMobileFound) {
+        setErrors({ mobileNumber: 'Cannot register. This mobile number is already registered.' });
+        return;
+      }
+
+      // Role-specific validations
+      if (occupation === 'Student') {
+        if (!institution.trim()) {
+          setErrors({ institution: 'Institution name is required for students.' });
+          setTimeout(() => document.getElementById('institution-field')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+          return;
+        }
+        if (!institutionDistrict) {
+          setErrors({ institutionDistrict: 'Institution district is required for students.' });
+          setTimeout(() => document.getElementById('institutionDistrict-field')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+          return;
+        }
+        const needsCourse = ['UG', 'PG', 'Professional courses'].includes(studentLevel);
+        if (needsCourse && !customCourse.trim()) {
+          setErrors({ customCourse: 'Please specify your course.' });
+          setTimeout(() => document.getElementById('course-field')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+          return;
+        }
+      } else if (occupation === 'Working Professional') {
+        if (!jobTitle.trim()) {
+          setErrors({ jobTitle: 'Job title is required.' });
+          setTimeout(() => document.getElementById('jobTitle-field')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+          return;
+        }
+      } else if (occupation === 'Entrepreneur') {
+        if (!sector.trim()) {
+          setErrors({ sector: 'Field / Sector is required.' });
+          setTimeout(() => document.getElementById('sector-field')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+          return;
+        }
+      } else if (occupation === 'Research Scholar' || occupation === 'Faculty') {
+        if (!university.trim()) {
+          setErrors({ university: 'University / Institution is required.' });
+          setTimeout(() => document.getElementById('university-field')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+          return;
+        }
+      }
+
+      setStep(3);
+      setTimeout(() => {
+        document.getElementById('register-flow')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 50);
+      return;
+    }
+
+    // Step 3 Validation
     if (isDuplicateMobileFound) {
       setErrors({ mobileNumber: 'Cannot register. This mobile number is already registered.' });
       return;
@@ -190,42 +287,10 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
       return;
     }
 
-    // Role-specific validations
-    if (occupation === 'Student') {
-      if (!institution.trim()) {
-        setErrors({ institution: 'Institution name is required for students.' });
-        setTimeout(() => document.getElementById('institution-field')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
-        return;
-      }
-      if (!institutionDistrict) {
-        setErrors({ institutionDistrict: 'Institution district is required for students.' });
-        setTimeout(() => document.getElementById('institutionDistrict-field')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
-        return;
-      }
-      const needsCourse = ['UG', 'PG', 'Professional courses'].includes(studentLevel);
-      if (needsCourse && !customCourse.trim()) {
-        setErrors({ customCourse: 'Please specify your course.' });
-        setTimeout(() => document.getElementById('course-field')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
-        return;
-      }
-    } else if (occupation === 'Working Professional') {
-      if (!jobTitle.trim()) {
-        setErrors({ jobTitle: 'Job title is required.' });
-        setTimeout(() => document.getElementById('jobTitle-field')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
-        return;
-      }
-    } else if (occupation === 'Entrepreneur') {
-      if (!sector.trim()) {
-        setErrors({ sector: 'Field / Sector is required.' });
-        setTimeout(() => document.getElementById('sector-field')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
-        return;
-      }
-    } else if (occupation === 'Research Scholar' || occupation === 'Faculty') {
-      if (!university.trim()) {
-        setErrors({ university: 'University / Institution is required.' });
-        setTimeout(() => document.getElementById('university-field')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
-        return;
-      }
+    if (specialPrograms.includes('Hackathon') && !feeReceiptUrl) {
+      setErrors({ feeReceiptUrl: 'Please upload the Rs 500 fee receipt for the Hackathon.' });
+      setTimeout(() => document.getElementById('hackathon-receipt-field')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+      return;
     }
 
     setIsSubmitting(true);
@@ -235,6 +300,7 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
         district, place, state: 'Kerala', country, occupation, consent,
         technologyInterests: ['AI', 'Development'],
         emergencyContact: whatsAppNumber, foodPreference: 'Veg', accessibilityRequirement: 'None',
+        sessions, specialPrograms, feeReceiptBase64: specialPrograms.includes('Hackathon') ? feeReceiptUrl : null
       };
 
       if (occupation === 'Student') {
@@ -278,7 +344,7 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
         <div className="flex items-center justify-between text-xs font-mono text-slate-400 mb-4">
           <span className="text-purple-600 font-semibold uppercase">SECURE REGISTRATION</span>
           <div className="flex items-center gap-4">
-            <span>STAGE {step} OF 2</span>
+            <span>STAGE {step} OF 3</span>
             <button 
               type="button" 
               onClick={onCancel}
@@ -289,9 +355,9 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
           </div>
         </div>
 
-        {/* 2-Step Wizards Tracker */}
+        {/* 3-Step Wizards Tracker */}
         <div className="flex gap-2.5">
-          {[1, 2].map((num) => (
+          {[1, 2, 3].map((num) => (
             <div 
               key={num} 
               className={`h-[3px] flex-1 rounded-full transition-all duration-500 ${
@@ -737,11 +803,143 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
               {/* OTHER ROLE FIELDS */}
               {occupation === 'Other' && (
                 <div className="py-2 text-center text-xs text-slate-400 font-sans italic">
-                  No additional parameters required. Proceed to validation below.
+                  No additional parameters required. Proceed to next step.
                 </div>
               )}
 
             </div>
+          </motion.div>
+        )}
+
+        {/* STEP 3: Sessions, Programs & Consent */}
+        {step === 3 && (
+          <motion.div
+            initial={{ opacity: 0, x: 10 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="space-y-6"
+          >
+            <div className="border-b border-slate-100 pb-3">
+              <h3 className="text-sm font-orbitron font-bold tracking-[0.05em] text-slate-950 uppercase flex items-center gap-2">
+                <Award size={18} className="text-purple-600" />
+                <span>Sessions & Programs</span>
+              </h3>
+              <p className="text-xs text-slate-400 font-sans mt-0.5">Customize your TECHCON '26 experience</p>
+            </div>
+
+            {/* Sessions Selection */}
+            <div className="space-y-3">
+              <label className="text-[11px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Select Sessions</label>
+              <div className="space-y-2">
+                {[
+                  "Mega Conference",
+                  "Workshop on Cybersecurity Shield a secure digital future",
+                  "Workshop on The imapct of technology on global industrials",
+                  "Workshop on Building tomorrow’s careers thriving the age of AI",
+                  "Presentation and discussion on AI smart village"
+                ].map((sessionName) => {
+                  const isMega = sessionName === "Mega Conference";
+                  return (
+                    <label key={sessionName} className={`flex items-start gap-3 p-3 rounded-xl border ${sessions.includes(sessionName) ? 'border-purple-300 bg-purple-50/50' : 'border-slate-100 bg-white hover:bg-slate-50'} cursor-pointer transition-colors`}>
+                      <input 
+                        type="checkbox"
+                        checked={sessions.includes(sessionName)}
+                        onChange={(e) => {
+                          if (isMega) return; // Cannot uncheck mega conference
+                          if (e.target.checked) {
+                            setSessions([...sessions, sessionName]);
+                          } else {
+                            setSessions(sessions.filter(s => s !== sessionName));
+                          }
+                        }}
+                        disabled={isMega || isDuplicateMobileFound}
+                        className="w-4 h-4 mt-0.5 accent-purple-600 rounded cursor-pointer disabled:opacity-50"
+                      />
+                      <span className={`text-xs font-sans font-medium ${isMega ? 'text-slate-900' : 'text-slate-700'}`}>
+                        {sessionName}
+                        {isMega && <span className="ml-2 inline-block px-1.5 py-0.5 bg-purple-100 text-purple-600 text-[9px] rounded uppercase font-bold tracking-wider">Default</span>}
+                      </span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Special Programs Selection */}
+            <div className="space-y-3 pt-4 border-t border-slate-100">
+              <label className="text-[11px] font-mono tracking-wider text-slate-400 uppercase font-semibold">Special Programs (Optional)</label>
+              <div className="space-y-2">
+                {[
+                  "Hackathon",
+                  "Project Competition",
+                  "Campus Ambassadors"
+                ].map((programName) => (
+                  <label key={programName} className={`flex items-start gap-3 p-3 rounded-xl border ${specialPrograms.includes(programName) ? 'border-brand-pink/50 bg-pink-50/30' : 'border-slate-100 bg-white hover:bg-slate-50'} cursor-pointer transition-colors`}>
+                    <input 
+                      type="checkbox"
+                      checked={specialPrograms.includes(programName)}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSpecialPrograms([...specialPrograms, programName]);
+                        } else {
+                          setSpecialPrograms(specialPrograms.filter(p => p !== programName));
+                        }
+                      }}
+                      disabled={isDuplicateMobileFound}
+                      className="w-4 h-4 mt-0.5 accent-brand-pink rounded cursor-pointer disabled:opacity-50"
+                    />
+                    <span className="text-xs font-sans font-medium text-slate-700">
+                      {programName}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Hackathon Fee Upload */}
+            <AnimatePresence>
+              {specialPrograms.includes('Hackathon') && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="overflow-hidden"
+                >
+                  <div className="bg-orange-50/50 border border-orange-100 p-4 rounded-xl mt-4" id="hackathon-receipt-field">
+                    <label className="text-[11px] font-mono tracking-wider text-orange-600 uppercase font-bold block mb-2">
+                      Hackathon Fee Receipt (Rs. 500) *
+                    </label>
+                    <p className="text-[10px] text-slate-500 mb-3">Please upload a screenshot or image of your payment receipt to complete Hackathon registration.</p>
+                    
+                    <div className="flex items-center gap-4">
+                      <div className="h-20 w-20 bg-white rounded-lg border-2 border-orange-200 border-dashed shrink-0 flex items-center justify-center relative overflow-hidden">
+                        {feeReceiptPreview ? (
+                          <img src={feeReceiptPreview} alt="Receipt Preview" className="w-full h-full object-cover" />
+                        ) : (
+                          <Upload size={20} className="text-orange-300" />
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <input 
+                          type="file" 
+                          accept="image/*" 
+                          id="fee-receipt-upload" 
+                          className="hidden" 
+                          onChange={handleReceiptChange} 
+                          disabled={isDuplicateMobileFound}
+                        />
+                        <label 
+                          htmlFor="fee-receipt-upload" 
+                          className="inline-block px-4 py-2 bg-white border border-orange-200 text-orange-600 font-bold rounded-lg text-xs cursor-pointer hover:bg-orange-50 transition-colors"
+                        >
+                          {feeReceiptUrl ? 'Change Receipt' : 'Upload Receipt'}
+                        </label>
+                      </div>
+                    </div>
+                    {errors.feeReceiptUrl && <span className="text-red-500 text-[10px] font-sans font-medium mt-2 block">{errors.feeReceiptUrl}</span>}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             <div className={`flex items-start gap-3 p-4 bg-slate-50 rounded-2xl border ${errors.consent ? 'border-red-300' : 'border-slate-100/80'}`}>
               <input
@@ -769,10 +967,10 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
 
         {/* Action Controls Footer */}
         <div className="flex items-center justify-between gap-4 border-t border-slate-100 pt-6 mt-8 select-none">
-          {step === 2 ? (
+          {step > 1 ? (
             <button
               type="button"
-              onClick={handlePrevStep}
+              onClick={() => setStep(step - 1)}
               className="px-6 py-2.5 border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-sans font-medium text-xs rounded-full transition-colors"
             >
               PREVIOUS
@@ -787,7 +985,7 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
             </button>
           )}
 
-          {step === 1 ? (
+          {step < 3 ? (
             <button
               type="submit"
               className="px-8 py-2.5 bg-slate-950 hover:bg-purple-600 text-white font-sans font-medium text-xs rounded-full shadow-md transition-all duration-300 disabled:opacity-50"

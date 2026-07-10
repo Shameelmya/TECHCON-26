@@ -35,6 +35,8 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCheckIn, setFilterCheckIn] = useState<'all' | 'checked-in' | 'not-checked-in'>('all');
   const [filterRole, setFilterRole] = useState<'all' | string>('all');
+  const [filterSession, setFilterSession] = useState<'all' | string>('all');
+  const [filterProgram, setFilterProgram] = useState<'all' | string>('all');
   const [activeTab, setActiveTab] = useState<'analytics' | 'checkin' | 'directory' | 'appscript' | 'volunteers' | 'settings'>('analytics');
 
   // Volunteer State
@@ -348,6 +350,8 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
       if (filterCheckIn === 'checked-in' && !a.checkedIn) return false;
       if (filterCheckIn === 'not-checked-in' && a.checkedIn) return false;
       if (filterRole !== 'all' && a.occupation.toLowerCase() !== filterRole.toLowerCase()) return false;
+      if (filterSession !== 'all' && (!a.sessions || !a.sessions.includes(filterSession))) return false;
+      if (filterProgram !== 'all' && (!a.specialPrograms || !a.specialPrograms.includes(filterProgram))) return false;
 
       const query = searchQuery.toLowerCase();
       if (!query) return true;
@@ -355,18 +359,21 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
         a.fullName.toLowerCase().includes(query) ||
         a.email.toLowerCase().includes(query) ||
         a.id.toLowerCase().includes(query) ||
+        a.ticketNumber.toLowerCase().includes(query) ||
         a.mobileNumber.toLowerCase().includes(query) ||
         a.district.toLowerCase().includes(query) ||
         a.occupation.toLowerCase().includes(query) ||
-        (a.place && a.place.toLowerCase().includes(query))
+        (a.place && a.place.toLowerCase().includes(query)) ||
+        (a.sessions && a.sessions.some(s => s.toLowerCase().includes(query))) ||
+        (a.specialPrograms && a.specialPrograms.some(p => p.toLowerCase().includes(query)))
       );
     });
-  }, [attendees, searchQuery, filterCheckIn, filterRole]);
+  }, [attendees, searchQuery, filterCheckIn, filterRole, filterSession, filterProgram]);
 
   // Reset display count when search changes
   useEffect(() => {
     setDisplayCount(50);
-  }, [searchQuery, activeTab, filterCheckIn, filterRole]);
+  }, [searchQuery, activeTab, filterCheckIn, filterRole, filterSession, filterProgram]);
 
   const displayedAttendees = filteredAttendees.slice(0, displayCount);
 
@@ -822,6 +829,30 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
                     <option value="research scholar">Research Scholar</option>
                     <option value="other">Other</option>
                   </select>
+
+                  <select
+                    value={filterSession}
+                    onChange={(e) => setFilterSession(e.target.value)}
+                    className="px-3 py-2.5 bg-slate-50 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-xs text-slate-900 max-w-[150px] truncate"
+                  >
+                    <option value="all">All Sessions</option>
+                    <option value="Mega Conference">Mega Conference</option>
+                    <option value="Workshop on Cybersecurity Shield a secure digital future">WS: Cybersecurity</option>
+                    <option value="Workshop on The imapct of technology on global industrials">WS: Global Industrials</option>
+                    <option value="Workshop on Building tomorrow’s careers thriving the age of AI">WS: AI Careers</option>
+                    <option value="Presentation and discussion on AI smart village">Presentation: AI Smart Village</option>
+                  </select>
+
+                  <select
+                    value={filterProgram}
+                    onChange={(e) => setFilterProgram(e.target.value)}
+                    className="px-3 py-2.5 bg-slate-50 border border-slate-200 focus:border-purple-500 rounded-xl outline-none font-sans text-xs text-slate-900 max-w-[150px] truncate"
+                  >
+                    <option value="all">All Programs</option>
+                    <option value="Hackathon">Hackathon</option>
+                    <option value="Project Competition">Project Competition</option>
+                    <option value="Campus Ambassadors">Campus Ambassadors</option>
+                  </select>
                 </div>
 
                 {/* Exports Actions */}
@@ -854,8 +885,8 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
                         <th className="p-4 text-[10px] font-mono text-slate-400 uppercase font-bold tracking-wider">Registration ID</th>
                         <th className="p-4 text-[10px] font-mono text-slate-400 uppercase font-bold tracking-wider">Full Name</th>
                         <th className="p-4 text-[10px] font-mono text-slate-400 uppercase font-bold tracking-wider">Contact Credentials</th>
-                        <th className="p-4 text-[10px] font-mono text-slate-400 uppercase font-bold tracking-wider">Role</th>
-                        <th className="p-4 text-[10px] font-mono text-slate-400 uppercase font-bold tracking-wider">Place</th>
+                        <th className="p-4 text-[10px] font-mono text-slate-400 uppercase font-bold tracking-wider">Role & Location</th>
+                        <th className="p-4 text-[10px] font-mono text-slate-400 uppercase font-bold tracking-wider">Sessions / Programs</th>
                         <th className="p-4 text-[10px] font-mono text-slate-400 uppercase font-bold tracking-wider text-center">Check-In Status</th>
                       </tr>
                     </thead>
@@ -876,8 +907,27 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
                               <span className="px-2.5 py-1 bg-slate-100 border border-slate-200 text-slate-600 rounded-full text-[10px] font-bold uppercase block w-fit">
                                 {a.occupation}
                               </span>
+                              <span className="text-[10px] text-slate-500 block mt-1">{a.place || 'N/A'}</span>
                             </td>
-                            <td className="p-4 font-medium text-slate-600">{a.place || 'N/A'}</td>
+                            <td className="p-4">
+                              <div className="flex flex-wrap gap-1">
+                                {a.sessions && a.sessions.map((s, idx) => (
+                                  <span key={idx} className="bg-purple-50 text-purple-600 border border-purple-100 px-1.5 py-0.5 rounded text-[9px] uppercase font-bold">
+                                    {s.replace("Workshop on ", "WS: ").replace("Presentation and discussion on ", "PR: ").substring(0, 15)}..
+                                  </span>
+                                ))}
+                                {a.specialPrograms && a.specialPrograms.map((p, idx) => (
+                                  <span key={`p-${idx}`} className="bg-pink-50 text-pink-600 border border-pink-100 px-1.5 py-0.5 rounded text-[9px] uppercase font-bold">
+                                    {p}
+                                  </span>
+                                ))}
+                                {a.feeReceiptUrl && (
+                                  <a href={a.feeReceiptUrl} target="_blank" rel="noreferrer" className="bg-orange-50 text-orange-600 border border-orange-100 px-1.5 py-0.5 rounded text-[9px] uppercase font-bold hover:underline">
+                                    [Receipt]
+                                  </a>
+                                )}
+                              </div>
+                            </td>
                             <td className="p-4 text-center select-none">
                               <button
                                 onClick={() => handleToggleCheckInTable(a)}

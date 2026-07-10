@@ -222,6 +222,32 @@ export default function TicketPass({ registration, onBackToHome }: TicketPassPro
                 )}
               </div>
 
+              {/* Programs Box */}
+              <div className="bg-purple-50/50 border border-purple-100 p-3 rounded-xl space-y-2.5 shadow-sm mt-3">
+                <div className="text-[11px] font-mono">
+                  <span className="text-[9px] text-slate-400 block mb-0.5 uppercase">Registered Sessions</span>
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {(registration.sessions || ['Mega Conference']).map((s, idx) => (
+                      <span key={idx} className="bg-purple-100 text-purple-700 text-[9px] px-1.5 py-0.5 rounded uppercase font-bold tracking-tight">
+                        {s.replace("Workshop on ", "WS: ").replace("Presentation and discussion on ", "Presentation: ")}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                {registration.specialPrograms && registration.specialPrograms.length > 0 && (
+                  <div className="text-[11px] font-mono border-t border-purple-100 pt-2 mt-2">
+                    <span className="text-[9px] text-slate-400 block mb-0.5 uppercase">Special Programs</span>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {registration.specialPrograms.map((p, idx) => (
+                        <span key={idx} className="bg-pink-100 text-pink-700 text-[9px] px-1.5 py-0.5 rounded uppercase font-bold tracking-tight">
+                          {p}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
             </div>
 
             {/* Dashed line on Ticket stub */}

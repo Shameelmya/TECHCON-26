@@ -38,6 +38,11 @@ export interface AttendeeRegistration {
   accessibilityRequirement: string;
   consent: boolean;
 
+  // Selected Sessions & Programs
+  sessions: string[];
+  specialPrograms: string[];
+  feeReceiptUrl?: string; // Optional URL for Hackathon fee receipt
+
   // Administrative / System fields
   verificationToken: string;
   checkedIn: boolean;

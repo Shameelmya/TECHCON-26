@@ -244,7 +244,7 @@ export const exportToCSV = (data: AttendeeRegistration[]) => {
     "Mobile Number", "WhatsApp Number", "Age", "Gender", "District", 
     "State", "Country", "Place", "Occupation", "Student Level", 
     "Institution", "Institution District", "Course", "Department", "Year", "Company", 
-    "Profession", "Industry", "Tech Interests", "Emergency Contact", 
+    "Profession", "Industry", "Tech Interests", "Sessions", "Special Programs", "Fee Receipt", "Emergency Contact", 
     "Food Preference", "Accessibility Req", "Consent", 
     "Checked In", "Check In Time", "Verification Token"
   ];
@@ -279,6 +279,9 @@ export const exportToCSV = (data: AttendeeRegistration[]) => {
       row.profession || '',
       row.industry || '',
       techInterests,
+      Array.isArray(row.sessions) ? row.sessions.join(", ") : '',
+      Array.isArray(row.specialPrograms) ? row.specialPrograms.join(", ") : '',
+      row.feeReceiptUrl || '',
       row.emergencyContact || '',
       row.foodPreference || '',
       row.accessibilityRequirement || '',

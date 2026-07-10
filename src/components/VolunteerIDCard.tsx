@@ -140,7 +140,7 @@ Address: ${volunteer.address}, ${volunteer.district}`;
             style={{
               position: 'absolute',
               left: '442px',
-              top: '250px',
+              top: '280px',
               width: '950px',
               fontFamily: '"Jura", sans-serif',
               fontWeight: 800,
@@ -160,7 +160,7 @@ Address: ${volunteer.address}, ${volunteer.district}`;
             style={{
               position: 'absolute',
               left: '442px',
-              top: '360px',
+              top: '390px',
               display: 'flex',
               alignItems: 'flex-end',
               gap: '53px'

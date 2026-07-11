@@ -88,5 +88,8 @@ export interface VolunteerRegistration {
   district: string;
   institutionDistrict: string;
   photoUrl: string; // Firebase Storage URL
+  volunteerAreas: string[];
+  hearAbout: string;
+  reasonToJoin: string;
   createdAt: string;
 }

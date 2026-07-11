@@ -9,7 +9,7 @@ import { VolunteerRegistration } from '../types';
 interface VolunteerRegistrationFormProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: (volunteer: VolunteerRegistration) => void;
+  onShowIDCard: (volunteer: VolunteerRegistration) => void;
 }
 
 const DISTRICTS = [
@@ -17,10 +17,10 @@ const DISTRICTS = [
   "Ernakulam", "Thrissur", "Palakkad", "Malappuram", "Kozhikode", "Wayanad", "Kannur", "Kasaragod"
 ];
 
-export default function VolunteerRegistrationForm({ isOpen, onClose, onSuccess }: VolunteerRegistrationFormProps) {
+export default function VolunteerRegistrationForm({ isOpen, onClose, onShowIDCard }: VolunteerRegistrationFormProps) {
   const [step, setStep] = useState(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [successVolunteer, setSuccessVolunteer] = useState<VolunteerRegistration | null>(null);
   const isSubmittingRef = useRef(false);
   const [error, setError] = useState('');
   const [showErrorsStep1, setShowErrorsStep1] = useState(false);
@@ -39,6 +39,41 @@ export default function VolunteerRegistrationForm({ isOpen, onClose, onSuccess }
   });
   const [photo, setPhoto] = useState<string | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+
+  const [volunteerAreas, setVolunteerAreas] = useState<string[]>([]);
+  const [hearAbout, setHearAbout] = useState('');
+  const [otherHearAbout, setOtherHearAbout] = useState('');
+  const [reasonToJoin, setReasonToJoin] = useState('');
+  const [otherReason, setOtherReason] = useState('');
+
+  const VOLUNTEER_AREAS_OPTIONS = [
+    'Event Management', 'Marketing & Promotions', 'Social Media', 
+    'Content Writing', 'Graphic Design', 'Photography & Videography', 
+    'Registration Desk', 'Technical Support', 'Stage & Logistics', 
+    'Public Relations', 'Hospitality'
+  ];
+  
+  const HEAR_ABOUT_OPTIONS = ['Instagram', 'WhatsApp', 'LinkedIn', 'College/Faculty', 'Friend', 'Website', 'Other'];
+  const REASON_OPTIONS = [
+    'To gain event management experience', 'To improve my leadership skills', 
+    'To network with industry professionals', 'To learn about technology and innovation', 
+    'To enhance my resume/CV', 'To contribute to a major tech event', 'Other'
+  ];
+
+  const [isIDCardDownloadEnabled, setIsIDCardDownloadEnabled] = useState(false);
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
+  const [downloadId, setDownloadId] = useState('');
+  const [downloadMobile, setDownloadMobile] = useState('');
+  const [downloadError, setDownloadError] = useState('');
+  const [isVerifying, setIsVerifying] = useState(false);
+
+  useEffect(() => {
+    import('../utils/db').then(({ getVolunteerSettings }) => {
+      getVolunteerSettings().then(settings => {
+        setIsIDCardDownloadEnabled(settings.isIDCardDownloadEnabled);
+      });
+    });
+  }, []);
 
   useEffect(() => {
     const cleanNum = formData.mobileNumber.replace(/\D/g, '').slice(-10);
@@ -119,6 +154,10 @@ export default function VolunteerRegistrationForm({ isOpen, onClose, onSuccess }
       setError("Please select all institution and district details.");
       return;
     }
+    if (volunteerAreas.length === 0 || !hearAbout || !reasonToJoin || (hearAbout === 'Other' && !otherHearAbout) || (reasonToJoin === 'Other' && !otherReason)) {
+      setError("Please answer all questionnaire fields.");
+      return;
+    }
     if (!photo) {
       setError("Please upload a passport size photo for your ID Card.");
       return;
@@ -143,6 +182,9 @@ export default function VolunteerRegistrationForm({ isOpen, onClose, onSuccess }
         institution: formData.institution,
         district: formData.district,
         institutionDistrict: formData.institutionDistrict,
+        volunteerAreas,
+        hearAbout: hearAbout === 'Other' ? otherHearAbout : hearAbout,
+        reasonToJoin: reasonToJoin === 'Other' ? otherReason : reasonToJoin,
         photoUrl
       };
 
@@ -161,9 +203,13 @@ export default function VolunteerRegistrationForm({ isOpen, onClose, onSuccess }
       });
       setPhoto(null);
       setPhotoPreview(null);
-      setStep(1);
-      
-      onSuccess(volunteer);
+      setVolunteerAreas([]);
+      setHearAbout('');
+      setOtherHearAbout('');
+      setReasonToJoin('');
+      setOtherReason('');
+      setStep(3);
+      setSuccessVolunteer(volunteer);
 
     } catch (err: any) {
       console.error(err);
@@ -191,9 +237,19 @@ export default function VolunteerRegistrationForm({ isOpen, onClose, onSuccess }
             <h2 className="text-xl font-bold font-orbitron text-white">Volunteer Registration</h2>
             <p className="text-slate-400 text-xs mt-1 font-mono tracking-widest uppercase">TECHCON 2026</p>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-slate-800 rounded-full text-slate-400 hover:text-white transition-colors">
-            <X size={20} />
-          </button>
+          <div className="flex items-center gap-4">
+            {isIDCardDownloadEnabled && step !== 3 && (
+              <button 
+                onClick={() => setShowDownloadModal(true)}
+                className="text-[10px] sm:text-xs font-bold bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-full transition-colors border border-white/20"
+              >
+                Download ID Card
+              </button>
+            )}
+            <button onClick={onClose} className="p-2 hover:bg-slate-800 rounded-full text-slate-400 hover:text-white transition-colors">
+              <X size={20} />
+            </button>
+          </div>
         </div>
 
         <div className="flex-1 overflow-y-auto p-6 sm:p-8" style={{ WebkitOverflowScrolling: 'touch' }}>
@@ -331,6 +387,69 @@ export default function VolunteerRegistrationForm({ isOpen, onClose, onSuccess }
                 </select>
               </div>
 
+              {/* Questionnaire */}
+              <div className="flex flex-col gap-2 pt-2 border-t border-slate-100">
+                <label className="text-[10px] font-mono text-slate-500 uppercase tracking-widest pl-1 font-bold">Which area would you like to volunteer in? (Select one or more) *</label>
+                <div className="flex flex-wrap gap-2">
+                  {VOLUNTEER_AREAS_OPTIONS.map(area => (
+                    <label key={area} className={`px-3 py-2 border rounded-xl text-xs font-sans cursor-pointer transition-colors ${volunteerAreas.includes(area) ? 'bg-purple-100 border-purple-400 text-purple-700 font-bold' : 'bg-slate-50 border-slate-200 text-slate-600'}`}>
+                      <input 
+                        type="checkbox" 
+                        className="hidden" 
+                        checked={volunteerAreas.includes(area)} 
+                        onChange={(e) => {
+                          if (e.target.checked) setVolunteerAreas(prev => [...prev, area]);
+                          else setVolunteerAreas(prev => prev.filter(a => a !== area));
+                        }} 
+                      />
+                      {area}
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2 pt-2 border-t border-slate-100">
+                <label className="text-[10px] font-mono text-slate-500 uppercase tracking-widest pl-1 font-bold">How did you hear about TECHCON'26? *</label>
+                <div className="flex flex-wrap gap-2">
+                  {HEAR_ABOUT_OPTIONS.map(option => (
+                    <label key={option} className={`px-3 py-2 border rounded-xl text-xs font-sans cursor-pointer transition-colors ${hearAbout === option ? 'bg-purple-100 border-purple-400 text-purple-700 font-bold' : 'bg-slate-50 border-slate-200 text-slate-600'}`}>
+                      <input 
+                        type="radio" 
+                        name="hearAbout"
+                        className="hidden" 
+                        checked={hearAbout === option} 
+                        onChange={() => setHearAbout(option)} 
+                      />
+                      {option}
+                    </label>
+                  ))}
+                </div>
+                {hearAbout === 'Other' && (
+                  <input type="text" placeholder="Please specify..." value={otherHearAbout} onChange={e => setOtherHearAbout(e.target.value)} className="mt-1 w-full border-2 rounded-xl px-4 py-3 focus:bg-white focus:border-brand-purple outline-none transition-all text-slate-900 border-slate-200 bg-slate-50" />
+                )}
+              </div>
+
+              <div className="flex flex-col gap-2 pt-2 border-t border-slate-100">
+                <label className="text-[10px] font-mono text-slate-500 uppercase tracking-widest pl-1 font-bold">Why do you want to join TECHCON'26? *</label>
+                <div className="flex flex-col gap-2">
+                  {REASON_OPTIONS.map(option => (
+                    <label key={option} className={`px-3 py-2 border rounded-xl text-xs font-sans cursor-pointer transition-colors ${reasonToJoin === option ? 'bg-purple-100 border-purple-400 text-purple-700 font-bold' : 'bg-slate-50 border-slate-200 text-slate-600'}`}>
+                      <input 
+                        type="radio" 
+                        name="reasonToJoin"
+                        className="hidden" 
+                        checked={reasonToJoin === option} 
+                        onChange={() => setReasonToJoin(option)} 
+                      />
+                      {option}
+                    </label>
+                  ))}
+                </div>
+                {reasonToJoin === 'Other' && (
+                  <input type="text" placeholder="Please specify..." value={otherReason} onChange={e => setOtherReason(e.target.value)} className="mt-1 w-full border-2 rounded-xl px-4 py-3 focus:bg-white focus:border-brand-purple outline-none transition-all text-slate-900 border-slate-200 bg-slate-50" />
+                )}
+              </div>
+
               {/* Photo Upload */}
               <div className="flex flex-col gap-2 pt-2">
                 <label className="text-[10px] font-mono text-slate-500 uppercase tracking-widest pl-1 font-bold">Passport Size Photo (For ID Card) *</label>
@@ -388,8 +507,91 @@ export default function VolunteerRegistrationForm({ isOpen, onClose, onSuccess }
             </motion.div>
           )}
 
+          {step === 3 && successVolunteer && (
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center justify-center py-10 text-center">
+              <div className="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mb-6">
+                <CheckCircle size={40} />
+              </div>
+              <h3 className="text-2xl font-bold text-slate-800 mb-2">Registration Successful!</h3>
+              <p className="text-slate-600 mb-6">Thank you for registering as a volunteer for TECHCON'26.</p>
+              
+              <div className="bg-slate-50 border border-slate-200 rounded-2xl p-6 w-full max-w-sm mb-6">
+                <p className="text-xs text-slate-500 uppercase tracking-widest font-bold mb-2">Your Registration ID</p>
+                <div className="text-3xl font-orbitron font-bold text-brand-purple">{successVolunteer.id}</div>
+                <p className="text-xs text-slate-500 mt-4">Please save this ID. Your Volunteer ID Card will be sent to you later.</p>
+              </div>
+
+              <button 
+                onClick={onClose}
+                className="w-full max-w-sm bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-xl transition-colors"
+              >
+                Done
+              </button>
+            </motion.div>
+          )}
+
         </div>
       </motion.div>
+
+      {/* Download ID Card Modal */}
+      <AnimatePresence>
+        {showDownloadModal && (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setShowDownloadModal(false)} />
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="relative bg-white rounded-3xl overflow-hidden shadow-2xl p-6 sm:p-8 w-full max-w-sm"
+            >
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="font-bold text-lg text-slate-800">Download ID Card</h3>
+                <button onClick={() => setShowDownloadModal(false)} className="text-slate-400 hover:text-slate-800"><X size={20}/></button>
+              </div>
+              
+              {downloadError && (
+                <div className="mb-4 p-3 bg-red-50 text-red-600 text-sm rounded-xl border border-red-100">
+                  {downloadError}
+                </div>
+              )}
+
+              <div className="space-y-4 mb-6">
+                <div>
+                  <label className="text-[10px] font-mono text-slate-500 uppercase font-bold">Volunteer ID</label>
+                  <input type="text" value={downloadId} onChange={e => setDownloadId(e.target.value)} placeholder="e.g. TCVOL-A001" className="w-full border-2 border-slate-100 rounded-xl px-4 py-3 mt-1 focus:border-brand-purple outline-none" />
+                </div>
+                <div>
+                  <label className="text-[10px] font-mono text-slate-500 uppercase font-bold">Mobile Number</label>
+                  <input type="tel" value={downloadMobile} onChange={e => setDownloadMobile(e.target.value)} placeholder="10-digit mobile" className="w-full border-2 border-slate-100 rounded-xl px-4 py-3 mt-1 focus:border-brand-purple outline-none" />
+                </div>
+              </div>
+
+              <button 
+                onClick={async () => {
+                  if(!downloadId || !downloadMobile) { setDownloadError("Fill all fields"); return; }
+                  setIsVerifying(true);
+                  setDownloadError('');
+                  try {
+                    const { verifyVolunteer } = await import('../utils/db');
+                    const vol = await verifyVolunteer(downloadId.trim(), downloadMobile.trim().replace(/\D/g, '').slice(-10));
+                    setShowDownloadModal(false);
+                    onShowIDCard(vol);
+                  } catch(e: any) {
+                    setDownloadError(e.message || "Verification failed");
+                  } finally {
+                    setIsVerifying(false);
+                  }
+                }}
+                disabled={isVerifying}
+                className="w-full bg-brand-purple text-white font-bold py-3 rounded-xl hover:bg-brand-pink transition-colors disabled:opacity-50"
+              >
+                {isVerifying ? 'Verifying...' : 'View ID Card'}
+              </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
     </div>
   );
 }

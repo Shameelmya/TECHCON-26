@@ -169,7 +169,7 @@ export default function TicketPass({ registration, onBackToHome }: TicketPassPro
                   <span className="font-jura font-bold text-lg text-slate-800 tracking-tight">TECHCON <span className="text-brand-pink">26</span></span>
                 </div>
                 <span className="text-[9px] font-mono tracking-[0.1em] text-slate-400 uppercase leading-none mt-1 ml-2">
-                  Organized by msf TechFed
+                  Organized by Techfed Kerala
                 </span>
               </div>
               <div className="flex flex-col items-end">

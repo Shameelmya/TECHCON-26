@@ -25,7 +25,7 @@ const SponsorPDFLayout = forwardRef<HTMLDivElement>((props, ref) => {
             <p className="text-xl text-slate-400">Dates to be Announced<br/>Ernakulam, Kerala</p>
             <div className="pt-6 border-t border-slate-800">
               <p className="text-sm tracking-widest text-slate-500 uppercase">Organised by</p>
-              <p className="text-xl font-bold mt-2">msf TechFed Kerala</p>
+              <p className="text-xl font-bold mt-2">Techfed Kerala</p>
             </div>
             <p className="text-lg font-bold" style={{ color: '#782DFF' }}>Partnering for Kerala's Next Technology Revolution</p>
           </div>

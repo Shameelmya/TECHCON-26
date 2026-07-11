@@ -108,7 +108,7 @@ export default function Loader({ onComplete }: LoaderProps) {
             transition={{ delay: 0.4 }}
           >
             <p className="text-[10px] text-slate-400 font-sans tracking-wide uppercase">
-              organized by <span className="text-slate-700 font-bold font-['Jura'] text-[11px] lowercase">msf techfed</span>
+              organized by <span className="text-slate-700 font-bold font-['Jura'] text-[11px] lowercase">Techfed Kerala</span>
             </p>
           </motion.div>
         </div>

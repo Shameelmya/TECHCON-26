@@ -1001,7 +1001,7 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
               />
               <div className="flex flex-col">
                 <label htmlFor="consent-box" className="text-xs text-slate-500 font-sans leading-relaxed cursor-pointer">
-                  I hereby declare that the details provided are genuine. I consent to receiving official tickets, security alerts, and event updates over Email and WhatsApp. I agree to the privacy policy of msf TechFed and TECHCON '26.
+                  I hereby declare that the details provided are genuine. I consent to receiving official tickets, security alerts, and event updates over Email and WhatsApp. I agree to the privacy policy of Techfed Kerala and TECHCON '26.
                 </label>
                 {errors.consent && <span className="text-red-500 text-[10px] font-sans font-medium mt-1">{errors.consent}</span>}
               </div>

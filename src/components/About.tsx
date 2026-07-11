@@ -23,7 +23,7 @@ export default function About() {
     {
       icon: <Sparkles className="text-brand-blue" size={20} />,
       title: 'Youth & Students Tech Ecosystem',
-      desc: 'Serving as the specialized wing of msf Kerala State Committee, providing an interactive sandbox for machine intelligence, engineering workshops, and digital creation.',
+      desc: 'Serving as the specialized wing of Techfed Kerala, providing an interactive sandbox for machine intelligence, engineering workshops, and digital creation.',
     },
     {
       icon: <Network className="text-indigo-500" size={20} />,
@@ -48,7 +48,7 @@ export default function About() {
             DEFINING THE <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-purple to-brand-blue">FUTURE</span>
           </h2>
           <p className="text-sm font-sans text-slate-500 leading-relaxed max-w-md mx-auto">
-            Organized by <span className="font-bold text-white font-sans">msf TechFed</span>, TECHCON '26 is the flagship technical assembly driving innovation and technological excellence in Kerala. Located at the historic CUSAT campus in Kochi, this conclave is where breakthrough ideas transform into real-world technological solutions.
+            Organized by <span className="font-bold text-white font-sans">Techfed Kerala</span>, TECHCON '26 is the flagship technical assembly driving innovation and technological excellence in Kerala. Located at the historic CUSAT campus in Kochi, this conclave is where breakthrough ideas transform into real-world technological solutions.
           </p>
         </div>
 
@@ -90,7 +90,7 @@ export default function About() {
           ))}
         </div>
 
-        {/* Organizer Section: msf TechFed */}
+        {/* Organizer Section: Techfed Kerala */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.95, y: 15 }}
           whileInView={{ opacity: 1, scale: 1, y: 0 }}
@@ -116,10 +116,10 @@ export default function About() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm font-sans text-slate-400 leading-relaxed">
               <div>
                 <p className="mb-4">
-                  <span className="font-bold text-white font-sans">msf TechFed</span> is an independent technological wing spearheading advanced digital learning, developer training, and student tech ecosystems.
+                  <span className="font-bold text-white font-sans">Techfed Kerala</span> is an independent technological wing spearheading advanced digital learning, developer training, and student tech ecosystems.
                 </p>
                 <p>
-                  As a vital division of msf Kerala State Committee, we create direct platforms where collegiate innovators, high school creators, and tech enthusiasts gain real-world industrial competencies.
+                  As a vital division of Techfed Kerala, we create direct platforms where collegiate innovators, high school creators, and tech enthusiasts gain real-world industrial competencies.
                 </p>
               </div>
               <div className="space-y-4">
@@ -130,7 +130,7 @@ export default function About() {
                   <CheckCircle2 className="text-brand-pink shrink-0 mt-0.5" size={16} />
                   <div>
                     <h5 className="text-xs font-orbitron font-bold text-white uppercase">Youth & Students Tech Ecosystem</h5>
-                    <p className="text-xs text-slate-500 mt-1 leading-normal">The specialised technology and student empowerment cell of msf Kerala State Committee.</p>
+                    <p className="text-xs text-slate-500 mt-1 leading-normal">The specialised technology and student empowerment cell of Techfed Kerala.</p>
                   </div>
                 </motion.div>
               </div>

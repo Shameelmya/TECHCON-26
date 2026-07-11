@@ -11,7 +11,7 @@ import {
   FileSpreadsheet, FileText, Check, AlertCircle, Copy, HelpCircle, User, Trash2, FileSearch, Settings
 } from 'lucide-react';
 import { AttendeeRegistration, AdminStats, VolunteerRegistration } from '../types';
-import { getRegistrations, fetchAllRegistrations, getStats, checkInAttendee, revertCheckIn, exportToCSV, loginAdmin, getSettings, toggleRegistrationStatus, fetchVolunteers, getVolunteerSettings, toggleVolunteerRegistrationStatus, deleteVolunteer, updateVolunteer, getProgramSettings, toggleProgramSetting } from '../utils/db';
+import { getRegistrations, fetchAllRegistrations, getStats, checkInAttendee, revertCheckIn, exportToCSV, loginAdmin, getSettings, toggleRegistrationStatus, fetchVolunteers, getVolunteerSettings, toggleVolunteerRegistrationStatus, toggleVolunteerIDDownloadStatus, deleteVolunteer, updateVolunteer, getProgramSettings, toggleProgramSetting } from '../utils/db';
 import { Html5QrcodeScanner, Html5Qrcode } from 'html5-qrcode';
 import VolunteerIDCard from './VolunteerIDCard';
 import VolunteerEditModal from './VolunteerEditModal';
@@ -44,6 +44,8 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
   const [volunteers, setVolunteers] = useState<VolunteerRegistration[]>([]);
   const [isVolRegOpen, setIsVolRegOpen] = useState(false);
   const [isTogglingVolReg, setIsTogglingVolReg] = useState(false);
+  const [isIDCardDownloadEnabled, setIsIDCardDownloadEnabled] = useState(false);
+  const [isTogglingIDCard, setIsTogglingIDCard] = useState(false);
   const [viewingVolunteer, setViewingVolunteer] = useState<VolunteerRegistration | null>(null);
   const [viewingVolunteerDetails, setViewingVolunteerDetails] = useState<VolunteerRegistration | null>(null);
   const [editingVolunteer, setEditingVolunteer] = useState<VolunteerRegistration | null>(null);
@@ -76,7 +78,8 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
       const volList = await fetchVolunteers(password);
       setVolunteers(volList);
       const volRegState = await getVolunteerSettings();
-      setIsVolRegOpen(volRegState);
+      setIsVolRegOpen(volRegState.isOpen);
+      setIsIDCardDownloadEnabled(volRegState.isIDCardDownloadEnabled);
       const progSettings = await getProgramSettings();
       setProgramSettings(progSettings);
     } catch (e) {
@@ -315,6 +318,20 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
       alert(e.message || "Failed to toggle volunteer registration.");
     } finally {
       setIsTogglingVolReg(false);
+    }
+  };
+
+  const handleToggleIDCardDownload = async () => {
+    if (isTogglingIDCard) return;
+    setIsTogglingIDCard(true);
+    try {
+      const newState = !isIDCardDownloadEnabled;
+      await toggleIDCardDownloadStatus(newState, password);
+      setIsIDCardDownloadEnabled(newState);
+    } catch (e: any) {
+      alert(e.message || "Failed to toggle ID card download status.");
+    } finally {
+      setIsTogglingIDCard(false);
     }
   };
 
@@ -1238,6 +1255,21 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
                       className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors disabled:opacity-50 ${isVolRegOpen ? 'bg-emerald-500' : 'bg-slate-600'}`}
                     >
                       <span className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${isVolRegOpen ? 'translate-x-7' : 'translate-x-1'}`} />
+                    </button>
+                  </div>
+
+                  {/* Volunteer ID Card Download */}
+                  <div className="flex items-center justify-between p-4 bg-slate-900 rounded-xl border border-slate-700">
+                    <div>
+                      <h4 className="font-bold text-white">Volunteer ID Card Download</h4>
+                      <p className="text-xs text-slate-400">Controls if volunteers can download their ID cards.</p>
+                    </div>
+                    <button 
+                      onClick={handleToggleIDCardDownload}
+                      disabled={isTogglingIDCard}
+                      className={`relative inline-flex h-8 w-14 items-center rounded-full transition-colors disabled:opacity-50 ${isIDCardDownloadEnabled ? 'bg-emerald-500' : 'bg-slate-600'}`}
+                    >
+                      <span className={`inline-block h-6 w-6 transform rounded-full bg-white transition-transform ${isIDCardDownloadEnabled ? 'translate-x-7' : 'translate-x-1'}`} />
                     </button>
                   </div>
                 </div>

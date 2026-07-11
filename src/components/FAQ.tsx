@@ -5,7 +5,7 @@ import { ChevronDown, MessageSquare } from 'lucide-react';
 const faqs: { question: string; answer: React.ReactNode }[] = [
   {
     question: "What is TECHCON '26?",
-    answer: "TECHCON '26 is a premier national technology conference organized by msf TechFed, bringing together students, professionals, and industry leaders to explore the latest advancements in AI, networking, and software engineering."
+    answer: "TECHCON '26 is a premier national technology conference organized by Techfed Kerala, bringing together students, professionals, and industry leaders to explore the latest advancements in AI, networking, and software engineering."
   },
   {
     question: "Who can attend the conference?",
@@ -36,7 +36,7 @@ const faqs: { question: string; answer: React.ReactNode }[] = [
   },
   {
     question: "Who are the organizers?",
-    answer: "TECHCON '26 is officially organized by msf TechFed Kerala, aimed at driving technological revolution and student empowerment across the region."
+    answer: "TECHCON '26 is officially organized by Techfed Kerala, aimed at driving technological revolution and student empowerment across the region."
   },
   {
     question: "How can I sponsor the event?",

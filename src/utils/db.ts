@@ -503,20 +503,40 @@ export const fetchVolunteers = async (password: string): Promise<VolunteerRegist
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 };
 
-export const getVolunteerSettings = async (): Promise<boolean> => {
+export const getVolunteerSettings = async (): Promise<{isOpen: boolean, isIDCardDownloadEnabled: boolean}> => {
   try {
     const settingsDoc = await getDoc(doc(db, 'settings', 'volunteer-registration'));
     if (settingsDoc.exists()) {
-      return settingsDoc.data().isOpen;
+      const data = settingsDoc.data();
+      return { 
+        isOpen: data.isOpen || false, 
+        isIDCardDownloadEnabled: data.isIDCardDownloadEnabled || false 
+      };
     }
-    return false; // Default false
+    return { isOpen: false, isIDCardDownloadEnabled: false };
   } catch (e) {
-    return false;
+    return { isOpen: false, isIDCardDownloadEnabled: false };
   }
 };
 
 export const toggleVolunteerRegistrationStatus = async (isOpen: boolean, password: string): Promise<void> => {
-  await setDoc(doc(db, 'settings', 'volunteer-registration'), { isOpen });
+  await setDoc(doc(db, 'settings', 'volunteer-registration'), { isOpen }, { merge: true });
+};
+
+export const toggleVolunteerIDDownloadStatus = async (isIDCardDownloadEnabled: boolean, password: string): Promise<void> => {
+  await setDoc(doc(db, 'settings', 'volunteer-registration'), { isIDCardDownloadEnabled }, { merge: true });
+};
+
+export const verifyVolunteer = async (id: string, mobileNumber: string): Promise<VolunteerRegistration> => {
+  const vDoc = await getDoc(doc(db, 'volunteers', id));
+  if (!vDoc.exists()) {
+    throw new Error('Volunteer not found');
+  }
+  const data = vDoc.data() as VolunteerRegistration;
+  if (data.mobileNumber !== mobileNumber) {
+    throw new Error('Mobile number mismatch');
+  }
+  return data;
 };
 
 export const deleteVolunteer = async (id: string, password: string): Promise<void> => {

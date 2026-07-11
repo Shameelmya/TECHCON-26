@@ -10,7 +10,7 @@ export default function CalendarCard() {
   const handleAddToCalendar = () => {
     const title = encodeURIComponent("TECHCON '26 - Defining the Future");
     const dates = "20260715T030000Z/20260715T123000Z"; // 08:30 AM to 06:00 PM IST (represented in UTC format)
-    const details = encodeURIComponent("TECHCON '26 organized by msf TechFed. India's premium technology conference featuring deep-dive technical tracks, hands-on development sandbox labs, youth tech innovation pitch battles, and executive networking mixers.");
+    const details = encodeURIComponent("TECHCON '26 organized by Techfed Kerala. India's premium technology conference featuring deep-dive technical tracks, hands-on development sandbox labs, youth tech innovation pitch battles, and executive networking mixers.");
     const location = encodeURIComponent("Cochin University of Science and Technology (CUSAT), Kalamassery, Kochi, Kerala, India");
     
     const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}&location=${location}&sf=true&output=xml`;

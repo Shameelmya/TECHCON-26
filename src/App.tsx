@@ -277,7 +277,7 @@ export default function App() {
                     Terms & Conditions
                   </a>
                 </div>
-                <p className="font-mono text-xs opacity-60">&copy; {new Date().getFullYear()} TECHCON 26 | msf TechFed. All rights reserved.</p>
+                <p className="font-mono text-xs opacity-60">&copy; {new Date().getFullYear()} TECHCON 26 | Techfed Kerala. All rights reserved.</p>
               </footer>
 
             </main>
@@ -494,7 +494,7 @@ export default function App() {
           <VolunteerRegistrationForm 
             isOpen={isVolunteerOpen && !activeVolunteer} 
             onClose={() => window.location.hash = ''} 
-            onSuccess={(vol) => setActiveVolunteer(vol)} 
+            onShowIDCard={(vol) => setActiveVolunteer(vol)} 
           />
           {activeVolunteer && (
             <VolunteerIDCard 
@@ -552,7 +552,7 @@ export default function App() {
                   TECHCON '26
                 </span>
                 <p className="text-xs text-slate-400 max-w-sm leading-relaxed">
-                  The flagship technological assembly defining tomorrow's computational infrastructure, neural networks, and interactive platforms. Organized independently by msf TechFed.
+                  The flagship technological assembly defining tomorrow's computational infrastructure, neural networks, and interactive platforms. Organized independently by Techfed Kerala.
                 </p>
                 <div className="flex items-center gap-2 text-[10px] font-mono text-purple-400 bg-purple-500/10 border border-purple-500/20 px-3 py-1 rounded-full w-fit">
                   <Award size={12} />
@@ -575,7 +575,7 @@ export default function App() {
               <div className="md:col-span-4 space-y-3">
                 <h4 className="text-xs font-mono font-bold text-white uppercase tracking-widest">LEGAL & RESOURCES</h4>
                 <p className="text-xs text-slate-500 leading-relaxed max-w-xs">
-                  For inquiries, press relations, and registration inquiries, contact the msf TechFed central organizing wing.
+                  For inquiries, press relations, and registration inquiries, contact the Techfed Kerala central organizing wing.
                 </p>
                 <div className="text-[10px] font-mono text-slate-500 mt-2 space-y-1">
                   <div>EMAIL: <span className="font-mono lowercase text-brand-blue">team@techcon26.org</span></div>
@@ -603,7 +603,7 @@ export default function App() {
             {/* Bottom Credits line */}
             <div className="max-w-7xl mx-auto relative z-10 border-t border-slate-900 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] font-mono text-slate-500">
               <div className="flex items-center gap-1">
-                <span>© 2026 msf TechFed. All rights reserved.</span>
+                <span>© 2026 Techfed Kerala. All rights reserved.</span>
               </div>
               <div className="flex items-center gap-2.5">
                 <button

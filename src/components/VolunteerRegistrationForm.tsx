@@ -68,12 +68,14 @@ export default function VolunteerRegistrationForm({ isOpen, onClose, onShowIDCar
   const [isVerifying, setIsVerifying] = useState(false);
 
   useEffect(() => {
-    import('../utils/db').then(({ getVolunteerSettings }) => {
-      getVolunteerSettings().then(settings => {
-        setIsIDCardDownloadEnabled(settings.isIDCardDownloadEnabled);
+    if (isOpen) {
+      import('../utils/db').then(({ getVolunteerSettings }) => {
+        getVolunteerSettings().then(settings => {
+          setIsIDCardDownloadEnabled(settings.isIDCardDownloadEnabled);
+        });
       });
-    });
-  }, []);
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     const cleanNum = formData.mobileNumber.replace(/\D/g, '').slice(-10);

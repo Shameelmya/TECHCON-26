@@ -486,7 +486,7 @@ export const submitVolunteer = async (data: Omit<VolunteerRegistration, 'id' | '
   const countSnapshot = await getCountFromServer(volunteersRef);
   const totalCount = countSnapshot.data().count;
   
-  const id = `TCVOL-${String(totalCount + 1).padStart(3, '0')}`;
+  const id = `TCVOL${String(totalCount + 1).padStart(3, '0')}`;
   const createdAt = new Date().toISOString();
   
   const newVolunteer: VolunteerRegistration = { ...data, id, createdAt };

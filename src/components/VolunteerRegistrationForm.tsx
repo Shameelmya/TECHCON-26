@@ -136,12 +136,23 @@ export default function VolunteerRegistrationForm({ isOpen, onClose, onShowIDCar
 
   const validateStep1 = () => {
     setShowErrorsStep1(true);
-    if (!formData.fullName || !formData.age || !formData.address || !formData.mobileNumber || !formData.whatsAppNumber) {
-      setError("Please fill all required fields in step 1.");
+    let missingField = '';
+    
+    if (!formData.fullName) missingField = 'fullName';
+    else if (!formData.age) missingField = 'age';
+    else if (!formData.address) missingField = 'address';
+    else if (!formData.mobileNumber) missingField = 'mobileNumber';
+    else if (!formData.whatsAppNumber) missingField = 'whatsAppNumber';
+    
+    if (missingField) {
+      setError(`Please fill the missing mandatory field: ${missingField.replace(/([A-Z])/g, ' $1').toLowerCase()}`);
+      document.getElementById(missingField)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return false;
     }
+    
     if (!/^\d{10}$/.test(formData.mobileNumber.replace(/\D/g, '').slice(-10))) {
       setError("Please enter a valid 10-digit mobile number.");
+      document.getElementById('mobileNumber')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return false;
     }
     setError('');
@@ -152,16 +163,37 @@ export default function VolunteerRegistrationForm({ isOpen, onClose, onShowIDCar
     if (isSubmittingRef.current) return;
     
     setShowErrorsStep2(true);
-    if (!formData.institution || !formData.district || !formData.institutionDistrict) {
-      setError("Please select all institution and district details.");
+    let missingField = '';
+    
+    if (!formData.district) missingField = 'district';
+    else if (!formData.institution) missingField = 'institution';
+    else if (!formData.institutionDistrict) missingField = 'institutionDistrict';
+    
+    if (missingField) {
+      setError(`Please select the ${missingField.replace(/([A-Z])/g, ' $1').toLowerCase()}`);
+      document.getElementById(missingField)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
-    if (volunteerAreas.length === 0 || !hearAbout || !reasonToJoin || (hearAbout === 'Other' && !otherHearAbout) || (reasonToJoin === 'Other' && !otherReason)) {
-      setError("Please answer all questionnaire fields.");
+    
+    if (volunteerAreas.length === 0) {
+      setError("Please select at least one volunteer area.");
+      document.getElementById('volunteerAreas')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
+    if (!hearAbout || (hearAbout === 'Other' && !otherHearAbout)) {
+      setError("Please tell us how you heard about TECHCON'26.");
+      document.getElementById('hearAbout')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    if (!reasonToJoin || (reasonToJoin === 'Other' && !otherReason)) {
+      setError("Please tell us why you want to join.");
+      document.getElementById('reasonToJoin')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    
     if (!photo) {
       setError("Please upload a passport size photo for your ID Card.");
+      document.getElementById('photo-upload')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
 
@@ -265,9 +297,10 @@ export default function VolunteerRegistrationForm({ isOpen, onClose, onShowIDCar
           {step === 1 && (
             <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="space-y-5">
               <div className="flex flex-col gap-2">
-                <label className="text-[10px] font-mono text-slate-500 uppercase tracking-widest pl-1 font-bold">Full Name *</label>
+                <label className={`text-[10px] font-mono uppercase tracking-widest pl-1 font-bold ${showErrorsStep1 && !formData.fullName ? 'text-red-500' : 'text-slate-500'}`}>Full Name *</label>
                 <input 
                   type="text" 
+                  id="fullName"
                   value={formData.fullName}
                   onChange={e => setFormData({...formData, fullName: e.target.value})}
                   className={`w-full border-2 rounded-xl px-4 py-3 focus:bg-white focus:border-brand-purple outline-none transition-all text-slate-900 ${showErrorsStep1 && !formData.fullName ? 'border-red-500 bg-red-50' : 'border-slate-100 bg-slate-50'}`} 
@@ -276,9 +309,10 @@ export default function VolunteerRegistrationForm({ isOpen, onClose, onShowIDCar
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col gap-2">
-                  <label className="text-[10px] font-mono text-slate-500 uppercase tracking-widest pl-1 font-bold">Age *</label>
+                  <label className={`text-[10px] font-mono uppercase tracking-widest pl-1 font-bold ${showErrorsStep1 && !formData.age ? 'text-red-500' : 'text-slate-500'}`}>Age *</label>
                   <input 
                     type="number" 
+                    id="age"
                     value={formData.age}
                     onChange={e => setFormData({...formData, age: e.target.value})}
                     className={`w-full border-2 rounded-xl px-4 py-3 focus:bg-white focus:border-brand-purple outline-none transition-all text-slate-900 ${showErrorsStep1 && !formData.age ? 'border-red-500 bg-red-50' : 'border-slate-100 bg-slate-50'}`} 
@@ -287,6 +321,7 @@ export default function VolunteerRegistrationForm({ isOpen, onClose, onShowIDCar
                 <div className="flex flex-col gap-2">
                   <label className="text-[10px] font-mono text-slate-500 uppercase tracking-widest pl-1 font-bold">Gender *</label>
                   <select 
+                    id="gender"
                     value={formData.gender}
                     onChange={e => setFormData({...formData, gender: e.target.value})}
                     className="w-full bg-slate-50 border-2 border-slate-100 rounded-xl px-4 py-3 focus:bg-white focus:border-brand-purple outline-none transition-all text-slate-900"
@@ -299,9 +334,10 @@ export default function VolunteerRegistrationForm({ isOpen, onClose, onShowIDCar
               </div>
 
               <div className="flex flex-col gap-2">
-                <label className="text-[10px] font-mono text-slate-500 uppercase tracking-widest pl-1 font-bold">Place *</label>
+                <label className={`text-[10px] font-mono uppercase tracking-widest pl-1 font-bold ${showErrorsStep1 && !formData.address ? 'text-red-500' : 'text-slate-500'}`}>Place *</label>
                 <input 
                   type="text"
+                  id="address"
                   value={formData.address}
                   onChange={e => setFormData({...formData, address: e.target.value})}
                   className={`w-full border-2 rounded-xl px-4 py-3 focus:bg-white focus:border-brand-purple outline-none transition-all text-slate-900 ${showErrorsStep1 && !formData.address ? 'border-red-500 bg-red-50' : 'border-slate-100 bg-slate-50'}`} 
@@ -310,9 +346,10 @@ export default function VolunteerRegistrationForm({ isOpen, onClose, onShowIDCar
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-2">
-                  <label className="text-[10px] font-mono text-slate-500 uppercase tracking-widest pl-1 font-bold">Mobile No. *</label>
+                  <label className={`text-[10px] font-mono uppercase tracking-widest pl-1 font-bold ${showErrorsStep1 && !formData.mobileNumber ? 'text-red-500' : 'text-slate-500'}`}>Mobile No. *</label>
                   <input 
                     type="tel" 
+                    id="mobileNumber"
                     value={formData.mobileNumber}
                     onChange={e => setFormData({...formData, mobileNumber: e.target.value})}
                     className={`w-full border-2 rounded-xl px-4 py-3 focus:bg-white focus:border-brand-purple outline-none transition-all text-slate-900 ${showErrorsStep1 && !formData.mobileNumber ? 'border-red-500 bg-red-50' : 'border-slate-100 bg-slate-50'}`} 
@@ -320,7 +357,7 @@ export default function VolunteerRegistrationForm({ isOpen, onClose, onShowIDCar
                 </div>
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center justify-between">
-                    <label className="text-[10px] font-mono text-slate-500 uppercase tracking-widest pl-1 font-bold">WhatsApp No. *</label>
+                    <label className={`text-[10px] font-mono uppercase tracking-widest pl-1 font-bold ${showErrorsStep1 && !formData.whatsAppNumber ? 'text-red-500' : 'text-slate-500'}`}>WhatsApp No. *</label>
                     <label className="flex items-center gap-1.5 text-[10px] text-brand-purple cursor-pointer font-bold bg-purple-50 px-2 py-0.5 rounded-full hover:bg-purple-100 transition-colors">
                       <input 
                         type="checkbox" 
@@ -336,6 +373,7 @@ export default function VolunteerRegistrationForm({ isOpen, onClose, onShowIDCar
                   </div>
                   <input 
                     type="tel" 
+                    id="whatsAppNumber"
                     value={formData.whatsAppNumber}
                     onChange={e => setFormData({...formData, whatsAppNumber: e.target.value})}
                     className={`w-full border-2 rounded-xl px-4 py-3 focus:bg-white focus:border-brand-purple outline-none transition-all text-slate-900 ${showErrorsStep1 && !formData.whatsAppNumber ? 'border-red-500 bg-red-50' : 'border-slate-100 bg-slate-50'}`} 
@@ -356,8 +394,9 @@ export default function VolunteerRegistrationForm({ isOpen, onClose, onShowIDCar
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="space-y-5">
               
               <div className="flex flex-col gap-2">
-                <label className="text-[10px] font-mono text-slate-500 uppercase tracking-widest pl-1 font-bold">Your District *</label>
+                <label className={`text-[10px] font-mono uppercase tracking-widest pl-1 font-bold ${showErrorsStep2 && !formData.district ? 'text-red-500' : 'text-slate-500'}`}>Your District *</label>
                 <select 
+                  id="district"
                   value={formData.district}
                   onChange={e => setFormData({...formData, district: e.target.value})}
                   className={`w-full border-2 rounded-xl px-4 py-3 focus:bg-white focus:border-brand-purple outline-none transition-all text-slate-900 ${showErrorsStep2 && !formData.district ? 'border-red-500 bg-red-50' : 'border-slate-100 bg-slate-50'}`}
@@ -368,9 +407,10 @@ export default function VolunteerRegistrationForm({ isOpen, onClose, onShowIDCar
               </div>
 
               <div className="flex flex-col gap-2">
-                <label className="text-[10px] font-mono text-slate-500 uppercase tracking-widest pl-1 font-bold">Institution Name *</label>
+                <label className={`text-[10px] font-mono uppercase tracking-widest pl-1 font-bold ${showErrorsStep2 && !formData.institution ? 'text-red-500' : 'text-slate-500'}`}>Institution Name *</label>
                 <input 
                   type="text" 
+                  id="institution"
                   value={formData.institution}
                   onChange={e => setFormData({...formData, institution: e.target.value})}
                   className={`w-full border-2 rounded-xl px-4 py-3 focus:bg-white focus:border-brand-purple outline-none transition-all text-slate-900 ${showErrorsStep2 && !formData.institution ? 'border-red-500 bg-red-50' : 'border-slate-100 bg-slate-50'}`} 
@@ -378,8 +418,9 @@ export default function VolunteerRegistrationForm({ isOpen, onClose, onShowIDCar
               </div>
 
               <div className="flex flex-col gap-2">
-                <label className="text-[10px] font-mono text-slate-500 uppercase tracking-widest pl-1 font-bold">Institution District *</label>
+                <label className={`text-[10px] font-mono uppercase tracking-widest pl-1 font-bold ${showErrorsStep2 && !formData.institutionDistrict ? 'text-red-500' : 'text-slate-500'}`}>Institution District *</label>
                 <select 
+                  id="institutionDistrict"
                   value={formData.institutionDistrict}
                   onChange={e => setFormData({...formData, institutionDistrict: e.target.value})}
                   className={`w-full border-2 rounded-xl px-4 py-3 focus:bg-white focus:border-brand-purple outline-none transition-all text-slate-900 ${showErrorsStep2 && !formData.institutionDistrict ? 'border-red-500 bg-red-50' : 'border-slate-100 bg-slate-50'}`}
@@ -390,8 +431,8 @@ export default function VolunteerRegistrationForm({ isOpen, onClose, onShowIDCar
               </div>
 
               {/* Questionnaire */}
-              <div className="flex flex-col gap-2 pt-2 border-t border-slate-100">
-                <label className="text-[10px] font-mono text-slate-500 uppercase tracking-widest pl-1 font-bold">Which area would you like to volunteer in? (Select one or more) *</label>
+              <div className="flex flex-col gap-2 pt-2 border-t border-slate-100" id="volunteerAreas">
+                <label className={`text-[10px] font-mono uppercase tracking-widest pl-1 font-bold ${showErrorsStep2 && volunteerAreas.length === 0 ? 'text-red-500' : 'text-slate-500'}`}>Which area would you like to volunteer in? (Select one or more) *</label>
                 <div className="flex flex-wrap gap-2">
                   {VOLUNTEER_AREAS_OPTIONS.map(area => (
                     <label key={area} className={`px-3 py-2 border rounded-xl text-xs font-sans cursor-pointer transition-colors ${volunteerAreas.includes(area) ? 'bg-purple-100 border-purple-400 text-purple-700 font-bold' : 'bg-slate-50 border-slate-200 text-slate-600'}`}>
@@ -410,8 +451,8 @@ export default function VolunteerRegistrationForm({ isOpen, onClose, onShowIDCar
                 </div>
               </div>
 
-              <div className="flex flex-col gap-2 pt-2 border-t border-slate-100">
-                <label className="text-[10px] font-mono text-slate-500 uppercase tracking-widest pl-1 font-bold">How did you hear about TECHCON'26? *</label>
+              <div className="flex flex-col gap-2 pt-2 border-t border-slate-100" id="hearAbout">
+                <label className={`text-[10px] font-mono uppercase tracking-widest pl-1 font-bold ${showErrorsStep2 && !hearAbout ? 'text-red-500' : 'text-slate-500'}`}>How did you hear about TECHCON'26? *</label>
                 <div className="flex flex-wrap gap-2">
                   {HEAR_ABOUT_OPTIONS.map(option => (
                     <label key={option} className={`px-3 py-2 border rounded-xl text-xs font-sans cursor-pointer transition-colors ${hearAbout === option ? 'bg-purple-100 border-purple-400 text-purple-700 font-bold' : 'bg-slate-50 border-slate-200 text-slate-600'}`}>
@@ -431,8 +472,8 @@ export default function VolunteerRegistrationForm({ isOpen, onClose, onShowIDCar
                 )}
               </div>
 
-              <div className="flex flex-col gap-2 pt-2 border-t border-slate-100">
-                <label className="text-[10px] font-mono text-slate-500 uppercase tracking-widest pl-1 font-bold">Why do you want to join TECHCON'26? *</label>
+              <div className="flex flex-col gap-2 pt-2 border-t border-slate-100" id="reasonToJoin">
+                <label className={`text-[10px] font-mono uppercase tracking-widest pl-1 font-bold ${showErrorsStep2 && !reasonToJoin ? 'text-red-500' : 'text-slate-500'}`}>Why do you want to join TECHCON'26? *</label>
                 <div className="flex flex-col gap-2">
                   {REASON_OPTIONS.map(option => (
                     <label key={option} className={`px-3 py-2 border rounded-xl text-xs font-sans cursor-pointer transition-colors ${reasonToJoin === option ? 'bg-purple-100 border-purple-400 text-purple-700 font-bold' : 'bg-slate-50 border-slate-200 text-slate-600'}`}>
@@ -454,7 +495,7 @@ export default function VolunteerRegistrationForm({ isOpen, onClose, onShowIDCar
 
               {/* Photo Upload */}
               <div className="flex flex-col gap-2 pt-2">
-                <label className="text-[10px] font-mono text-slate-500 uppercase tracking-widest pl-1 font-bold">Passport Size Photo (For ID Card) *</label>
+                <label className={`text-[10px] font-mono uppercase tracking-widest pl-1 font-bold ${showErrorsStep2 && !photo ? 'text-red-500' : 'text-slate-500'}`}>Passport Size Photo (For ID Card) *</label>
                 <div className="mt-1 flex items-center gap-4">
                   <div className="h-24 w-20 bg-slate-100 rounded-lg overflow-hidden border-2 border-slate-200 border-dashed shrink-0 flex items-center justify-center relative">
                     {photoPreview ? (
@@ -485,6 +526,13 @@ export default function VolunteerRegistrationForm({ isOpen, onClose, onShowIDCar
                 </div>
                 {showErrorsStep2 && !photo && <p className="text-red-500 text-xs mt-1 font-bold">Please upload a photo.</p>}
               </div>
+
+              {error && step === 2 && error.toLowerCase().includes('already') && (
+                <div className="p-4 bg-red-50 border border-red-100 rounded-xl flex items-start gap-3 mt-4">
+                  <span className="text-red-500 font-bold">Error:</span>
+                  <p className="text-red-700 text-sm leading-tight">{error}</p>
+                </div>
+              )}
 
               <div className="flex gap-3 pt-6">
                 <button 
@@ -524,10 +572,10 @@ export default function VolunteerRegistrationForm({ isOpen, onClose, onShowIDCar
               </div>
 
               <button 
-                onClick={onClose}
+                onClick={() => setStep(1)}
                 className="w-full max-w-sm bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-xl transition-colors"
               >
-                Done
+                Register Another Volunteer
               </button>
             </motion.div>
           )}

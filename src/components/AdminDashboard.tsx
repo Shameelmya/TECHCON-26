@@ -326,7 +326,7 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
     setIsTogglingIDCard(true);
     try {
       const newState = !isIDCardDownloadEnabled;
-      await toggleIDCardDownloadStatus(newState, password);
+      await toggleVolunteerIDDownloadStatus(newState, password);
       setIsIDCardDownloadEnabled(newState);
     } catch (e: any) {
       alert(e.message || "Failed to toggle ID card download status.");

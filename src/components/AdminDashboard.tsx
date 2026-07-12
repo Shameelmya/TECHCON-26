@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   Lock, CheckCircle, XCircle, Search, LogOut, Download, 
   Send, Users, QrCode, ClipboardList, Shield, RefreshCw, BarChart3, 
-  FileSpreadsheet, FileText, Check, AlertCircle, Copy, HelpCircle, User, Trash2, FileSearch, Settings
+  FileSpreadsheet, FileText, Check, AlertCircle, Copy, HelpCircle, User, Trash2, FileSearch, Settings, Network
 } from 'lucide-react';
 import { AttendeeRegistration, AdminStats, VolunteerRegistration } from '../types';
 import { getRegistrations, fetchAllRegistrations, getStats, checkInAttendee, revertCheckIn, exportToCSV, loginAdmin, getSettings, toggleRegistrationStatus, fetchVolunteers, getVolunteerSettings, toggleVolunteerRegistrationStatus, toggleVolunteerIDDownloadStatus, deleteVolunteer, updateVolunteer, getProgramSettings, toggleProgramSetting, getCampusAmbassadors } from '../utils/db';

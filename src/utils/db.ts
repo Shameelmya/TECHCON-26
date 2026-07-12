@@ -444,20 +444,14 @@ export const addEventToRegistration = async (id: string, mobileNumber: string, e
 };
 
 export const fetchPass = async (fullName: string, mobileNumber: string): Promise<any> => {
-  try {
-    const res = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ action: 'getPass', fullName, mobileNumber })
-    });
-    const data = await res.json();
-    if (data.status === 'success') {
-      return data.ticket;
-    }
-    throw new Error(data.message || 'Ticket not found.');
-  } catch (err) {
-    throw err;
+  const list = getRegistrations();
+  const reg = list.find(r => r.fullName.toLowerCase().trim() === fullName.toLowerCase().trim() && r.mobileNumber === mobileNumber);
+  
+  if (reg) {
+    return reg;
   }
+  
+  throw new Error("Invalid Name or Mobile Number. Pass not found.");
 };
 
 // ==========================================
@@ -597,4 +591,16 @@ export const getCampusAmbassadors = async (password: string): Promise<any[]> => 
   
   const snapshot = await getDocs(collection(db, 'campus_ambassadors'));
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+};
+
+export const updateCampusAmbassadorStatus = async (id: string, status: 'pending' | 'approved', password: string): Promise<void> => {
+  const isValid = await loginAdmin(password);
+  if (!isValid) throw new Error("Unauthorized");
+  await updateDoc(doc(db, 'campus_ambassadors', id), { status });
+};
+
+export const deleteCampusAmbassador = async (id: string, password: string): Promise<void> => {
+  const isValid = await loginAdmin(password);
+  if (!isValid) throw new Error("Unauthorized");
+  await deleteDoc(doc(db, 'campus_ambassadors', id));
 };

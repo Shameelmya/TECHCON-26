@@ -96,8 +96,11 @@ export default function AddOnRegistrationModal({ eventName, isSpecialProgram, on
     setErrorMsg(null);
     try {
       const updated = await addEventToRegistration(id, mobile, eventName, isSpecialProgram, feeReceiptUrl || undefined);
-      if (onSuccess) onSuccess(updated);
-      onClose();
+      if (onSuccess) {
+        onSuccess(updated);
+      } else {
+        onClose();
+      }
     } catch (e: any) {
       setErrorMsg(e.message || "Failed to register for the event.");
     } finally {

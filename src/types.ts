@@ -93,3 +93,13 @@ export interface VolunteerRegistration {
   reasonToJoin: string;
   createdAt: string;
 }
+
+export interface CampusAmbassador {
+  id: string; // References AttendeeRegistration ID
+  fullName: string;
+  mobileNumber: string;
+  email: string;
+  institution: string;
+  status: 'pending' | 'approved';
+  createdAt: string;
+}

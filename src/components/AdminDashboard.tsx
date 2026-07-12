@@ -57,9 +57,13 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
   const [foundAttendee, setFoundAttendee] = useState<AttendeeRegistration | null>(null);
   const [isCameraActive, setIsCameraActive] = useState(false);
 
-  // Copy success indicator
   const [copiedCode, setCopiedCode] = useState(false);
   const [isProcessingAttendance, setIsProcessingAttendance] = useState(false);
+
+  // --- Campus Ambassador States ---
+  const [ambassadorSort, setAmbassadorSort] = useState<'all' | 'pending' | 'approved'>('all');
+  const [ambassadorToDelete, setAmbassadorToDelete] = useState<CampusAmbassador | null>(null);
+  const [isProcessingAmbassador, setIsProcessingAmbassador] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -372,6 +376,128 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const filteredAmbassadors = useMemo(() => {
+    let list = [...ambassadors];
+    if (ambassadorSort !== 'all') {
+      list = list.filter(a => a.status === ambassadorSort);
+    }
+    // Sort logic (Pending first, then by date)
+    list.sort((a, b) => {
+      if (a.status === 'pending' && b.status === 'approved') return -1;
+      if (a.status === 'approved' && b.status === 'pending') return 1;
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
+    return list;
+  }, [ambassadors, ambassadorSort]);
+
+  const handleExportAmbassadorsCSV = () => {
+    const headers = ['Reg ID', 'Name', 'Phone', 'Email', 'Institution', 'Status', 'Date'];
+    const csvRows = [headers];
+    filteredAmbassadors.forEach(a => {
+      csvRows.push([
+        a.id, `"${a.fullName}"`, a.mobileNumber, `"${a.email || ''}"`, `"${a.institution}"`, a.status, new Date(a.createdAt).toLocaleDateString()
+      ]);
+    });
+    const csvString = csvRows.map(r => r.join(',')).join('\n');
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `Campus_Ambassadors_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleExportAmbassadorsPDF = () => {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+
+    const tableRows = filteredAmbassadors.map((a, idx) => `
+      <tr style="border-bottom: 1px solid #e2e8f0;">
+        <td style="padding: 10px; font-family: monospace; font-size: 11px;">${idx + 1}</td>
+        <td style="padding: 10px; font-family: monospace; font-size: 11px; font-weight: bold; color: #4f46e5;">${a.id}</td>
+        <td style="padding: 10px; font-weight: 500;">${a.fullName}</td>
+        <td style="padding: 10px;">${a.email}</td>
+        <td style="padding: 10px; font-family: monospace; font-size: 11px;">${a.mobileNumber}</td>
+        <td style="padding: 10px; font-size: 11px;">${a.institution || 'N/A'}</td>
+        <td style="padding: 10px; text-align: center;">
+          <span style="display: inline-block; padding: 2px 8px; border-radius: 9999px; font-size: 10px; font-weight: bold; text-transform: uppercase; background-color: ${a.status === 'approved' ? '#d1fae5; color: #065f46' : '#fef3c7; color: #92400e'}">
+            ${a.status}
+          </span>
+        </td>
+        <td style="padding: 10px; font-family: monospace; font-size: 11px;">${new Date(a.createdAt).toLocaleDateString()}</td>
+      </tr>
+    `).join('');
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>TECHCON '26 - Campus Ambassador Report</title>
+          <style>
+            @page { size: landscape; }
+            body { font-family: system-ui, -apple-system, sans-serif; color: #1e293b; padding: 40px; }
+            h1 { font-family: 'Jura', sans-serif; font-size: 24px; font-weight: bold; margin-bottom: 5px; text-transform: uppercase; }
+            p { font-size: 12px; color: #64748b; margin-top: 0; margin-bottom: 25px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+            th { text-align: left; background-color: #f8fafc; border-bottom: 2px solid #e2e8f0; padding: 12px 10px; font-size: 11px; font-weight: bold; color: #475569; text-transform: uppercase; }
+            tr:nth-child(even) { background-color: #f8fafc; }
+          </style>
+        </head>
+        <body>
+          <h1>TECHCON '26 - Campus Ambassador Report</h1>
+          <p>Generated on: ${new Date().toLocaleString()} | Total: ${filteredAmbassadors.length}</p>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Reg ID</th>
+                <th>Name</th>
+                <th>Email Address</th>
+                <th>Mobile Number</th>
+                <th>Institution</th>
+                <th>Status</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${tableRows}
+            </tbody>
+          </table>
+          <script>
+            window.onload = function() { window.print(); window.close(); }
+          </script>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+  };
+
+  const handleToggleAmbassadorStatus = async (id: string, currentStatus: string) => {
+    setIsProcessingAmbassador(true);
+    try {
+      const newStatus = currentStatus === 'pending' ? 'approved' : 'pending';
+      await updateCampusAmbassadorStatus(id, newStatus as any, password);
+      setAmbassadors(prev => prev.map(a => a.id === id ? { ...a, status: newStatus } : a));
+    } catch (e) {
+      alert('Failed to update ambassador status.');
+    }
+    setIsProcessingAmbassador(false);
+  };
+
+  const handleDeleteAmbassador = async () => {
+    if (!ambassadorToDelete) return;
+    setIsProcessingAmbassador(true);
+    try {
+      await deleteCampusAmbassador(ambassadorToDelete.id, password);
+      setAmbassadors(prev => prev.filter(a => a.id !== ambassadorToDelete.id));
+      setAmbassadorToDelete(null);
+    } catch (e) {
+      alert('Failed to delete ambassador.');
+    }
+    setIsProcessingAmbassador(false);
   };
 
   const handleDeleteVolunteer = async (id: string) => {
@@ -1238,10 +1364,37 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-slate-800">Campus Ambassadors</h3>
-                    <p className="text-sm text-slate-500">Manage {ambassadors.length} applications</p>
+                    <p className="text-sm text-slate-500">Manage {filteredAmbassadors.length} applications</p>
                   </div>
                 </div>
+                <div className="flex flex-wrap items-center gap-3">
+                  <select
+                    value={ambassadorSort}
+                    onChange={(e) => setAmbassadorSort(e.target.value as any)}
+                    className="pl-3 pr-8 py-2 bg-slate-50 border border-slate-200 text-slate-700 text-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple/40 appearance-none"
+                    style={{ backgroundImage: 'url("data:image/svg+xml,%3csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 20 20\'%3e%3cpath stroke=\'%236b7280\' stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'1.5\' d=\'M6 8l4 4 4-4\'/%3e%3c/svg%3e")', backgroundPosition: 'right 0.5rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
+                  >
+                    <option value="all">All Statuses</option>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                  </select>
+                  <button 
+                    onClick={handleExportAmbassadorsCSV}
+                    className="flex items-center gap-2 px-4 py-2 bg-slate-50 hover:bg-slate-100 text-slate-700 font-medium text-sm rounded-xl transition-colors border border-slate-200"
+                  >
+                    <FileSpreadsheet size={16} className="text-green-600" />
+                    <span>CSV</span>
+                  </button>
+                  <button 
+                    onClick={handleExportAmbassadorsPDF}
+                    className="flex items-center gap-2 px-4 py-2 bg-slate-50 hover:bg-slate-100 text-slate-700 font-medium text-sm rounded-xl transition-colors border border-slate-200"
+                  >
+                    <FileText size={16} className="text-red-500" />
+                    <span>PDF</span>
+                  </button>
+                </div>
               </div>
+              
               <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse whitespace-nowrap">
@@ -1252,29 +1405,52 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
                         <th className="p-4">Phone</th>
                         <th className="p-4">Institution</th>
                         <th className="p-4">Status</th>
-                        <th className="p-4">Date</th>
+                        <th className="p-4 text-center">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 text-sm">
-                      {ambassadors.map((amb) => (
+                      {filteredAmbassadors.map((amb) => (
                         <tr key={amb.id} className="hover:bg-slate-50/50 transition-colors">
                           <td className="p-4 font-mono font-bold text-brand-purple">
                             {amb.id}
                           </td>
-                          <td className="p-4 font-semibold text-slate-800">{amb.fullName}</td>
+                          <td className="p-4 font-semibold text-slate-800">
+                            <div>{amb.fullName}</div>
+                            <div className="text-xs text-slate-500 font-normal">{amb.email}</div>
+                          </td>
                           <td className="p-4 text-slate-600">{amb.mobileNumber}</td>
                           <td className="p-4 text-slate-600 truncate max-w-[200px]" title={amb.institution}>{amb.institution}</td>
                           <td className="p-4">
-                            <span className="px-2 py-1 bg-amber-100 text-amber-700 text-xs font-bold uppercase rounded-md">
+                            <span className={`px-2 py-1 text-xs font-bold uppercase rounded-md ${amb.status === 'approved' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
                               {amb.status}
                             </span>
                           </td>
-                          <td className="p-4 text-slate-500 font-mono text-xs">
-                            {new Date(amb.createdAt).toLocaleDateString()}
+                          <td className="p-4">
+                            <div className="flex items-center justify-center gap-2">
+                              <button
+                                onClick={() => handleToggleAmbassadorStatus(amb.id, amb.status)}
+                                disabled={isProcessingAmbassador}
+                                className={`p-1.5 rounded-lg transition-colors border ${
+                                  amb.status === 'approved' 
+                                    ? 'bg-amber-50 text-amber-600 border-amber-200 hover:bg-amber-100' 
+                                    : 'bg-emerald-50 text-emerald-600 border-emerald-200 hover:bg-emerald-100'
+                                }`}
+                                title={amb.status === 'approved' ? 'Mark as Pending' : 'Approve Application'}
+                              >
+                                {amb.status === 'approved' ? <XCircle size={16} /> : <CheckCircle size={16} />}
+                              </button>
+                              <button
+                                onClick={() => setAmbassadorToDelete(amb)}
+                                className="p-1.5 rounded-lg bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 transition-colors"
+                                title="Delete Ambassador"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}
-                      {ambassadors.length === 0 && (
+                      {filteredAmbassadors.length === 0 && (
                         <tr>
                           <td colSpan={6} className="p-12 text-center text-slate-500">
                             No campus ambassador applications found.
@@ -1469,6 +1645,51 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
           </motion.div>
         </div>
       )}
+
+      {/* Delete Ambassador Modal */}
+      <AnimatePresence>
+        {ambassadorToDelete && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden max-w-md w-full"
+            >
+              <div className="p-6">
+                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-4 text-red-600">
+                  <AlertCircle size={24} />
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-2">Delete Ambassador</h3>
+                <p className="text-slate-600 mb-6">
+                  Are you sure you want to permanently delete the application for <span className="font-bold text-slate-800">{ambassadorToDelete.fullName}</span>? This action cannot be undone.
+                </p>
+                <div className="flex gap-3 justify-end">
+                  <button
+                    onClick={() => setAmbassadorToDelete(null)}
+                    className="px-4 py-2 font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors"
+                    disabled={isProcessingAmbassador}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleDeleteAmbassador}
+                    disabled={isProcessingAmbassador}
+                    className="px-4 py-2 font-semibold text-white bg-red-600 hover:bg-red-700 rounded-xl shadow-sm shadow-red-600/20 transition-all flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    {isProcessingAmbassador ? 'Deleting...' : 'Delete Application'}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, CheckCircle, AlertCircle, Upload } from 'lucide-react';
-import { getRegistrations, addEventToRegistration } from '../utils/db';
+import { X, CheckCircle, AlertCircle, Upload, ShieldAlert, Loader2 } from 'lucide-react';
+import { getRegistrations, addEventToRegistration, getProgramSettings } from '../utils/db';
 import { AttendeeRegistration } from '../types';
 
 interface AddOnRegistrationModalProps {
@@ -19,6 +19,18 @@ export default function AddOnRegistrationModal({ eventName, isSpecialProgram, on
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   const [foundAttendee, setFoundAttendee] = useState<AttendeeRegistration | null>(null);
+
+  const [isClosed, setIsClosed] = useState(false);
+  const [isLoadingSettings, setIsLoadingSettings] = useState(true);
+
+  useEffect(() => {
+    getProgramSettings().then(settings => {
+      if (settings[eventName] === false) {
+        setIsClosed(true);
+      }
+      setIsLoadingSettings(false);
+    });
+  }, [eventName]);
 
   const needsFee = isSpecialProgram && eventName === 'Hackathon';
 
@@ -113,14 +125,36 @@ export default function AddOnRegistrationModal({ eventName, isSpecialProgram, on
         </div>
 
         <div className="p-6 sm:p-8 space-y-6">
-          {errorMsg && (
-            <div className="p-3 bg-red-50 text-red-600 rounded-xl text-xs font-medium flex items-start gap-2 border border-red-100">
-              <AlertCircle size={16} className="shrink-0" />
-              <span>{errorMsg}</span>
+          {isLoadingSettings ? (
+            <div className="flex justify-center py-10">
+              <Loader2 className="w-8 h-8 text-brand-purple animate-spin" />
             </div>
-          )}
+          ) : isClosed ? (
+            <div className="text-center space-y-4 py-8">
+               <div className="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                 <ShieldAlert size={32} />
+               </div>
+               <h3 className="text-xl font-bold text-slate-900 font-orbitron">Registration Paused</h3>
+               <p className="text-sm text-slate-500 max-w-sm mx-auto">
+                 We are currently not accepting new registrations for {eventName}. Please check back later.
+               </p>
+               <button 
+                 onClick={onClose}
+                 className="mt-6 px-6 py-3 bg-slate-900 text-white font-bold rounded-xl w-full hover:bg-slate-800 transition-colors"
+               >
+                 Close
+               </button>
+            </div>
+          ) : (
+            <>
+              {errorMsg && (
+                <div className="p-3 bg-red-50 text-red-600 rounded-xl text-xs font-medium flex items-start gap-2 border border-red-100">
+                  <AlertCircle size={16} className="shrink-0" />
+                  <span>{errorMsg}</span>
+                </div>
+              )}
 
-          {!foundAttendee ? (
+              {!foundAttendee ? (
             <div className="space-y-4">
               <div className="space-y-1">
                 <label className="text-xs font-mono font-bold text-slate-500 uppercase tracking-widest">Registration ID</label>
@@ -192,6 +226,8 @@ export default function AddOnRegistrationModal({ eventName, isSpecialProgram, on
                 {isSubmitting ? 'Registering...' : `Register for ${eventName}`}
               </button>
             </div>
+          )}
+          </>
           )}
         </div>
       </motion.div>

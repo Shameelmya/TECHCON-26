@@ -590,3 +590,11 @@ export const submitCampusAmbassador = async (data: any): Promise<void> => {
     createdAt: new Date().toISOString()
   });
 };
+
+export const getCampusAmbassadors = async (password: string): Promise<any[]> => {
+  const isValid = await loginAdmin(password);
+  if (!isValid) throw new Error("Unauthorized");
+  
+  const snapshot = await getDocs(collection(db, 'campus_ambassadors'));
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+};

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { X, CheckCircle, ShieldAlert, Loader2, Network } from 'lucide-react';
-import { verifyMainRegistration, submitCampusAmbassador } from '../utils/db';
+import { verifyMainRegistration, submitCampusAmbassador, getProgramSettings } from '../utils/db';
 import { AttendeeRegistration } from '../types';
 
 interface CampusAmbassadorModalProps {
@@ -19,6 +19,25 @@ export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModal
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const [isClosed, setIsClosed] = useState(false);
+  const [isLoadingSettings, setIsLoadingSettings] = useState(true);
+
+  useEffect(() => {
+    // Check if we came back from registration for auto-fill
+    const savedRegId = sessionStorage.getItem('autofillRegId');
+    const savedMobile = sessionStorage.getItem('autofillMobile');
+    if (savedRegId) setRegId(savedRegId);
+    if (savedMobile) setMobile(savedMobile);
+    
+    // Check if program is enabled
+    getProgramSettings().then(settings => {
+      if (settings['Campus Ambassador'] === false) {
+        setIsClosed(true);
+      }
+      setIsLoadingSettings(false);
+    });
+  }, []);
 
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -115,7 +134,27 @@ export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModal
 
         <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 flex-1 flex flex-col justify-center">
           
-          {isSuccess ? (
+          {isLoadingSettings ? (
+            <div className="flex justify-center py-10">
+              <Loader2 className="w-8 h-8 text-brand-purple animate-spin" />
+            </div>
+          ) : isClosed ? (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center space-y-4 py-8">
+               <div className="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                 <ShieldAlert size={32} />
+               </div>
+               <h3 className="text-xl font-bold text-slate-900 font-orbitron">Registration Paused</h3>
+               <p className="text-sm text-slate-500 max-w-sm mx-auto">
+                 We are currently not accepting new Campus Ambassador applications. Please check back later.
+               </p>
+               <button 
+                 onClick={onClose}
+                 className="mt-6 px-6 py-3 bg-slate-900 text-white font-bold rounded-xl w-full hover:bg-slate-800 transition-colors"
+               >
+                 Close
+               </button>
+            </motion.div>
+          ) : isSuccess ? (
             <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center space-y-4">
               <div className="w-16 h-16 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
                 <CheckCircle size={32} />
@@ -138,6 +177,7 @@ export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModal
               </h3>
               
               {!verifiedUser ? (
+                <>
                 <form onSubmit={handleVerify} className="space-y-4">
                   
                   {verifyError && (
@@ -183,6 +223,20 @@ export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModal
                     {isVerifying ? <Loader2 size={18} className="animate-spin" /> : "Verify Registration"}
                   </button>
                 </form>
+                
+                <div className="mt-8 pt-6 border-t border-slate-200 text-center">
+                  <p className="text-xs text-slate-500 mb-3 font-medium uppercase tracking-wider">Not registered yet?</p>
+                  <button 
+                    onClick={() => {
+                      sessionStorage.setItem('returnTo', 'ambassador');
+                      window.location.hash = 'register';
+                    }}
+                    className="w-full py-3 border-2 border-brand-purple text-brand-purple font-bold rounded-xl hover:bg-brand-purple hover:text-white transition-colors"
+                  >
+                    Register for TECHCON '26 Now
+                  </button>
+                </div>
+                </>
               ) : (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
                   <div className="p-5 bg-white border-2 border-green-100 rounded-xl">

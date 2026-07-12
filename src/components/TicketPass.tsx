@@ -353,6 +353,23 @@ export default function TicketPass({ registration, onBackToHome }: TicketPassPro
               Register Another
             </button>
           </div>
+
+          {sessionStorage.getItem('returnTo') === 'ambassador' && (
+            <button
+              onClick={() => {
+                sessionStorage.removeItem('returnTo');
+                sessionStorage.setItem('autofillRegId', registration.id);
+                sessionStorage.setItem('autofillMobile', registration.mobileNumber);
+                onBackToHome();
+                setTimeout(() => {
+                  window.location.hash = 'ambassador';
+                }, 100);
+              }}
+              className="w-full mt-2 py-4 bg-slate-900 hover:bg-slate-800 text-white font-sans font-bold text-sm uppercase tracking-wider rounded-2xl transition-colors text-center shadow-xl shadow-slate-900/20 animate-pulse border border-slate-700"
+            >
+              Continue to Campus Ambassador
+            </button>
+          )}
         </div>
 
       </div>

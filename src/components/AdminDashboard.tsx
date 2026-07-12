@@ -11,7 +11,7 @@ import {
   FileSpreadsheet, FileText, Check, AlertCircle, Copy, HelpCircle, User, Trash2, FileSearch, Settings
 } from 'lucide-react';
 import { AttendeeRegistration, AdminStats, VolunteerRegistration } from '../types';
-import { getRegistrations, fetchAllRegistrations, getStats, checkInAttendee, revertCheckIn, exportToCSV, loginAdmin, getSettings, toggleRegistrationStatus, fetchVolunteers, getVolunteerSettings, toggleVolunteerRegistrationStatus, toggleVolunteerIDDownloadStatus, deleteVolunteer, updateVolunteer, getProgramSettings, toggleProgramSetting } from '../utils/db';
+import { getRegistrations, fetchAllRegistrations, getStats, checkInAttendee, revertCheckIn, exportToCSV, loginAdmin, getSettings, toggleRegistrationStatus, fetchVolunteers, getVolunteerSettings, toggleVolunteerRegistrationStatus, toggleVolunteerIDDownloadStatus, deleteVolunteer, updateVolunteer, getProgramSettings, toggleProgramSetting, getCampusAmbassadors } from '../utils/db';
 import { Html5QrcodeScanner, Html5Qrcode } from 'html5-qrcode';
 import VolunteerIDCard from './VolunteerIDCard';
 import VolunteerEditModal from './VolunteerEditModal';
@@ -38,10 +38,11 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
   const [filterRole, setFilterRole] = useState<'all' | string>('all');
   const [filterSession, setFilterSession] = useState<'all' | string>('all');
   const [filterProgram, setFilterProgram] = useState<'all' | string>('all');
-  const [activeTab, setActiveTab] = useState<'analytics' | 'checkin' | 'directory' | 'appscript' | 'volunteers' | 'settings'>('analytics');
+  const [activeTab, setActiveTab] = useState<'analytics' | 'checkin' | 'directory' | 'appscript' | 'volunteers' | 'ambassadors' | 'settings'>('analytics');
 
   // Volunteer State
   const [volunteers, setVolunteers] = useState<VolunteerRegistration[]>([]);
+  const [ambassadors, setAmbassadors] = useState<any[]>([]);
   const [isVolRegOpen, setIsVolRegOpen] = useState(false);
   const [isTogglingVolReg, setIsTogglingVolReg] = useState(false);
   const [isIDCardDownloadEnabled, setIsIDCardDownloadEnabled] = useState(false);
@@ -82,8 +83,10 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
       setIsIDCardDownloadEnabled(volRegState.isIDCardDownloadEnabled);
       const progSettings = await getProgramSettings();
       setProgramSettings(progSettings);
+      const ambList = await getCampusAmbassadors(password);
+      setAmbassadors(ambList);
     } catch (e) {
-      console.error("Failed to load volunteers or program settings", e);
+      console.error("Failed to load data", e);
     }
   };
 
@@ -644,6 +647,18 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
               <span className="hidden sm:inline">Volunteers</span>
             </button>
             <button 
+              onClick={() => setActiveTab('ambassadors')}
+              className={`flex-1 sm:flex-none py-3 px-4 sm:px-6 rounded-t-xl font-bold text-sm transition-all border-b-2 flex justify-center items-center gap-2 ${
+                activeTab === 'ambassadors' 
+                  ? 'bg-slate-800 text-brand-pink border-brand-pink' 
+                  : 'bg-slate-900 text-slate-400 border-transparent hover:text-white hover:bg-slate-800'
+              }`}
+            >
+              <Network size={18} />
+              <span className="hidden sm:inline">Ambassadors</span>
+            </button>
+
+            <button 
               onClick={() => setActiveTab('settings')}
               className={`flex-1 sm:flex-none py-3 px-4 sm:px-6 rounded-t-xl font-bold text-sm transition-all border-b-2 flex justify-center items-center gap-2 ${
                 activeTab === 'settings' 
@@ -1203,6 +1218,66 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
                         <tr>
                           <td colSpan={5} className="px-6 py-12 text-center text-slate-500 font-mono text-sm">
                             No volunteers registered yet.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* AMBASSADORS TAB */}
+          {activeTab === 'ambassadors' && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 bg-purple-100 text-purple-600 rounded-xl">
+                    <Network size={24} />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-slate-800">Campus Ambassadors</h3>
+                    <p className="text-sm text-slate-500">Manage {ambassadors.length} applications</p>
+                  </div>
+                </div>
+              </div>
+              <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse whitespace-nowrap">
+                    <thead>
+                      <tr className="bg-slate-50 border-b border-slate-100 text-xs uppercase tracking-wider font-bold text-slate-500 font-mono">
+                        <th className="p-4">Reg ID</th>
+                        <th className="p-4">Name</th>
+                        <th className="p-4">Phone</th>
+                        <th className="p-4">Institution</th>
+                        <th className="p-4">Status</th>
+                        <th className="p-4">Date</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100 text-sm">
+                      {ambassadors.map((amb) => (
+                        <tr key={amb.id} className="hover:bg-slate-50/50 transition-colors">
+                          <td className="p-4 font-mono font-bold text-brand-purple">
+                            {amb.id}
+                          </td>
+                          <td className="p-4 font-semibold text-slate-800">{amb.fullName}</td>
+                          <td className="p-4 text-slate-600">{amb.mobileNumber}</td>
+                          <td className="p-4 text-slate-600 truncate max-w-[200px]" title={amb.institution}>{amb.institution}</td>
+                          <td className="p-4">
+                            <span className="px-2 py-1 bg-amber-100 text-amber-700 text-xs font-bold uppercase rounded-md">
+                              {amb.status}
+                            </span>
+                          </td>
+                          <td className="p-4 text-slate-500 font-mono text-xs">
+                            {new Date(amb.createdAt).toLocaleDateString()}
+                          </td>
+                        </tr>
+                      ))}
+                      {ambassadors.length === 0 && (
+                        <tr>
+                          <td colSpan={6} className="p-12 text-center text-slate-500">
+                            No campus ambassador applications found.
                           </td>
                         </tr>
                       )}

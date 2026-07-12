@@ -126,6 +126,7 @@ export default function App() {
       else if (hash === '#pronight') { setAddOnEventName("Pro Night"); setIsAddOnSpecial(true); }
       else if (hash === '#pass') {
         setIsRegisterOpen(false);
+        setAddOnEventName(null);
       }
       else if (hash === '' || hash === '#') {
         setIsAdminOpen(false);

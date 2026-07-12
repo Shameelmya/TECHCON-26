@@ -555,3 +555,38 @@ export const getAttendeeByMobile = (mobile: string): AttendeeRegistration | null
   const list = getRegistrations();
   return list.find(a => a.mobileNumber === mobile) || null;
 };
+
+// ==========================================
+// CAMPUS AMBASSADOR REGISTRATION
+// ==========================================
+
+export const verifyMainRegistration = async (id: string, mobileNumber: string): Promise<AttendeeRegistration> => {
+  const registrations = getRegistrations();
+  const reg = registrations.find(r => r.id.trim() === id.trim() && r.mobileNumber.trim() === mobileNumber.trim());
+  
+  if (!reg) {
+    throw new Error('No matching registration found. Please ensure you are fully registered with TECHCON 26 first.');
+  }
+  
+  if (reg.occupation !== 'Student') {
+    throw new Error('Only students are eligible for the Campus Ambassador program.');
+  }
+  
+  return reg;
+};
+
+export const submitCampusAmbassador = async (data: any): Promise<void> => {
+  const ambassadorsRef = collection(db, 'campus_ambassadors');
+  
+  const q = query(ambassadorsRef, where('id', '==', data.id));
+  const snapshot = await getDocs(q);
+  if (!snapshot.empty) {
+    throw new Error('You have already submitted an application for Campus Ambassador.');
+  }
+  
+  await setDoc(doc(ambassadorsRef, data.id), {
+    ...data,
+    status: 'pending',
+    createdAt: new Date().toISOString()
+  });
+};

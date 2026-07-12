@@ -17,11 +17,26 @@ export default function WhyAttend() {
     else if (title === 'Career Accelerator') hash = 'careers';
     else if (title === 'Innovation Hub') hash = 'projectcomp';
     else if (title === 'Hackathon') hash = 'hackathon';
+    else if (title === 'Campus Ambassador') hash = 'ambassador';
     else if (title === 'Cyber Shield') hash = 'cybershield';
     window.location.hash = hash;
   };
 
   const sessions = [
+    {
+      title: "Campus Ambassador",
+      description: "Represent your college. Organize promotional events, execute marketing campaigns, and lead outreach efforts to gain hands-on experience and rewards.",
+      icon: <Network size={24} className="text-white" />,
+      gradient: "from-brand-purple to-indigo-600",
+      shadow: "shadow-brand-purple/20",
+    },
+    {
+      title: "Hackathon",
+      description: "Competitive coding and problem-solving event. Build innovative solutions and prototypes under pressure.",
+      icon: <Terminal size={24} className="text-white" />,
+      gradient: "from-emerald-400 to-cyan-500",
+      shadow: "shadow-emerald-400/20",
+    },
     {
       title: "AI Summit",
       description: "Smart village assistant with AI minister. Dive deep into the future of governance and AI integration.",
@@ -33,15 +48,15 @@ export default function WhyAttend() {
       title: "Industry & Skill",
       description: "General discussion: World tech industry & growth + AI Camera workshop for students to build real-world vision models.",
       icon: <Sparkles size={24} className="text-white" />,
-      gradient: "from-brand-purple to-indigo-600",
-      shadow: "shadow-brand-purple/20",
+      gradient: "from-brand-blue to-cyan-500",
+      shadow: "shadow-brand-blue/20",
     },
     {
       title: "Career Accelerator",
       description: "LinkedIn Optimization & Professional placement drive preparation with top-tier HR industry veterans.",
       icon: <Compass size={24} className="text-white" />,
-      gradient: "from-brand-blue to-cyan-500",
-      shadow: "shadow-brand-blue/20",
+      gradient: "from-amber-500 to-orange-400",
+      shadow: "shadow-amber-500/20",
     },
     {
       title: "Innovation Hub",
@@ -51,18 +66,11 @@ export default function WhyAttend() {
       shadow: "shadow-emerald-500/20",
     },
     {
-      title: "Hackathon",
-      description: "Competitive coding and problem-solving event. Build innovative solutions and prototypes under pressure.",
-      icon: <Terminal size={24} className="text-white" />,
-      gradient: "from-emerald-400 to-cyan-500",
-      shadow: "shadow-emerald-400/20",
-    },
-    {
       title: "Cyber Shield",
       description: "Protect your business with Cyber Shield. Advanced cybersecurity solutions to safeguard your data, defend against threats, and build a secure digital future.",
       icon: <ShieldCheck size={24} className="text-white" />,
-      gradient: "from-amber-500 to-orange-400",
-      shadow: "shadow-amber-500/20",
+      gradient: "from-rose-500 to-pink-500",
+      shadow: "shadow-rose-500/20",
     }
   ];
 

@@ -24,6 +24,7 @@ import RetrievePassForm from './components/RetrievePassForm';
 import Sponsorship from './components/Sponsorship';
 import ContactUs from './components/ContactUs';
 import FAQ from './components/FAQ';
+import CampusAmbassadorModal from './components/CampusAmbassadorModal';
 
 import VolunteerRegistrationForm from './components/VolunteerRegistrationForm';
 import VolunteerIDCard from './components/VolunteerIDCard';
@@ -37,6 +38,7 @@ export default function App() {
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [isRetrieveOpen, setIsRetrieveOpen] = useState(false);
   const [isSponsorOpen, setIsSponsorOpen] = useState(false);
+  const [isAmbassadorOpen, setIsAmbassadorOpen] = useState(false);
   const [activeRegistration, setActiveRegistration] = useState<AttendeeRegistration | null>(null);
   const [activeSection, setActiveSection] = useState('hero');
   const [isRegistrationClosedPopupOpen, setIsRegistrationClosedPopupOpen] = useState(false);
@@ -120,11 +122,10 @@ export default function App() {
       else if (hash === '#cybershield') { setAddOnEventName("Workshop on Cybersecurity Shield a secure digital future"); setIsAddOnSpecial(false); }
       else if (hash === '#hackathon') { setAddOnEventName("Hackathon"); setIsAddOnSpecial(true); }
       else if (hash === '#projectcomp') { setAddOnEventName("Project Competition"); setIsAddOnSpecial(true); }
-      else if (hash === '#ambassador') { setAddOnEventName("Campus Ambassadors."); setIsAddOnSpecial(true); }
+      else if (hash === '#ambassador') { setIsAmbassadorOpen(true); }
       else if (hash === '#pronight') { setAddOnEventName("Pro Night"); setIsAddOnSpecial(true); }
       else if (hash === '#pass') {
-        // Allow the pass component to handle missing registration gracefully
-        // or just let it stay on #pass.
+        setIsRegisterOpen(false);
       }
       else if (hash === '' || hash === '#') {
         setIsAdminOpen(false);
@@ -135,9 +136,11 @@ export default function App() {
         setIsRegistrationClosedPopupOpen(false);
         setIsVolunteerClosedPopupOpen(false);
         setIsHubOpen(false);
+        setIsAmbassadorOpen(false);
         setAddOnEventName(null);
         setActiveRegistration(null);
         setActiveVolunteer(null);
+        setIsAddOnSpecial(false);
       }
     };
 
@@ -285,7 +288,7 @@ export default function App() {
 
           {/* 4. Registration Flow Sliding Modal Panel Overlay */}
           <AnimatePresence>
-            {(isRegisterOpen || isRetrieveOpen) && (
+            {(isRegisterOpen || isRetrieveOpen || isAmbassadorOpen) && (
               <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -320,6 +323,9 @@ export default function App() {
                       }}
                       onOpenRegister={() => window.location.hash = 'register'}
                     />
+                  )}
+                  {isAmbassadorOpen && (
+                    <CampusAmbassadorModal onClose={() => window.location.hash = ''} />
                   )}
                 </motion.div>
               </motion.div>

@@ -910,7 +910,6 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
                 {[
                   "Hackathon",
                   "Project Competition",
-                  "Campus Ambassadors",
                   "Pro Night"
                 ].filter(programName => {
                   if (programSettings[programName] === false) return false;

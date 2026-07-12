@@ -21,6 +21,12 @@ button, a, [role="button"], input[type="submit"] {
   cursor: pointer !important;
 }
 
+@layer base {
+  input:not([type="submit"]):not([type="checkbox"]):not([type="radio"]), textarea, select {
+    color: var(--color-brand-navy);
+  }
+}
+
 @keyframes marquee {
   0% { transform: translateX(0%); }
   100% { transform: translateX(-33.33%); }

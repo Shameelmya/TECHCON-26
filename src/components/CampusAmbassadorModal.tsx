@@ -178,6 +178,16 @@ export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModal
               
               {!verifiedUser ? (
                 <>
+                <div className="mb-6 p-4 bg-brand-purple/5 border border-brand-purple/20 rounded-xl flex items-start gap-3">
+                  <Network className="text-brand-purple shrink-0 mt-0.5" size={18} />
+                  <div>
+                    <p className="text-xs font-bold text-slate-800 uppercase tracking-wide mb-1">Registration Required</p>
+                    <p className="text-xs text-slate-600 leading-relaxed">
+                      You must be registered for the main TECHCON '26 event to apply for Campus Ambassador. Please verify your Registration ID below, or register first.
+                    </p>
+                  </div>
+                </div>
+                
                 <form onSubmit={handleVerify} className="space-y-4">
                   
                   {verifyError && (

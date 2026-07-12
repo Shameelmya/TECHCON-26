@@ -116,24 +116,26 @@ export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModal
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-6 border-b border-transparent">
+        <div className="flex gap-3 pb-4 items-center border-b border-transparent">
           <button 
             onClick={() => switchTab('details')}
-            className={`pb-4 px-2 text-sm font-bold tracking-widest uppercase transition-all relative ${activeTab === 'details' ? 'text-brand-purple' : 'text-slate-400 hover:text-slate-600'}`}
+            className={`px-5 py-2.5 text-sm font-bold tracking-widest uppercase transition-all rounded-xl ${
+              activeTab === 'details' 
+                ? 'text-brand-purple bg-brand-purple/10' 
+                : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50'
+            }`}
           >
             Details
-            {activeTab === 'details' && (
-              <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-purple rounded-t-full" />
-            )}
           </button>
           <button 
             onClick={() => switchTab('register')}
-            className={`pb-4 px-2 text-sm font-bold tracking-widest uppercase transition-all relative ${activeTab === 'register' ? 'text-brand-purple' : 'text-slate-400 hover:text-slate-600'}`}
+            className={`px-5 py-2.5 text-sm font-bold tracking-widest uppercase transition-all rounded-xl shadow-sm ${
+              activeTab === 'register' 
+                ? 'bg-gradient-to-r from-brand-purple to-indigo-600 text-white shadow-brand-purple/30 shadow-lg scale-[1.02]' 
+                : 'bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-700'
+            }`}
           >
-            Registration
-            {activeTab === 'register' && (
-              <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-purple rounded-t-full" />
-            )}
+            Register Now
           </button>
         </div>
       </div>

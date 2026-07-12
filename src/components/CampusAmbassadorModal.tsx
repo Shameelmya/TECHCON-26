@@ -107,7 +107,7 @@ export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModal
               <Network size={20} />
             </div>
             <h2 className="text-xl sm:text-2xl font-orbitron font-bold text-slate-900 tracking-tight uppercase">
-              Ambassador
+              Campus Ambassador
             </h2>
           </div>
           <button onClick={onClose} className="p-2 bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-full transition-colors">
@@ -268,7 +268,17 @@ export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModal
                         <div>
                           <p className="text-xs font-bold text-slate-800 uppercase tracking-wide mb-1">Registration Required</p>
                           <p className="text-xs text-slate-600 leading-relaxed">
-                            You must be registered for the main TECHCON '26 event to apply for Campus Ambassador.
+                            You must be registered for the main TECHCON '26 event to apply for Campus Ambassador. 
+                            <button 
+                              type="button"
+                              onClick={() => {
+                                sessionStorage.setItem('returnTo', 'ambassador');
+                                window.location.hash = 'register';
+                              }}
+                              className="font-bold text-brand-purple hover:text-purple-700 underline underline-offset-2 ml-1"
+                            >
+                              Register for TECHCON '26 Now
+                            </button>
                           </p>
                         </div>
                       </div>
@@ -317,18 +327,6 @@ export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModal
                         </button>
                       </form>
                       
-                      <div className="pt-8 text-center">
-                        <p className="text-xs text-slate-400 mb-3 font-medium uppercase tracking-wider">Not registered yet?</p>
-                        <button 
-                          onClick={() => {
-                            sessionStorage.setItem('returnTo', 'ambassador');
-                            window.location.hash = 'register';
-                          }}
-                          className="w-full py-3.5 border-2 border-brand-purple text-brand-purple font-bold rounded-xl hover:bg-brand-purple hover:text-white transition-all shadow-sm"
-                        >
-                          Register for TECHCON '26 Now
-                        </button>
-                      </div>
                     </div>
                   ) : (
                     <div className="space-y-6">

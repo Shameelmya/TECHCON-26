@@ -204,7 +204,6 @@ export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModal
                     <input 
                       type="text" 
                       required
-                      placeholder="e.g. TC26A001"
                       value={regId}
                       onChange={e => setRegId(e.target.value)}
                       className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-brand-purple text-sm"
@@ -218,7 +217,6 @@ export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModal
                     <input 
                       type="tel" 
                       required
-                      placeholder="10-digit mobile number"
                       value={mobile}
                       onChange={e => setMobile(e.target.value)}
                       className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-brand-purple text-sm"

@@ -468,7 +468,7 @@ export default function VolunteerRegistrationForm({ isOpen, onClose, onShowIDCar
                   ))}
                 </div>
                 {hearAbout === 'Other' && (
-                  <input type="text" placeholder="Please specify..." value={otherHearAbout} onChange={e => setOtherHearAbout(e.target.value)} className="mt-1 w-full border-2 rounded-xl px-4 py-3 focus:bg-white focus:border-brand-purple outline-none transition-all text-slate-900 border-slate-200 bg-slate-50" />
+                  <input type="text" value={otherHearAbout} onChange={e => setOtherHearAbout(e.target.value)} className="mt-1 w-full border-2 rounded-xl px-4 py-3 focus:bg-white focus:border-brand-purple outline-none transition-all text-slate-900 border-slate-200 bg-slate-50" />
                 )}
               </div>
 
@@ -489,7 +489,7 @@ export default function VolunteerRegistrationForm({ isOpen, onClose, onShowIDCar
                   ))}
                 </div>
                 {reasonToJoin === 'Other' && (
-                  <input type="text" placeholder="Please specify..." value={otherReason} onChange={e => setOtherReason(e.target.value)} className="mt-1 w-full border-2 rounded-xl px-4 py-3 focus:bg-white focus:border-brand-purple outline-none transition-all text-slate-900 border-slate-200 bg-slate-50" />
+                  <input type="text" value={otherReason} onChange={e => setOtherReason(e.target.value)} className="mt-1 w-full border-2 rounded-xl px-4 py-3 focus:bg-white focus:border-brand-purple outline-none transition-all text-slate-900 border-slate-200 bg-slate-50" />
                 )}
               </div>
 
@@ -608,11 +608,11 @@ export default function VolunteerRegistrationForm({ isOpen, onClose, onShowIDCar
               <div className="space-y-4 mb-6">
                 <div>
                   <label className="text-[10px] font-mono text-slate-500 uppercase font-bold">Volunteer ID</label>
-                  <input type="text" value={downloadId} onChange={e => setDownloadId(e.target.value)} placeholder="e.g. TCVOL-A001" className="w-full border-2 border-slate-100 rounded-xl px-4 py-3 mt-1 focus:border-brand-purple outline-none" />
+                  <input type="text" value={downloadId} onChange={e => setDownloadId(e.target.value)} className="w-full border-2 border-slate-100 rounded-xl px-4 py-3 mt-1 focus:border-brand-purple outline-none" />
                 </div>
                 <div>
                   <label className="text-[10px] font-mono text-slate-500 uppercase font-bold">Mobile Number</label>
-                  <input type="tel" value={downloadMobile} onChange={e => setDownloadMobile(e.target.value)} placeholder="10-digit mobile" className="w-full border-2 border-slate-100 rounded-xl px-4 py-3 mt-1 focus:border-brand-purple outline-none" />
+                  <input type="tel" value={downloadMobile} onChange={e => setDownloadMobile(e.target.value)} className="w-full border-2 border-slate-100 rounded-xl px-4 py-3 mt-1 focus:border-brand-purple outline-none" />
                 </div>
               </div>
 

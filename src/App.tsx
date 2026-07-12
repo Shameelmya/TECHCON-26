@@ -159,7 +159,7 @@ export default function App() {
     else if (initialHash === '#cybershield') { setAddOnEventName("Workshop on Cybersecurity Shield a secure digital future"); setIsAddOnSpecial(false); }
     else if (initialHash === '#hackathon') { setAddOnEventName("Hackathon"); setIsAddOnSpecial(true); }
     else if (initialHash === '#projectcomp') { setAddOnEventName("Project Competition"); setIsAddOnSpecial(true); }
-    else if (initialHash === '#ambassador') { setAddOnEventName("Campus Ambassadors."); setIsAddOnSpecial(true); }
+    else if (initialHash === '#ambassador') { setIsAmbassadorOpen(true); }
     else if (initialHash === '#pronight') { setAddOnEventName("Pro Night"); setIsAddOnSpecial(true); }
     
     window.addEventListener('hashchange', handleHashChange);

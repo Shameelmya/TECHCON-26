@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
-import { X, CheckCircle, ShieldAlert, Loader2, Network } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { X, CheckCircle, ShieldAlert, Loader2, Network, ChevronRight, Zap, Target, Users, Award } from 'lucide-react';
 import { verifyMainRegistration, submitCampusAmbassador, getProgramSettings } from '../utils/db';
 import { AttendeeRegistration } from '../types';
 
@@ -9,6 +9,9 @@ interface CampusAmbassadorModalProps {
 }
 
 export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModalProps) {
+  const [activeTab, setActiveTab] = useState<'details' | 'register'>('details');
+  const scrollRef = useRef<HTMLDivElement>(null);
+
   const [regId, setRegId] = useState('');
   const [mobile, setMobile] = useState('');
   
@@ -27,8 +30,17 @@ export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModal
     // Check if we came back from registration for auto-fill
     const savedRegId = sessionStorage.getItem('autofillRegId');
     const savedMobile = sessionStorage.getItem('autofillMobile');
-    if (savedRegId) setRegId(savedRegId);
-    if (savedMobile) setMobile(savedMobile);
+    
+    if (savedRegId || savedMobile) {
+       // If auto-fill is present, immediately switch to register tab
+       setActiveTab('register');
+       if (savedRegId) setRegId(savedRegId);
+       if (savedMobile) setMobile(savedMobile);
+       
+       // Clear them so it doesn't happen again unnecessarily
+       sessionStorage.removeItem('autofillRegId');
+       sessionStorage.removeItem('autofillMobile');
+    }
     
     // Check if program is enabled
     getProgramSettings().then(settings => {
@@ -38,6 +50,13 @@ export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModal
       setIsLoadingSettings(false);
     });
   }, []);
+
+  const switchTab = (tab: 'details' | 'register') => {
+    setActiveTab(tab);
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,219 +97,291 @@ export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModal
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto bg-white border border-slate-100 p-6 sm:p-10 rounded-[32px] shadow-2xl relative overflow-hidden flex flex-col md:flex-row gap-10">
+    <div className="w-full max-w-3xl mx-auto bg-white border border-slate-100 rounded-[24px] sm:rounded-[32px] shadow-2xl relative overflow-hidden flex flex-col h-[90vh] md:h-[80vh] max-h-[800px]">
       
-      <div className="absolute w-64 h-64 rounded-full bg-brand-purple/5 blur-3xl -top-10 -right-10 pointer-events-none" />
-
-      {/* Left side: Details */}
-      <div className="flex-1 space-y-6 overflow-y-auto max-h-[80vh] pr-2 custom-scrollbar">
-        <div className="flex justify-between items-start md:hidden mb-4">
-           <div className="w-12 h-12 bg-brand-purple/10 text-brand-purple rounded-xl flex items-center justify-center shrink-0">
-             <Network size={24} />
-           </div>
-           <button onClick={onClose} className="p-2 bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-full transition-colors">
-              <X size={20} />
-           </button>
+      {/* Sticky Header with Close button and Tabs */}
+      <div className="sticky top-0 z-20 bg-white/90 backdrop-blur-xl border-b border-slate-100 pt-6 px-6 sm:px-10 pb-0">
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-brand-purple/10 text-brand-purple rounded-xl flex items-center justify-center shrink-0">
+              <Network size={20} />
+            </div>
+            <h2 className="text-xl sm:text-2xl font-orbitron font-bold text-slate-900 tracking-tight uppercase">
+              Ambassador
+            </h2>
+          </div>
+          <button onClick={onClose} className="p-2 bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-full transition-colors">
+            <X size={20} />
+          </button>
         </div>
 
-        <div className="hidden md:flex w-14 h-14 bg-brand-purple/10 text-brand-purple rounded-2xl items-center justify-center shadow-inner shrink-0 mb-6">
-          <Network size={32} />
-        </div>
-        
-        <h2 className="text-3xl sm:text-4xl font-orbitron font-bold text-slate-900 tracking-tight leading-tight uppercase">
-          Campus <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-purple to-indigo-600">Ambassador</span>
-        </h2>
-        
-        <div className="space-y-4 text-sm font-sans text-slate-600 leading-relaxed text-justify">
-          <p>
-            Campus Ambassador is a registered student representative serving within an academic organization or institution to promote our premier technical festival, TECHCON 26, across their respective campus.
-          </p>
-          <p>
-            The role of a campus ambassador typically involves organizing and participating in promotional events, executing strategic marketing campaigns, and leading other key outreach efforts targeted at students. This position offers a magnificent opportunity for individuals to gain comprehensive, hands-on experience in corporate communication, public relations, project management, and leadership.
-          </p>
-          <p>
-            In addition to skill development, being a campus ambassador enables you to build strong networks with professional peers, industry experts, and potential future employers, while qualifying for exclusive financial rewards and corporate perks.
-          </p>
-          
-          <ul className="list-disc pl-5 space-y-2 text-slate-700 font-medium mt-4">
-            <li>Candidates must be officially registered on our primary portal to be eligible.</li>
-            <li>As a campus ambassador, you are expected to share all official digital assets, promotional posts, updates, and links across your personal and institutional social media channels, as well as physical college notice boards.</li>
-            <li>Your core responsibilities include fostering awareness, encouraging festival registrations, and driving massive student participation from your college into Tenogo Tech fest events.</li>
-            <li>Ambassadors will act as the chief face and representative of their college to the Tenogo committee.</li>
-            <li>Depending on the institution's student population size, the committee may appoint multiple campus ambassadors per college.</li>
-            <li>Any student currently pursuing higher education in a recognized institution is eligible to apply. If there is an influx of applications from the same campus, preference will naturally be granted to applicants demonstrating exceptional interpersonal skills, persuasive communication, and documented past experience.</li>
-          </ul>
+        {/* Tabs */}
+        <div className="flex gap-6 border-b border-transparent">
+          <button 
+            onClick={() => switchTab('details')}
+            className={`pb-4 px-2 text-sm font-bold tracking-widest uppercase transition-all relative ${activeTab === 'details' ? 'text-brand-purple' : 'text-slate-400 hover:text-slate-600'}`}
+          >
+            Details
+            {activeTab === 'details' && (
+              <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-purple rounded-t-full" />
+            )}
+          </button>
+          <button 
+            onClick={() => switchTab('register')}
+            className={`pb-4 px-2 text-sm font-bold tracking-widest uppercase transition-all relative ${activeTab === 'register' ? 'text-brand-purple' : 'text-slate-400 hover:text-slate-600'}`}
+          >
+            Registration
+            {activeTab === 'register' && (
+              <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand-purple rounded-t-full" />
+            )}
+          </button>
         </div>
       </div>
 
-      {/* Right side: Verification / Registration Form */}
-      <div className="flex-1 md:border-l md:border-slate-100 md:pl-10 flex flex-col pt-6 md:pt-0">
-        
-        <div className="hidden md:flex justify-end mb-6">
-           <button onClick={onClose} className="p-2 bg-slate-100 hover:bg-slate-200 text-slate-500 rounded-full transition-colors">
-              <X size={20} />
-           </button>
-        </div>
+      {/* Scrollable Content Area */}
+      <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 sm:p-10 custom-scrollbar relative">
+        <div className="absolute w-64 h-64 rounded-full bg-brand-purple/5 blur-3xl -top-10 -right-10 pointer-events-none" />
 
-        <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100 flex-1 flex flex-col justify-center">
-          
-          {isLoadingSettings ? (
-            <div className="flex justify-center py-10">
-              <Loader2 className="w-8 h-8 text-brand-purple animate-spin" />
-            </div>
-          ) : isClosed ? (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center space-y-4 py-8">
-               <div className="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                 <ShieldAlert size={32} />
-               </div>
-               <h3 className="text-xl font-bold text-slate-900 font-orbitron">Registration Paused</h3>
-               <p className="text-sm text-slate-500 max-w-sm mx-auto">
-                 We are currently not accepting new Campus Ambassador applications. Please check back later.
-               </p>
-               <button 
-                 onClick={onClose}
-                 className="mt-6 px-6 py-3 bg-slate-900 text-white font-bold rounded-xl w-full hover:bg-slate-800 transition-colors"
-               >
-                 Close
-               </button>
-            </motion.div>
-          ) : isSuccess ? (
-            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center space-y-4">
-              <div className="w-16 h-16 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CheckCircle size={32} />
+        <AnimatePresence mode="wait">
+          {activeTab === 'details' ? (
+            <motion.div 
+              key="details"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="space-y-8"
+            >
+              
+              <div className="text-center space-y-4 mb-8">
+                <h3 className="text-3xl sm:text-4xl font-orbitron font-bold text-slate-900 uppercase">
+                  Lead Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-purple to-indigo-600">Campus</span>
+                </h3>
+                <p className="text-slate-500 font-sans max-w-xl mx-auto leading-relaxed">
+                  Become the official face of TECHCON '26 at your institution and gain unparalleled experience in leadership and management.
+                </p>
               </div>
-              <h3 className="text-xl font-bold text-slate-900 font-orbitron">Application Submitted!</h3>
-              <p className="text-sm text-slate-500">
-                Your request to become a Campus Ambassador has been received. Our team will review your application and contact you soon.
-              </p>
-              <button 
-                onClick={onClose}
-                className="mt-6 px-6 py-3 bg-brand-purple text-white font-bold rounded-xl w-full hover:bg-purple-700 transition-colors"
-              >
-                Close
-              </button>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="bg-slate-50 border border-slate-100 p-5 rounded-2xl flex gap-4">
+                  <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                    <Target size={18} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-800 text-sm mb-1 uppercase tracking-wide">Core Mission</h4>
+                    <p className="text-xs text-slate-600 leading-relaxed">Organize promotional events, execute strategic marketing campaigns, and drive student participation from your college.</p>
+                  </div>
+                </div>
+                <div className="bg-slate-50 border border-slate-100 p-5 rounded-2xl flex gap-4">
+                  <div className="w-10 h-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center shrink-0">
+                    <Award size={18} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-800 text-sm mb-1 uppercase tracking-wide">Exclusive Perks</h4>
+                    <p className="text-xs text-slate-600 leading-relaxed">Build strong networks with industry experts, enhance your resume, and qualify for financial rewards and corporate perks.</p>
+                  </div>
+                </div>
+                <div className="bg-slate-50 border border-slate-100 p-5 rounded-2xl flex gap-4">
+                  <div className="w-10 h-10 rounded-full bg-pink-100 text-pink-600 flex items-center justify-center shrink-0">
+                    <Users size={18} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-800 text-sm mb-1 uppercase tracking-wide">Chief Representative</h4>
+                    <p className="text-xs text-slate-600 leading-relaxed">Act as the primary face of your college to the TECHCON committee. Multiple ambassadors may be appointed for larger institutions.</p>
+                  </div>
+                </div>
+                <div className="bg-slate-50 border border-slate-100 p-5 rounded-2xl flex gap-4">
+                  <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
+                    <Zap size={18} />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-800 text-sm mb-1 uppercase tracking-wide">Eligibility</h4>
+                    <p className="text-xs text-slate-600 leading-relaxed">Any student currently pursuing higher education. Candidates must be officially registered on our primary portal to apply.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-brand-purple/5 border border-brand-purple/20 p-6 rounded-2xl text-center">
+                <h4 className="font-bold text-slate-900 mb-2 uppercase tracking-wide">Ready to make an impact?</h4>
+                <p className="text-sm text-slate-600 mb-6">Join an elite network of student leaders across the state.</p>
+                <button 
+                  onClick={() => switchTab('register')}
+                  className="px-8 py-3 bg-brand-purple text-white font-bold rounded-xl hover:bg-purple-700 hover:shadow-lg hover:shadow-brand-purple/20 transition-all flex items-center gap-2 mx-auto"
+                >
+                  Apply Now <ChevronRight size={18} />
+                </button>
+              </div>
+
             </motion.div>
           ) : (
-            <>
-              <h3 className="text-lg font-bold text-slate-900 mb-6 font-orbitron uppercase text-center tracking-wide">
-                Register as Ambassador
-              </h3>
+            <motion.div 
+              key="register"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="max-w-md mx-auto"
+            >
               
-              {!verifiedUser ? (
-                <>
-                <div className="mb-6 p-4 bg-brand-purple/5 border border-brand-purple/20 rounded-xl flex items-start gap-3">
-                  <Network className="text-brand-purple shrink-0 mt-0.5" size={18} />
-                  <div>
-                    <p className="text-xs font-bold text-slate-800 uppercase tracking-wide mb-1">Registration Required</p>
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      You must be registered for the main TECHCON '26 event to apply for Campus Ambassador. Please verify your Registration ID below, or register first.
-                    </p>
-                  </div>
+              {isLoadingSettings ? (
+                <div className="flex justify-center py-20">
+                  <Loader2 className="w-8 h-8 text-brand-purple animate-spin" />
                 </div>
-                
-                <form onSubmit={handleVerify} className="space-y-4">
-                  
-                  {verifyError && (
-                    <div className="p-3 bg-red-50 border border-red-100 text-red-600 rounded-xl text-xs flex gap-2">
-                      <ShieldAlert size={16} className="shrink-0" />
-                      <p>{verifyError}</p>
-                    </div>
-                  )}
-
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest pl-1">
-                      TECHCON'26 Registration ID
-                    </label>
-                    <input 
-                      type="text" 
-                      required
-                      value={regId}
-                      onChange={e => setRegId(e.target.value)}
-                      className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-brand-purple text-sm"
-                    />
+              ) : isClosed ? (
+                <div className="text-center space-y-4 py-12">
+                   <div className="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                     <ShieldAlert size={32} />
+                   </div>
+                   <h3 className="text-xl font-bold text-slate-900 font-orbitron">Registration Paused</h3>
+                   <p className="text-sm text-slate-500 max-w-sm mx-auto">
+                     We are currently not accepting new Campus Ambassador applications. Please check back later.
+                   </p>
+                </div>
+              ) : isSuccess ? (
+                <div className="text-center space-y-4 py-12">
+                  <div className="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <CheckCircle size={40} />
                   </div>
-
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest pl-1">
-                      Registered Mobile Number
-                    </label>
-                    <input 
-                      type="tel" 
-                      required
-                      value={mobile}
-                      onChange={e => setMobile(e.target.value)}
-                      className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:border-brand-purple text-sm"
-                    />
-                  </div>
-
+                  <h3 className="text-2xl font-bold text-slate-900 font-orbitron uppercase tracking-wide">Application Submitted!</h3>
+                  <p className="text-slate-500 leading-relaxed">
+                    Your request to become a Campus Ambassador has been received. Our team will review your application and contact you soon.
+                  </p>
                   <button 
-                    type="submit"
-                    disabled={isVerifying || !regId.trim() || !mobile.trim()}
-                    className="w-full py-3 mt-4 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 transition-all flex items-center justify-center gap-2 disabled:opacity-70"
+                    onClick={() => switchTab('details')}
+                    className="mt-8 px-8 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl hover:bg-slate-200 transition-colors"
                   >
-                    {isVerifying ? <Loader2 size={18} className="animate-spin" /> : "Verify Registration"}
-                  </button>
-                </form>
-                
-                <div className="mt-8 pt-6 border-t border-slate-200 text-center">
-                  <p className="text-xs text-slate-500 mb-3 font-medium uppercase tracking-wider">Not registered yet?</p>
-                  <button 
-                    onClick={() => {
-                      sessionStorage.setItem('returnTo', 'ambassador');
-                      window.location.hash = 'register';
-                    }}
-                    className="w-full py-3 border-2 border-brand-purple text-brand-purple font-bold rounded-xl hover:bg-brand-purple hover:text-white transition-colors"
-                  >
-                    Register for TECHCON '26 Now
+                    Back to Details
                   </button>
                 </div>
-                </>
               ) : (
-                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
-                  <div className="p-5 bg-white border-2 border-green-100 rounded-xl">
-                    <div className="flex items-center gap-2 text-green-600 mb-4 pb-3 border-b border-green-50">
-                      <CheckCircle size={18} />
-                      <span className="font-bold text-sm font-sans uppercase tracking-wide">Student Verified</span>
-                    </div>
-                    <div className="space-y-3 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-slate-500">Name</span>
-                        <span className="font-bold text-slate-900">{verifiedUser.fullName}</span>
+                <div className="py-4">
+                  
+                  {!verifiedUser ? (
+                    <div className="space-y-6">
+                      <div className="text-center mb-8">
+                        <h3 className="text-2xl font-bold text-slate-900 font-orbitron uppercase tracking-wide">Verify Identity</h3>
+                        <p className="text-sm text-slate-500 mt-2">Enter your event details to continue.</p>
                       </div>
-                      <div className="flex justify-between">
-                        <span className="text-slate-500">Reg ID</span>
-                        <span className="font-bold text-brand-purple">{verifiedUser.id}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-slate-500">Mobile</span>
-                        <span className="font-bold text-slate-900">{verifiedUser.mobileNumber}</span>
-                      </div>
-                      <div className="pt-2 border-t border-slate-50">
-                        <span className="text-slate-500 block text-xs mb-1">Institution</span>
-                        <span className="font-bold text-slate-900 line-clamp-2">{verifiedUser.institution}</span>
-                      </div>
-                    </div>
-                  </div>
 
-                  {submitError && (
-                    <div className="p-3 bg-red-50 border border-red-100 text-red-600 rounded-xl text-xs">
-                      {submitError}
+                      <div className="p-4 bg-brand-purple/5 border border-brand-purple/20 rounded-xl flex items-start gap-3">
+                        <Network className="text-brand-purple shrink-0 mt-0.5" size={18} />
+                        <div>
+                          <p className="text-xs font-bold text-slate-800 uppercase tracking-wide mb-1">Registration Required</p>
+                          <p className="text-xs text-slate-600 leading-relaxed">
+                            You must be registered for the main TECHCON '26 event to apply for Campus Ambassador.
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <form onSubmit={handleVerify} className="space-y-5">
+                        
+                        {verifyError && (
+                          <div className="p-3 bg-red-50 border border-red-100 text-red-600 rounded-xl text-xs flex gap-2">
+                            <ShieldAlert size={16} className="shrink-0" />
+                            <p>{verifyError}</p>
+                          </div>
+                        )}
+
+                        <div className="space-y-1.5">
+                          <label className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest pl-1">
+                            TECHCON'26 Registration ID
+                          </label>
+                          <input 
+                            type="text" 
+                            required
+                            value={regId}
+                            onChange={e => setRegId(e.target.value)}
+                            className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-brand-purple focus:ring-4 focus:ring-brand-purple/10 transition-all text-sm font-medium"
+                          />
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <label className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest pl-1">
+                            Registered Mobile Number
+                          </label>
+                          <input 
+                            type="tel" 
+                            required
+                            value={mobile}
+                            onChange={e => setMobile(e.target.value)}
+                            className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-brand-purple focus:ring-4 focus:ring-brand-purple/10 transition-all text-sm font-medium"
+                          />
+                        </div>
+
+                        <button 
+                          type="submit"
+                          disabled={isVerifying || !regId.trim() || !mobile.trim()}
+                          className="w-full py-4 mt-2 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:hover:shadow-none disabled:cursor-not-allowed"
+                        >
+                          {isVerifying ? <Loader2 size={18} className="animate-spin" /> : "Verify Registration"}
+                        </button>
+                      </form>
+                      
+                      <div className="pt-8 text-center">
+                        <p className="text-xs text-slate-400 mb-3 font-medium uppercase tracking-wider">Not registered yet?</p>
+                        <button 
+                          onClick={() => {
+                            sessionStorage.setItem('returnTo', 'ambassador');
+                            window.location.hash = 'register';
+                          }}
+                          className="w-full py-3.5 border-2 border-brand-purple text-brand-purple font-bold rounded-xl hover:bg-brand-purple hover:text-white transition-all shadow-sm"
+                        >
+                          Register for TECHCON '26 Now
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-6">
+                      <div className="text-center mb-6">
+                        <div className="w-16 h-16 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <CheckCircle size={32} />
+                        </div>
+                        <h3 className="text-2xl font-bold text-slate-900 font-orbitron uppercase tracking-wide">Student Verified</h3>
+                        <p className="text-sm text-slate-500 mt-2">Confirm your details below to submit.</p>
+                      </div>
+
+                      <div className="p-6 bg-slate-50 border border-slate-200 rounded-2xl">
+                        <div className="space-y-4 text-sm">
+                          <div className="flex flex-col gap-1">
+                            <span className="text-slate-500 text-[10px] font-mono uppercase tracking-widest font-bold">Full Name</span>
+                            <span className="font-bold text-slate-900 text-base">{verifiedUser.fullName}</span>
+                          </div>
+                          <div className="flex flex-col gap-1">
+                            <span className="text-slate-500 text-[10px] font-mono uppercase tracking-widest font-bold">Registration ID</span>
+                            <span className="font-bold text-brand-purple text-base">{verifiedUser.id}</span>
+                          </div>
+                          <div className="flex flex-col gap-1">
+                            <span className="text-slate-500 text-[10px] font-mono uppercase tracking-widest font-bold">Mobile Number</span>
+                            <span className="font-bold text-slate-900 text-base">{verifiedUser.mobileNumber}</span>
+                          </div>
+                          <div className="flex flex-col gap-1 pt-2 border-t border-slate-200">
+                            <span className="text-slate-500 text-[10px] font-mono uppercase tracking-widest font-bold">Institution</span>
+                            <span className="font-bold text-slate-900 text-base leading-snug">{verifiedUser.institution}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {submitError && (
+                        <div className="p-4 bg-red-50 border border-red-100 text-red-600 rounded-xl text-sm flex items-start gap-2">
+                          <ShieldAlert size={18} className="shrink-0 mt-0.5" />
+                          <p>{submitError}</p>
+                        </div>
+                      )}
+
+                      <button 
+                        onClick={handleRegister}
+                        disabled={isSubmitting}
+                        className="w-full py-4 mt-4 bg-brand-purple text-white font-bold rounded-xl shadow-xl shadow-purple-500/25 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:shadow-none"
+                      >
+                        {isSubmitting ? <Loader2 size={20} className="animate-spin" /> : "Confirm & Apply"}
+                      </button>
                     </div>
                   )}
-
-                  <button 
-                    onClick={handleRegister}
-                    disabled={isSubmitting}
-                    className="w-full py-4 bg-brand-purple text-white font-bold rounded-xl shadow-lg shadow-purple-500/20 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:hover:translate-y-0"
-                  >
-                    {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : "Apply as Campus Ambassador"}
-                  </button>
-                </motion.div>
+                </div>
               )}
-            </>
+            </motion.div>
           )}
-
-        </div>
+        </AnimatePresence>
       </div>
     </div>
   );

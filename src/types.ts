@@ -97,9 +97,14 @@ export interface VolunteerRegistration {
 export interface CampusAmbassador {
   id: string; // e.g., TCCA001
   fullName: string;
+  dob: string;
+  place: string;
+  district: string;
   mobileNumber: string;
+  whatsAppNumber: string;
   email: string;
   institution: string;
+  institutionDistrict: string;
   status: 'pending' | 'approved';
   createdAt: string;
 }

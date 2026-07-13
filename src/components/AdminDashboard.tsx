@@ -393,11 +393,11 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
   }, [ambassadors, ambassadorSort]);
 
   const handleExportAmbassadorsCSV = () => {
-    const headers = ['Reg ID', 'Name', 'Phone', 'Email', 'Institution', 'Status', 'Date'];
+    const headers = ['Reg ID', 'Name', 'DOB', 'Place', 'District', 'Phone', 'WhatsApp', 'Email', 'Institution', 'Inst. District', 'Status', 'Date'];
     const csvRows = [headers];
     filteredAmbassadors.forEach(a => {
       csvRows.push([
-        a.id, `"${a.fullName}"`, a.mobileNumber, `"${a.email || ''}"`, `"${a.institution}"`, a.status, new Date(a.createdAt).toLocaleDateString()
+        a.id, `"${a.fullName}"`, a.dob || '', `"${a.place || ''}"`, `"${a.district || ''}"`, a.mobileNumber, a.whatsAppNumber || '', `"${a.email || ''}"`, `"${a.institution}"`, `"${a.institutionDistrict || ''}"`, a.status, new Date(a.createdAt).toLocaleDateString()
       ]);
     });
     const csvString = csvRows.map(r => r.join(',')).join('\n');
@@ -420,8 +420,8 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
         <td style="padding: 10px; font-family: monospace; font-size: 11px;">${idx + 1}</td>
         <td style="padding: 10px; font-family: monospace; font-size: 11px; font-weight: bold; color: #4f46e5;">${a.id}</td>
         <td style="padding: 10px; font-weight: 500;">${a.fullName}</td>
-        <td style="padding: 10px;">${a.email}</td>
-        <td style="padding: 10px; font-family: monospace; font-size: 11px;">${a.mobileNumber}</td>
+        <td style="padding: 10px;">${a.district || ''}</td>
+        <td style="padding: 10px; font-family: monospace; font-size: 11px;">${a.mobileNumber} / ${a.whatsAppNumber || ''}</td>
         <td style="padding: 10px; font-size: 11px;">${a.institution || 'N/A'}</td>
         <td style="padding: 10px; text-align: center;">
           <span style="display: inline-block; padding: 2px 8px; border-radius: 9999px; font-size: 10px; font-weight: bold; text-transform: uppercase; background-color: ${a.status === 'approved' ? '#d1fae5; color: #065f46' : '#fef3c7; color: #92400e'}">

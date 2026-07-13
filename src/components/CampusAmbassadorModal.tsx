@@ -3,6 +3,12 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, CheckCircle, ShieldAlert, Loader2, Network, ChevronRight, Zap, Target, Users, Award } from 'lucide-react';
 import { submitCampusAmbassador, getProgramSettings } from '../utils/db';
 
+const DISTRICTS_KERALA = [
+  'Ernakulam', 'Thiruvananthapuram', 'Kozhikode', 'Thrissur', 'Kottayam', 
+  'Alappuzha', 'Kollam', 'Malappuram', 'Palakkad', 'Kannur', 
+  'Kasaragod', 'Idukki', 'Wayanad', 'Pathanamthitta', 'Other State'
+];
+
 interface CampusAmbassadorModalProps {
   onClose: () => void;
 }
@@ -11,11 +17,17 @@ export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModal
   const [activeTab, setActiveTab] = useState<'details' | 'register'>('details');
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // New independent form fields
+  // Form fields
   const [fullName, setFullName] = useState('');
+  const [dob, setDob] = useState('');
+  const [place, setPlace] = useState('');
+  const [district, setDistrict] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
+  const [whatsAppNumber, setWhatsAppNumber] = useState('');
+  const [sameAsMobile, setSameAsMobile] = useState(false);
   const [email, setEmail] = useState('');
   const [institution, setInstitution] = useState('');
+  const [institutionDistrict, setInstitutionDistrict] = useState('');
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -34,6 +46,23 @@ export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModal
     });
   }, []);
 
+  const handleSameAsMobileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSameAsMobile(e.target.checked);
+    if (e.target.checked) {
+      setWhatsAppNumber(mobileNumber);
+    } else {
+      setWhatsAppNumber('');
+    }
+  };
+
+  const handleMobileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setMobileNumber(val);
+    if (sameAsMobile) {
+      setWhatsAppNumber(val);
+    }
+  };
+
   const switchTab = (tab: 'details' | 'register') => {
     setActiveTab(tab);
     if (scrollRef.current) {
@@ -49,9 +78,14 @@ export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModal
     try {
       await submitCampusAmbassador({
         fullName,
+        dob,
+        place,
+        district,
         mobileNumber,
+        whatsAppNumber,
         email,
         institution,
+        institutionDistrict
       });
       setIsSuccess(true);
     } catch (err: any) {
@@ -60,6 +94,8 @@ export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModal
       setIsSubmitting(false);
     }
   };
+
+  const isFormValid = fullName.trim() && dob && place.trim() && district && mobileNumber.trim() && whatsAppNumber.trim() && email.trim() && institution.trim() && institutionDistrict;
 
   return (
     <div className="w-full max-w-3xl mx-auto bg-white border border-slate-100 rounded-[24px] sm:rounded-[32px] shadow-2xl relative overflow-hidden flex flex-col h-[90vh] md:h-[80vh] max-h-[800px]">
@@ -246,23 +282,54 @@ export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModal
                           required
                           value={fullName}
                           onChange={e => setFullName(e.target.value)}
-                          className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-brand-purple focus:ring-4 focus:ring-brand-purple/10 transition-all text-sm font-medium"
+                          className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-brand-purple focus:ring-4 focus:ring-brand-purple/10 transition-all text-sm font-medium"
                           placeholder="Enter your full name"
                         />
                       </div>
 
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1.5">
+                          <label className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest pl-1">
+                            Date of Birth
+                          </label>
+                          <input 
+                            type="date" 
+                            required
+                            value={dob}
+                            onChange={e => setDob(e.target.value)}
+                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-brand-purple focus:ring-4 focus:ring-brand-purple/10 transition-all text-sm font-medium text-slate-700"
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <label className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest pl-1">
+                            Place
+                          </label>
+                          <input 
+                            type="text" 
+                            required
+                            value={place}
+                            onChange={e => setPlace(e.target.value)}
+                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-brand-purple focus:ring-4 focus:ring-brand-purple/10 transition-all text-sm font-medium"
+                            placeholder="Home City/Town"
+                          />
+                        </div>
+                      </div>
+
                       <div className="space-y-1.5">
                         <label className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest pl-1">
-                          Mobile Number
+                          District (Home)
                         </label>
-                        <input 
-                          type="tel" 
+                        <select
                           required
-                          value={mobileNumber}
-                          onChange={e => setMobileNumber(e.target.value)}
-                          className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-brand-purple focus:ring-4 focus:ring-brand-purple/10 transition-all text-sm font-medium"
-                          placeholder="10-digit mobile number"
-                        />
+                          value={district}
+                          onChange={e => setDistrict(e.target.value)}
+                          className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-brand-purple focus:ring-4 focus:ring-brand-purple/10 transition-all text-sm font-medium text-slate-700"
+                        >
+                          <option value="" disabled>Select District</option>
+                          {DISTRICTS_KERALA.map(d => (
+                            <option key={d} value={d}>{d}</option>
+                          ))}
+                        </select>
                       </div>
 
                       <div className="space-y-1.5">
@@ -274,9 +341,50 @@ export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModal
                           required
                           value={email}
                           onChange={e => setEmail(e.target.value)}
-                          className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-brand-purple focus:ring-4 focus:ring-brand-purple/10 transition-all text-sm font-medium"
+                          className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-brand-purple focus:ring-4 focus:ring-brand-purple/10 transition-all text-sm font-medium"
                           placeholder="Your email address"
                         />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-1.5">
+                          <label className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest pl-1">
+                            Mobile Number
+                          </label>
+                          <input 
+                            type="tel" 
+                            required
+                            value={mobileNumber}
+                            onChange={handleMobileChange}
+                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-brand-purple focus:ring-4 focus:ring-brand-purple/10 transition-all text-sm font-medium"
+                            placeholder="10-digit mobile"
+                          />
+                        </div>
+                        <div className="space-y-1.5">
+                          <div className="flex items-center justify-between pb-1">
+                            <label className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest pl-1">
+                              WhatsApp
+                            </label>
+                            <label className="flex items-center gap-1.5 cursor-pointer group">
+                              <input 
+                                type="checkbox"
+                                checked={sameAsMobile}
+                                onChange={handleSameAsMobileChange}
+                                className="w-3 h-3 text-brand-purple rounded border-slate-300 focus:ring-brand-purple cursor-pointer"
+                              />
+                              <span className="text-[9px] font-bold text-slate-400 uppercase group-hover:text-slate-600 transition-colors">Same</span>
+                            </label>
+                          </div>
+                          <input 
+                            type="tel" 
+                            required
+                            disabled={sameAsMobile}
+                            value={whatsAppNumber}
+                            onChange={e => setWhatsAppNumber(e.target.value)}
+                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-brand-purple focus:ring-4 focus:ring-brand-purple/10 transition-all text-sm font-medium disabled:opacity-50 disabled:bg-slate-100"
+                            placeholder="WhatsApp number"
+                          />
+                        </div>
                       </div>
 
                       <div className="space-y-1.5">
@@ -288,14 +396,31 @@ export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModal
                           required
                           value={institution}
                           onChange={e => setInstitution(e.target.value)}
-                          className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-brand-purple focus:ring-4 focus:ring-brand-purple/10 transition-all text-sm font-medium"
+                          className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-brand-purple focus:ring-4 focus:ring-brand-purple/10 transition-all text-sm font-medium"
                           placeholder="Your College or University"
                         />
                       </div>
 
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest pl-1">
+                          Institution District
+                        </label>
+                        <select
+                          required
+                          value={institutionDistrict}
+                          onChange={e => setInstitutionDistrict(e.target.value)}
+                          className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-brand-purple focus:ring-4 focus:ring-brand-purple/10 transition-all text-sm font-medium text-slate-700"
+                        >
+                          <option value="" disabled>Select District</option>
+                          {DISTRICTS_KERALA.map(d => (
+                            <option key={d} value={d}>{d}</option>
+                          ))}
+                        </select>
+                      </div>
+
                       <button 
                         type="submit"
-                        disabled={isSubmitting || !fullName.trim() || !mobileNumber.trim() || !email.trim() || !institution.trim()}
+                        disabled={isSubmitting || !isFormValid}
                         className="w-full py-4 mt-2 bg-brand-purple text-white font-bold rounded-xl hover:bg-purple-700 hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:hover:shadow-none disabled:cursor-not-allowed"
                       >
                         {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : "Submit Application"}

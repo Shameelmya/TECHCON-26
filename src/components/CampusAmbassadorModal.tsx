@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, CheckCircle, ShieldAlert, Loader2, Network, ChevronRight, Zap, Target, Users, Award } from 'lucide-react';
-import { verifyMainRegistration, submitCampusAmbassador, getProgramSettings } from '../utils/db';
-import { AttendeeRegistration } from '../types';
+import { submitCampusAmbassador, getProgramSettings } from '../utils/db';
 
 interface CampusAmbassadorModalProps {
   onClose: () => void;
@@ -12,12 +11,11 @@ export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModal
   const [activeTab, setActiveTab] = useState<'details' | 'register'>('details');
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const [regId, setRegId] = useState('');
-  const [mobile, setMobile] = useState('');
-  
-  const [isVerifying, setIsVerifying] = useState(false);
-  const [verifiedUser, setVerifiedUser] = useState<AttendeeRegistration | null>(null);
-  const [verifyError, setVerifyError] = useState<string | null>(null);
+  // New independent form fields
+  const [fullName, setFullName] = useState('');
+  const [mobileNumber, setMobileNumber] = useState('');
+  const [email, setEmail] = useState('');
+  const [institution, setInstitution] = useState('');
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -27,21 +25,6 @@ export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModal
   const [isLoadingSettings, setIsLoadingSettings] = useState(true);
 
   useEffect(() => {
-    // Check if we came back from registration for auto-fill
-    const savedRegId = sessionStorage.getItem('autofillRegId');
-    const savedMobile = sessionStorage.getItem('autofillMobile');
-    
-    if (savedRegId || savedMobile) {
-       // If auto-fill is present, immediately switch to register tab
-       setActiveTab('register');
-       if (savedRegId) setRegId(savedRegId);
-       if (savedMobile) setMobile(savedMobile);
-       
-       // Clear them so it doesn't happen again unnecessarily
-       sessionStorage.removeItem('autofillRegId');
-       sessionStorage.removeItem('autofillMobile');
-    }
-    
     // Check if program is enabled
     getProgramSettings().then(settings => {
       if (settings['Campus Ambassador'] === false) {
@@ -58,35 +41,17 @@ export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModal
     }
   };
 
-  const handleVerify = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    setVerifyError(null);
-    setSubmitError(null);
-    setIsVerifying(true);
-    
-    try {
-      const user = await verifyMainRegistration(regId, mobile);
-      setVerifiedUser(user);
-    } catch (err: any) {
-      setVerifyError(err.message || 'Verification failed. Please check your details.');
-      setVerifiedUser(null);
-    } finally {
-      setIsVerifying(false);
-    }
-  };
-
-  const handleRegister = async () => {
-    if (!verifiedUser) return;
     setIsSubmitting(true);
     setSubmitError(null);
     
     try {
       await submitCampusAmbassador({
-        id: verifiedUser.id,
-        fullName: verifiedUser.fullName,
-        mobileNumber: verifiedUser.mobileNumber,
-        email: verifiedUser.email,
-        institution: verifiedUser.institution,
+        fullName,
+        mobileNumber,
+        email,
+        institution,
       });
       setIsSuccess(true);
     } catch (err: any) {
@@ -198,7 +163,7 @@ export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModal
                   </div>
                   <div>
                     <h4 className="font-bold text-slate-800 text-sm mb-1 uppercase tracking-wide">Eligibility</h4>
-                    <p className="text-xs text-slate-600 leading-relaxed">Any student currently pursuing higher education. Candidates must be officially registered on our primary portal to apply.</p>
+                    <p className="text-xs text-slate-600 leading-relaxed">Any student currently pursuing higher education. Independent application is now officially open to all active students.</p>
                   </div>
                 </div>
               </div>
@@ -257,126 +222,87 @@ export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModal
                 </div>
               ) : (
                 <div className="py-4">
-                  
-                  {!verifiedUser ? (
-                    <div className="space-y-6">
-                      <div className="text-center mb-8">
-                        <h3 className="text-2xl font-bold text-slate-900 font-orbitron uppercase tracking-wide">Verify Identity</h3>
-                        <p className="text-sm text-slate-500 mt-2">Enter your event details to continue.</p>
-                      </div>
-
-                      <div className="p-4 bg-brand-purple/5 border border-brand-purple/20 rounded-xl flex items-start gap-3">
-                        <Network className="text-brand-purple shrink-0 mt-0.5" size={18} />
-                        <div>
-                          <p className="text-xs font-bold text-slate-800 uppercase tracking-wide mb-1">Registration Required</p>
-                          <p className="text-xs text-slate-600 leading-relaxed">
-                            You must be registered for the main TECHCON '26 event to apply for Campus Ambassador. 
-                            <button 
-                              type="button"
-                              onClick={() => {
-                                sessionStorage.setItem('returnTo', 'ambassador');
-                                window.location.hash = 'register';
-                              }}
-                              className="font-bold text-brand-purple hover:text-purple-700 underline underline-offset-2 ml-1"
-                            >
-                              Register for TECHCON '26 Now
-                            </button>
-                          </p>
-                        </div>
-                      </div>
-                      
-                      <form onSubmit={handleVerify} className="space-y-5">
-                        
-                        {verifyError && (
-                          <div className="p-3 bg-red-50 border border-red-100 text-red-600 rounded-xl text-xs flex gap-2">
-                            <ShieldAlert size={16} className="shrink-0" />
-                            <p>{verifyError}</p>
-                          </div>
-                        )}
-
-                        <div className="space-y-1.5">
-                          <label className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest pl-1">
-                            TECHCON'26 Registration ID
-                          </label>
-                          <input 
-                            type="text" 
-                            required
-                            value={regId}
-                            onChange={e => setRegId(e.target.value)}
-                            className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-brand-purple focus:ring-4 focus:ring-brand-purple/10 transition-all text-sm font-medium"
-                          />
-                        </div>
-
-                        <div className="space-y-1.5">
-                          <label className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest pl-1">
-                            Registered Mobile Number
-                          </label>
-                          <input 
-                            type="tel" 
-                            required
-                            value={mobile}
-                            onChange={e => setMobile(e.target.value)}
-                            className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-brand-purple focus:ring-4 focus:ring-brand-purple/10 transition-all text-sm font-medium"
-                          />
-                        </div>
-
-                        <button 
-                          type="submit"
-                          disabled={isVerifying || !regId.trim() || !mobile.trim()}
-                          className="w-full py-4 mt-2 bg-slate-900 text-white font-bold rounded-xl hover:bg-slate-800 hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:hover:shadow-none disabled:cursor-not-allowed"
-                        >
-                          {isVerifying ? <Loader2 size={18} className="animate-spin" /> : "Verify Registration"}
-                        </button>
-                      </form>
-                      
+                  <div className="space-y-6">
+                    <div className="text-center mb-8">
+                      <h3 className="text-2xl font-bold text-slate-900 font-orbitron uppercase tracking-wide">Ambassador Registration</h3>
+                      <p className="text-sm text-slate-500 mt-2">Enter your details below to apply.</p>
                     </div>
-                  ) : (
-                    <div className="space-y-6">
-                      <div className="text-center mb-6">
-                        <div className="w-16 h-16 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                          <CheckCircle size={32} />
-                        </div>
-                        <h3 className="text-2xl font-bold text-slate-900 font-orbitron uppercase tracking-wide">Student Verified</h3>
-                        <p className="text-sm text-slate-500 mt-2">Confirm your details below to submit.</p>
-                      </div>
 
-                      <div className="p-6 bg-slate-50 border border-slate-200 rounded-2xl">
-                        <div className="space-y-4 text-sm">
-                          <div className="flex flex-col gap-1">
-                            <span className="text-slate-500 text-[10px] font-mono uppercase tracking-widest font-bold">Full Name</span>
-                            <span className="font-bold text-slate-900 text-base">{verifiedUser.fullName}</span>
-                          </div>
-                          <div className="flex flex-col gap-1">
-                            <span className="text-slate-500 text-[10px] font-mono uppercase tracking-widest font-bold">Registration ID</span>
-                            <span className="font-bold text-brand-purple text-base">{verifiedUser.id}</span>
-                          </div>
-                          <div className="flex flex-col gap-1">
-                            <span className="text-slate-500 text-[10px] font-mono uppercase tracking-widest font-bold">Mobile Number</span>
-                            <span className="font-bold text-slate-900 text-base">{verifiedUser.mobileNumber}</span>
-                          </div>
-                          <div className="flex flex-col gap-1 pt-2 border-t border-slate-200">
-                            <span className="text-slate-500 text-[10px] font-mono uppercase tracking-widest font-bold">Institution</span>
-                            <span className="font-bold text-slate-900 text-base leading-snug">{verifiedUser.institution}</span>
-                          </div>
-                        </div>
-                      </div>
-
+                    <form onSubmit={handleRegister} className="space-y-5">
+                      
                       {submitError && (
-                        <div className="p-4 bg-red-50 border border-red-100 text-red-600 rounded-xl text-sm flex items-start gap-2">
-                          <ShieldAlert size={18} className="shrink-0 mt-0.5" />
+                        <div className="p-3 bg-red-50 border border-red-100 text-red-600 rounded-xl text-xs flex gap-2">
+                          <ShieldAlert size={16} className="shrink-0" />
                           <p>{submitError}</p>
                         </div>
                       )}
 
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest pl-1">
+                          Full Name
+                        </label>
+                        <input 
+                          type="text" 
+                          required
+                          value={fullName}
+                          onChange={e => setFullName(e.target.value)}
+                          className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-brand-purple focus:ring-4 focus:ring-brand-purple/10 transition-all text-sm font-medium"
+                          placeholder="Enter your full name"
+                        />
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest pl-1">
+                          Mobile Number
+                        </label>
+                        <input 
+                          type="tel" 
+                          required
+                          value={mobileNumber}
+                          onChange={e => setMobileNumber(e.target.value)}
+                          className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-brand-purple focus:ring-4 focus:ring-brand-purple/10 transition-all text-sm font-medium"
+                          placeholder="10-digit mobile number"
+                        />
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest pl-1">
+                          Email Address
+                        </label>
+                        <input 
+                          type="email" 
+                          required
+                          value={email}
+                          onChange={e => setEmail(e.target.value)}
+                          className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-brand-purple focus:ring-4 focus:ring-brand-purple/10 transition-all text-sm font-medium"
+                          placeholder="Your email address"
+                        />
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest pl-1">
+                          Institution
+                        </label>
+                        <input 
+                          type="text" 
+                          required
+                          value={institution}
+                          onChange={e => setInstitution(e.target.value)}
+                          className="w-full px-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:border-brand-purple focus:ring-4 focus:ring-brand-purple/10 transition-all text-sm font-medium"
+                          placeholder="Your College or University"
+                        />
+                      </div>
+
                       <button 
-                        onClick={handleRegister}
-                        disabled={isSubmitting}
-                        className="w-full py-4 mt-4 bg-brand-purple text-white font-bold rounded-xl shadow-xl shadow-purple-500/25 hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:shadow-none"
+                        type="submit"
+                        disabled={isSubmitting || !fullName.trim() || !mobileNumber.trim() || !email.trim() || !institution.trim()}
+                        className="w-full py-4 mt-2 bg-brand-purple text-white font-bold rounded-xl hover:bg-purple-700 hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:hover:shadow-none disabled:cursor-not-allowed"
                       >
-                        {isSubmitting ? <Loader2 size={20} className="animate-spin" /> : "Confirm & Apply"}
+                        {isSubmitting ? <Loader2 size={18} className="animate-spin" /> : "Submit Application"}
                       </button>
-                    </div>
-                  )}
+                    </form>
+                    
+                  </div>
                 </div>
               )}
             </motion.div>

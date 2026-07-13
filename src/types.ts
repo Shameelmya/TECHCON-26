@@ -95,7 +95,7 @@ export interface VolunteerRegistration {
 }
 
 export interface CampusAmbassador {
-  id: string; // References AttendeeRegistration ID
+  id: string; // e.g., TCCA001
   fullName: string;
   mobileNumber: string;
   email: string;

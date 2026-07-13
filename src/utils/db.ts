@@ -565,32 +565,35 @@ export const getAttendeeByMobile = (mobile: string): AttendeeRegistration | null
 // CAMPUS AMBASSADOR REGISTRATION
 // ==========================================
 
-export const verifyMainRegistration = async (id: string, mobileNumber: string): Promise<AttendeeRegistration> => {
-  const registrations = getRegistrations();
-  const reg = registrations.find(r => r.id.trim() === id.trim() && r.mobileNumber.trim() === mobileNumber.trim());
-  
-  if (!reg) {
-    throw new Error('No matching registration found. Please ensure you are fully registered with TECHCON 26 first.');
-  }
-  
-  if (reg.occupation !== 'Student') {
-    throw new Error('Only students are eligible for the Campus Ambassador program.');
-  }
-  
-  return reg;
-};
-
 export const submitCampusAmbassador = async (data: any): Promise<void> => {
   const ambassadorsRef = collection(db, 'campus_ambassadors');
   
-  const q = query(ambassadorsRef, where('id', '==', data.id));
-  const snapshot = await getDocs(q);
-  if (!snapshot.empty) {
-    throw new Error('You have already submitted an application for Campus Ambassador.');
+  // Duplicate check using mobile
+  const mobileQuery = query(ambassadorsRef, where('mobileNumber', '==', data.mobileNumber));
+  const mobileSnapshot = await getDocs(mobileQuery);
+  if (!mobileSnapshot.empty) {
+    throw new Error('An application with this mobile number already exists.');
   }
   
-  await setDoc(doc(ambassadorsRef, data.id), {
+  // Fetch all existing ambassadors to find the highest ID number
+  const snapshot = await getDocs(ambassadorsRef);
+  let maxIdNum = 0;
+  snapshot.forEach(docSnap => {
+    const docId = docSnap.id;
+    if (docId.startsWith('TCCA')) {
+      const num = parseInt(docId.replace('TCCA', ''), 10);
+      if (!isNaN(num) && num > maxIdNum) {
+        maxIdNum = num;
+      }
+    }
+  });
+  
+  // Append a random suffix to completely eliminate race conditions
+  const id = `TCCA${String(maxIdNum + 1).padStart(3, '0')}`;
+  
+  await setDoc(doc(ambassadorsRef, id), {
     ...data,
+    id: id,
     status: 'pending',
     createdAt: new Date().toISOString()
   });

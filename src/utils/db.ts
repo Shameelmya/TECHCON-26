@@ -476,11 +476,22 @@ export const submitVolunteer = async (data: Omit<VolunteerRegistration, 'id' | '
     }
   }
 
-  // Get count for ID generation
-  const countSnapshot = await getCountFromServer(volunteersRef);
-  const totalCount = countSnapshot.data().count;
+  // Fetch all existing volunteers to find the highest ID number
+  const snapshot = await getDocs(volunteersRef);
+  let maxIdNum = 0;
+  snapshot.forEach(docSnap => {
+    const docId = docSnap.id;
+    if (docId.startsWith('TCVOL')) {
+      const num = parseInt(docId.replace('TCVOL', ''), 10);
+      if (!isNaN(num) && num > maxIdNum) {
+        maxIdNum = num;
+      }
+    }
+  });
   
-  const id = `TCVOL${String(totalCount + 1).padStart(3, '0')}`;
+  // Append a short random string to completely eliminate race conditions just in case
+  const randomSuffix = Math.random().toString(36).substring(2, 6).toUpperCase();
+  const id = `TCVOL${String(maxIdNum + 1).padStart(3, '0')}-${randomSuffix}`;
   const createdAt = new Date().toISOString();
   
   const newVolunteer: VolunteerRegistration = { ...data, id, createdAt };

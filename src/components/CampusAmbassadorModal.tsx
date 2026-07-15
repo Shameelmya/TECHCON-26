@@ -249,12 +249,33 @@ export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModal
                   <p className="text-slate-500 leading-relaxed">
                     Your request to become a Campus Ambassador has been received. Our team will review your application and contact you soon.
                   </p>
-                  <button 
-                    onClick={() => switchTab('details')}
-                    className="mt-8 px-8 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl hover:bg-slate-200 transition-colors"
-                  >
-                    Back to Details
-                  </button>
+                  <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <button 
+                      onClick={() => switchTab('details')}
+                      className="w-full sm:w-auto px-8 py-3 bg-slate-100 text-slate-700 font-bold rounded-xl hover:bg-slate-200 transition-colors"
+                    >
+                      Back to Details
+                    </button>
+                    <button 
+                      onClick={() => {
+                        setFullName('');
+                        setDob('');
+                        setPlace('');
+                        setDistrict('');
+                        setMobileNumber('');
+                        setWhatsAppNumber('');
+                        setSameAsMobile(false);
+                        setEmail('');
+                        setInstitution('');
+                        setInstitutionDistrict('');
+                        setSubmitError(null);
+                        setIsSuccess(false);
+                      }}
+                      className="w-full sm:w-auto px-8 py-3 bg-brand-purple text-white font-bold rounded-xl hover:bg-brand-purple/90 transition-colors shadow-[0_4px_14px_rgba(120,45,255,0.25)]"
+                    >
+                      Register New Person
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <div className="py-4">

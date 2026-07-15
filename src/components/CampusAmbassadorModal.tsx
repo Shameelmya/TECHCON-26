@@ -287,13 +287,6 @@ export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModal
 
                     <form onSubmit={handleRegister} className="space-y-5">
                       
-                      {submitError && (
-                        <div className="p-3 bg-red-50 border border-red-100 text-red-600 rounded-xl text-xs flex gap-2">
-                          <ShieldAlert size={16} className="shrink-0" />
-                          <p>{submitError}</p>
-                        </div>
-                      )}
-
                       <div className="space-y-1.5">
                         <label className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-widest pl-1">
                           Full Name
@@ -438,6 +431,13 @@ export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModal
                           ))}
                         </select>
                       </div>
+
+                      {submitError && (
+                        <div className="p-3 bg-red-50 border border-red-100 text-red-600 rounded-xl text-xs flex gap-2">
+                          <ShieldAlert size={16} className="shrink-0" />
+                          <p>{submitError}</p>
+                        </div>
+                      )}
 
                       <button 
                         type="submit"

@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   Lock, CheckCircle, XCircle, Search, LogOut, Download, 
   Send, Users, QrCode, ClipboardList, Shield, RefreshCw, BarChart3, 
-  FileSpreadsheet, FileText, Check, AlertCircle, Copy, HelpCircle, User, Trash2, FileSearch, Settings, Network
+  FileSpreadsheet, FileText, Check, AlertCircle, Copy, HelpCircle, User, Trash2, FileSearch, Settings, Network, X
 } from 'lucide-react';
 import { AttendeeRegistration, AdminStats, VolunteerRegistration } from '../types';
 import { getRegistrations, fetchAllRegistrations, getStats, checkInAttendee, revertCheckIn, exportToCSV, loginAdmin, getSettings, toggleRegistrationStatus, fetchVolunteers, getVolunteerSettings, toggleVolunteerRegistrationStatus, toggleVolunteerIDDownloadStatus, deleteVolunteer, updateVolunteer, getProgramSettings, toggleProgramSetting, getCampusAmbassadors } from '../utils/db';
@@ -668,6 +668,14 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
               >
                 <LogOut size={13} />
                 <span className="hidden sm:inline">Lock Console</span>
+              </button>
+              
+              <button
+                onClick={onClose}
+                className="flex items-center gap-2 px-4 py-2.5 border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-sans font-semibold text-xs rounded-xl transition-all"
+              >
+                <X size={13} />
+                <span className="hidden sm:inline">Close</span>
               </button>
             </div>
           </div>

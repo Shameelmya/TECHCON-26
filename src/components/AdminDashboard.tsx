@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { 
   Lock, CheckCircle, XCircle, Search, LogOut, Download, 
   Send, Users, QrCode, ClipboardList, Shield, RefreshCw, BarChart3, 
-  FileSpreadsheet, FileText, Check, AlertCircle, Copy, HelpCircle, User, Trash2, FileSearch, Settings, Network, X
+  FileSpreadsheet, FileText, Check, AlertCircle, Copy, HelpCircle, User, Trash2, FileSearch, Settings, Network, X, Eye, EyeOff
 } from 'lucide-react';
 import { AttendeeRegistration, AdminStats, VolunteerRegistration } from '../types';
 import { getRegistrations, fetchAllRegistrations, getStats, checkInAttendee, revertCheckIn, exportToCSV, loginAdmin, getSettings, toggleRegistrationStatus, fetchVolunteers, getVolunteerSettings, toggleVolunteerRegistrationStatus, toggleVolunteerIDDownloadStatus, deleteVolunteer, updateVolunteer, getProgramSettings, toggleProgramSetting, getCampusAmbassadors, updateCampusAmbassadorStatus, deleteCampusAmbassador } from '../utils/db';
@@ -25,6 +25,7 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
   const [password, setPassword] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [loginError, setLoginError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [isRegOpen, setIsRegOpen] = useState(true);
   const [isTogglingReg, setIsTogglingReg] = useState(false);
   const [displayCount, setDisplayCount] = useState(50);
@@ -91,6 +92,18 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
       setAmbassadors(ambList);
     } catch (e) {
       console.error("Failed to load data", e);
+    }
+  };
+
+  const handleClose = () => {
+    if (isAuthenticated) {
+      if (window.confirm("You are logging out of the Admin Console. Are you sure?")) {
+        setPassword('');
+        setIsAuthenticated(false);
+        onClose();
+      }
+    } else {
+      onClose();
     }
   };
 
@@ -557,66 +570,76 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-6"
+            className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-6"
           >
             <motion.div 
               initial={{ scale: 0.95, y: 15 }}
               animate={{ scale: 1, y: 0 }}
-              className="w-full max-w-md bg-white border border-slate-200 rounded-[32px] p-8 md:p-10 shadow-2xl relative overflow-hidden"
+              className="w-full max-w-md bg-slate-900 border border-slate-700/50 rounded-2xl p-8 md:p-10 shadow-2xl relative overflow-hidden"
             >
-              <div className="absolute w-28 h-28 rounded-full bg-purple-500/5 blur-2xl top-0 right-0" />
+              {/* Subtle tech background glows */}
+              <div className="absolute w-32 h-32 rounded-full bg-brand-purple/20 blur-[50px] top-0 right-0 pointer-events-none" />
+              <div className="absolute w-32 h-32 rounded-full bg-brand-blue/10 blur-[50px] bottom-0 left-0 pointer-events-none" />
               
-              <div className="text-center mb-8 select-none">
-                <div className="w-12 h-12 rounded-2xl bg-purple-100 flex items-center justify-center text-purple-600 mx-auto mb-4 border border-purple-200">
+              <div className="text-center mb-8 select-none relative z-10">
+                <div className="w-12 h-12 rounded-xl bg-slate-800/80 flex items-center justify-center text-brand-purple mx-auto mb-5 border border-slate-700 shadow-inner">
                   <Shield size={20} />
                 </div>
-                <h2 className="text-xl font-orbitron font-bold text-slate-900 tracking-[0.06em] uppercase">Gatekeeper Portal</h2>
-                <p className="text-xs text-slate-500 mt-1.5 font-sans leading-relaxed">
-                  Provide administrator passcode to access live registrations, check-in controls, and sheet sync engines.
+                <h2 className="text-xl font-orbitron font-bold text-white tracking-wider uppercase drop-shadow-md">Gatekeeper Access</h2>
+                <p className="text-xs text-slate-400 mt-2 font-mono leading-relaxed">
+                  Provide secure passcode to authenticate and initialize live telemetry systems.
                 </p>
               </div>
 
               {loginError && (
-                <div className="mb-5 p-3 bg-red-50 border border-red-100 text-red-600 rounded-xl text-xs font-medium font-sans flex items-center gap-2">
+                <div className="mb-5 p-3 bg-red-900/20 border border-red-500/30 text-red-400 rounded-xl text-xs font-mono flex items-center gap-2 relative z-10">
                   <AlertCircle size={14} className="shrink-0" />
                   <span>{loginError}</span>
                 </div>
               )}
 
-              <form onSubmit={handleLogin} className="space-y-4">
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-mono text-slate-400 tracking-wider uppercase font-semibold">GATE PASSCODE</label>
+              <form onSubmit={handleLogin} className="space-y-5 relative z-10">
+                <div className="flex flex-col gap-2">
+                  <label className="text-[10px] font-mono text-slate-500 tracking-widest uppercase font-bold">Admin Passcode</label>
                   <div className="relative">
                     <input
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       placeholder="••••••••••••"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 focus:border-purple-500 focus:bg-white rounded-xl outline-none font-sans text-sm text-slate-900 transition-all"
+                      className="w-full pl-10 pr-10 py-3.5 bg-slate-800/50 border border-slate-700/50 focus:border-brand-purple focus:bg-slate-800 focus:ring-1 focus:ring-brand-purple/50 rounded-xl outline-none font-mono text-sm text-white transition-all placeholder:text-slate-600"
                       autoFocus
                     />
-                    <Lock size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
+                    
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white transition-colors"
+                    >
+                      {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                    </button>
                   </div>
                 </div>
 
-                <div className="flex gap-2.5 pt-2">
+                <div className="flex gap-3 pt-4">
                   <button
                     type="button"
-                    onClick={onClose}
-                    className="flex-1 py-3 border border-slate-200 hover:bg-slate-50 text-slate-600 font-sans font-semibold text-xs rounded-xl transition-all"
+                    onClick={handleClose}
+                    className="flex-1 py-3.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white font-mono font-bold text-xs tracking-wider rounded-xl transition-all"
                   >
-                    RETURN HOME
+                    ABORT
                   </button>
                   <button
                     type="submit"
                     disabled={isLoggingIn}
-                    className={`flex-1 py-3 font-sans font-semibold text-xs rounded-xl shadow-md transition-all ${
+                    className={`flex-1 py-3.5 font-mono font-bold text-xs tracking-wider rounded-xl shadow-lg transition-all ${
                       isLoggingIn 
-                        ? 'bg-slate-200 text-slate-500 cursor-not-allowed'
-                        : 'bg-gradient-to-r from-brand-purple to-brand-pink text-white hover:shadow-lg'
+                        ? 'bg-brand-purple/50 text-white/50 cursor-not-allowed border border-brand-purple/20'
+                        : 'bg-brand-purple text-white hover:bg-brand-purple/90 border border-brand-purple/50 hover:shadow-brand-purple/20'
                     }`}
                   >
-                    {isLoggingIn ? 'VALIDATING...' : 'UNLOCK ACCESS'}
+                    {isLoggingIn ? 'AUTHENTICATING...' : 'INITIALIZE'}
                   </button>
                 </div>
               </form>
@@ -648,30 +671,18 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
               </div>
             </div>
 
-            <div className="flex items-center gap-2.5 flex-wrap">
-              {/* Refresh button */}
+            <div className="flex items-center gap-2">
               <button
                 onClick={loadData}
-                className="p-2.5 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl text-slate-500 hover:text-slate-900 transition-all flex items-center gap-1.5 text-xs font-semibold"
-                title="Refresh registrations"
+                className="flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 font-sans font-semibold text-xs text-slate-700 rounded-xl transition-all"
+                title="Refresh Data"
               >
-                <RefreshCw size={13} className="text-slate-600 animate-[spin_6s_linear_infinite]" />
+                <RefreshCw size={13} className={isProcessingAttendance ? "animate-spin" : ""} />
                 <span className="hidden sm:inline">REFRESH</span>
               </button>
               
               <button
-                onClick={() => {
-                  setIsAuthenticated(false);
-                  setPassword('');
-                }}
-                className="flex items-center gap-2 px-4 py-2.5 border border-red-200 bg-red-50 hover:bg-red-100 text-red-600 hover:text-red-700 font-sans font-semibold text-xs rounded-xl transition-all"
-              >
-                <LogOut size={13} />
-                <span className="hidden sm:inline">Lock Console</span>
-              </button>
-              
-              <button
-                onClick={onClose}
+                onClick={handleClose}
                 className="flex items-center gap-2 px-4 py-2.5 border border-slate-700 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-sans font-semibold text-xs rounded-xl transition-all"
               >
                 <X size={13} />

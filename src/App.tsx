@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense, lazy } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
 import { Award, Compass, Shield, X, Instagram, Facebook, Linkedin, User, UserPlus } from 'lucide-react';
 import { AttendeeRegistration } from './types';
 
-// Component Imports
+// Static Component Imports
 import CircuitBackground from './components/CircuitBackground';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -17,19 +17,20 @@ import Collaborators from './components/Collaborators';
 import WhyAttend from './components/WhyAttend';
 import Timeline from './components/Timeline';
 import Venue from './components/Venue';
-import RegistrationForm from './components/RegistrationForm';
-import TicketPass from './components/TicketPass';
-import AdminDashboard from './components/AdminDashboard';
-import RetrievePassForm from './components/RetrievePassForm';
-import Sponsorship from './components/Sponsorship';
 import ContactUs from './components/ContactUs';
 import FAQ from './components/FAQ';
-import CampusAmbassadorModal from './components/CampusAmbassadorModal';
 
-import VolunteerRegistrationForm from './components/VolunteerRegistrationForm';
-import VolunteerIDCard from './components/VolunteerIDCard';
-import RegistrationHubModal from './components/RegistrationHubModal';
-import AddOnRegistrationModal from './components/AddOnRegistrationModal';
+// Dynamic Component Imports (Lazy Loading)
+const RegistrationForm = lazy(() => import('./components/RegistrationForm'));
+const TicketPass = lazy(() => import('./components/TicketPass'));
+const AdminDashboard = lazy(() => import('./components/AdminDashboard'));
+const RetrievePassForm = lazy(() => import('./components/RetrievePassForm'));
+const Sponsorship = lazy(() => import('./components/Sponsorship'));
+const CampusAmbassadorModal = lazy(() => import('./components/CampusAmbassadorModal'));
+const VolunteerRegistrationForm = lazy(() => import('./components/VolunteerRegistrationForm'));
+const VolunteerIDCard = lazy(() => import('./components/VolunteerIDCard'));
+const RegistrationHubModal = lazy(() => import('./components/RegistrationHubModal'));
+const AddOnRegistrationModal = lazy(() => import('./components/AddOnRegistrationModal'));
 import { getSettings, getVolunteerSettings } from './utils/db';
 import { VolunteerRegistration } from './types';
 
@@ -182,8 +183,15 @@ export default function App() {
 
   const isAnyModalOpen = isRegisterOpen || isRetrieveOpen || isAmbassadorOpen || !!addOnEventName || isSponsorOpen || isHubOpen || isAdminOpen || (isVolunteerOpen && !activeVolunteer) || !!activeVolunteer;
 
+  const SuspenseFallback = () => (
+    <div className="fixed inset-0 z-[9999] bg-brand-dark flex flex-col items-center justify-center">
+      <div className="w-12 h-12 border-4 border-slate-800 border-t-brand-purple rounded-full animate-spin"></div>
+      <p className="text-slate-500 font-mono text-xs tracking-widest uppercase mt-4">Loading Module...</p>
+    </div>
+  );
+
   return (
-    <>
+    <Suspense fallback={<SuspenseFallback />}>
         <div className="relative min-h-screen bg-brand-dark text-white overflow-x-hidden selection:bg-brand-purple selection:text-white">
           
           {/* Subtle canvas circuit backgrounds */}
@@ -630,6 +638,6 @@ export default function App() {
           />
         )}
       </AnimatePresence>
-    </>
+    </Suspense>
   );
 }

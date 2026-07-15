@@ -180,17 +180,18 @@ export default function App() {
     window.location.hash = 'retrieve';
   };
 
+  const isAnyModalOpen = isRegisterOpen || isRetrieveOpen || isAmbassadorOpen || !!addOnEventName || isSponsorOpen || isHubOpen || isAdminOpen || (isVolunteerOpen && !activeVolunteer) || !!activeVolunteer;
+
   return (
     <>
         <div className="relative min-h-screen bg-brand-dark text-white overflow-x-hidden selection:bg-brand-purple selection:text-white">
           
           {/* Subtle canvas circuit backgrounds */}
-          <CircuitBackground />
+          {!isAnyModalOpen && !activeRegistration && <CircuitBackground />}
           
-
-
           {/* 2. Glassmorphic Sticky Navigation */}
-          <Navbar 
+          {!isAnyModalOpen && !activeRegistration && (
+            <Navbar 
             onNavigate={(id) => {
               setActiveRegistration(null);
               setIsRegisterOpen(false);
@@ -215,6 +216,7 @@ export default function App() {
             onOpenHub={() => window.location.hash = 'hub'}
             onOpenAdmin={() => window.location.hash = 'admin'}
           />
+          )}
 
           {/* 3. Render Pass Card if passenger successfully registered */}
           {activeRegistration ? (
@@ -224,7 +226,7 @@ export default function App() {
                 onBackToHome={handleBackToHomeFromPass} 
               />
             </div>
-          ) : (
+          ) : !isAnyModalOpen ? (
             /* Main Interactive Website Landings */
             <main className="relative">
               
@@ -283,9 +285,8 @@ export default function App() {
                 </div>
                 <p className="font-mono text-xs opacity-60">&copy; {new Date().getFullYear()} TECHCON 26 | Techfed Kerala. All rights reserved.</p>
               </footer>
-
             </main>
-          )}
+          ) : null}
 
           {/* 4. Registration Flow Sliding Modal Panel Overlay */}
           <AnimatePresence>

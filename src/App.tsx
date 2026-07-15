@@ -186,7 +186,6 @@ export default function App() {
   const SuspenseFallback = () => (
     <div className="fixed inset-0 z-[9999] bg-brand-dark flex flex-col items-center justify-center">
       <div className="w-12 h-12 border-4 border-slate-800 border-t-brand-purple rounded-full animate-spin"></div>
-      <p className="text-slate-500 font-mono text-xs tracking-widest uppercase mt-4">Loading Module...</p>
     </div>
   );
 

@@ -88,7 +88,7 @@ export default function WhyAttend() {
   return (
     <section 
       id="why-attend" 
-      className="py-20 sm:py-28 px-6 md:px-12 relative overflow-hidden"
+      className="py-20 sm:py-28 px-6 md:px-12 relative"
     >
 
       <div className="absolute w-[400px] h-[400px] rounded-full bg-gradient-to-tr from-brand-purple/10 to-brand-pink/5 blur-[120px] -top-30 -left-20 pointer-events-none" />

@@ -58,7 +58,7 @@ export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section className="py-24 px-6 md:px-12 relative overflow-hidden bg-brand-dark">
+    <section className="py-24 px-6 md:px-12 relative">
       <div className="max-w-4xl mx-auto relative z-10">
         <div className="text-center mb-16">
           <span className="text-xs font-mono font-bold tracking-[0.25em] text-brand-blue uppercase block mb-3">

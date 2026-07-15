@@ -38,7 +38,7 @@ export default function Timeline() {
   return (
     <section 
       id="timeline" 
-      className="py-24 sm:py-32 px-6 md:px-12 relative overflow-hidden"
+      className="py-24 sm:py-32 px-6 md:px-12 relative"
     >
       {/* Background Soft Blobs */}
       <div className="absolute w-[400px] h-[400px] rounded-full bg-gradient-to-br from-pink-100/30 to-purple-100/20 blur-[110px] top-40 -right-48 pointer-events-none" />

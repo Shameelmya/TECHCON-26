@@ -3,7 +3,7 @@ import { Phone, MessageCircle, Instagram, Linkedin, Mail, User, ArrowUpRight } f
 
 export default function ContactUs() {
   return (
-    <section id="contact-us" className="py-24 sm:py-32 px-6 md:px-12 relative overflow-hidden bg-brand-dark">
+    <section id="contact-us" className="py-24 sm:py-32 px-6 md:px-12 relative">
       
       {/* Background blobs */}
       <div className="absolute w-[400px] h-[400px] rounded-full bg-gradient-to-tr from-brand-pink/10 to-brand-purple/10 blur-[120px] top-0 left-0 pointer-events-none" />

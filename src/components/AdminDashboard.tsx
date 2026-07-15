@@ -11,7 +11,7 @@ import {
   FileSpreadsheet, FileText, Check, AlertCircle, Copy, HelpCircle, User, Trash2, FileSearch, Settings, Network, X
 } from 'lucide-react';
 import { AttendeeRegistration, AdminStats, VolunteerRegistration } from '../types';
-import { getRegistrations, fetchAllRegistrations, getStats, checkInAttendee, revertCheckIn, exportToCSV, loginAdmin, getSettings, toggleRegistrationStatus, fetchVolunteers, getVolunteerSettings, toggleVolunteerRegistrationStatus, toggleVolunteerIDDownloadStatus, deleteVolunteer, updateVolunteer, getProgramSettings, toggleProgramSetting, getCampusAmbassadors } from '../utils/db';
+import { getRegistrations, fetchAllRegistrations, getStats, checkInAttendee, revertCheckIn, exportToCSV, loginAdmin, getSettings, toggleRegistrationStatus, fetchVolunteers, getVolunteerSettings, toggleVolunteerRegistrationStatus, toggleVolunteerIDDownloadStatus, deleteVolunteer, updateVolunteer, getProgramSettings, toggleProgramSetting, getCampusAmbassadors, updateCampusAmbassadorStatus, deleteCampusAmbassador } from '../utils/db';
 import { Html5QrcodeScanner, Html5Qrcode } from 'html5-qrcode';
 import VolunteerIDCard from './VolunteerIDCard';
 import VolunteerEditModal from './VolunteerEditModal';
@@ -481,8 +481,8 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
       const newStatus = currentStatus === 'pending' ? 'approved' : 'pending';
       await updateCampusAmbassadorStatus(id, newStatus as any, password);
       setAmbassadors(prev => prev.map(a => a.id === id ? { ...a, status: newStatus } : a));
-    } catch (e) {
-      alert('Failed to update ambassador status.');
+    } catch (e: any) {
+      alert(e.message || 'Failed to update ambassador status.');
     }
     setIsProcessingAmbassador(false);
   };
@@ -494,8 +494,8 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
       await deleteCampusAmbassador(ambassadorToDelete.id, password);
       setAmbassadors(prev => prev.filter(a => a.id !== ambassadorToDelete.id));
       setAmbassadorToDelete(null);
-    } catch (e) {
-      alert('Failed to delete ambassador.');
+    } catch (e: any) {
+      alert(e.message || 'Failed to delete ambassador.');
     }
     setIsProcessingAmbassador(false);
   };

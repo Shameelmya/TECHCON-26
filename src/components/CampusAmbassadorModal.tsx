@@ -142,7 +142,7 @@ export default function CampusAmbassadorModal({ onClose }: CampusAmbassadorModal
       </div>
 
       {/* Scrollable Content Area */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 sm:p-10 custom-scrollbar relative">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto overflow-x-hidden p-6 sm:p-10 custom-scrollbar relative">
         <div className="absolute w-64 h-64 rounded-full bg-brand-purple/5 blur-3xl -top-10 -right-10 pointer-events-none" />
 
         <AnimatePresence mode="wait">

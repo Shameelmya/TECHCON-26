@@ -5,7 +5,7 @@
 
 import { AttendeeRegistration, AdminStats, VolunteerRegistration } from '../types';
 import { db } from './firebase';
-import { doc, getDoc, setDoc, deleteDoc, collection, getDocs, query, where, getCountFromServer, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, deleteDoc, collection, getDocs, query, where, getCountFromServer, updateDoc, runTransaction, deleteField } from 'firebase/firestore';
 
 const STORAGE_KEY = 'techcon26_registrations_v3'; // Bumped version to force a refresh on clients
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzpg71jCgkSvWkvF2eY7ifWGJIvhUyVt7OiFdw0UfNJYn4LRSFA9imLg-kzI8DF4WuwBg/exec';
@@ -54,72 +54,85 @@ export const getRegistrations = (): AttendeeRegistration[] => {
 export const fetchAllRegistrations = async (password: string): Promise<AttendeeRegistration[]> => {
   if (typeof window === 'undefined') return [];
   try {
-    const res = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ action: 'getAllRegistrations', password })
-    });
-    const data = await res.json();
-    if (data.status === 'success' && data.registrations) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data.registrations));
-      return data.registrations;
-    }
+    const snapshot = await getDocs(collection(db, 'registrations'));
+    const registrations = snapshot.docs.map(doc => doc.data() as AttendeeRegistration);
+    // Sort by createdAt desc
+    registrations.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(registrations));
+    return registrations;
   } catch (e) {
-    console.error("Failed to fetch all registrations from Google Sheet:", e);
+    console.error("Failed to fetch all registrations from Firestore:", e);
   }
   return getRegistrations();
 };
 
 export const saveRegistration = async (reg: Omit<AttendeeRegistration, 'id' | 'ticketNumber' | 'verificationToken' | 'checkedIn' | 'checkInTime' | 'createdAt'>): Promise<AttendeeRegistration> => {
-  const list = getRegistrations();
+  const registrationsRef = collection(db, 'registrations');
   
-  // Optimistically generate local data in case of network failure
-  const optimisticReg: AttendeeRegistration = {
-    ...reg,
-    id: generateCustomID(list.length), // generateCustomID already accounts for 0-index internally
-    ticketNumber: generateTicketNumber(),
-    verificationToken: btoa(Math.random().toString()).substring(0, 16),
-    createdAt: new Date().toISOString(),
-    checkedIn: false,
-    checkInTime: null
-  };
-
-  try {
-    // Attempt to sync with Google Sheets (20 second timeout max)
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 20000);
-    
-    const res = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ action: 'register', ...reg }),
-      signal: controller.signal
-    });
-    
-    clearTimeout(timeoutId);
-    const data = await res.json();
-    
-    if (data.status === 'error') {
-      throw new Error(data.message);
-    }
-    
-    if (data.status === 'success' && data.registration) {
-      optimisticReg.id = data.registration.id;
-      optimisticReg.ticketNumber = data.registration.ticketNumber;
-      optimisticReg.verificationToken = data.registration.verificationToken;
-      optimisticReg.createdAt = data.registration.createdAt;
-    }
-  } catch (err: any) {
-    if (err.message && (err.message.includes("Already registered") || err.message.includes("Server busy") || err.message.includes("Invalid password"))) {
-      throw err; // Stop and report duplicate/server error to user
-    }
-    console.warn("Google Sheets Sync Failed. Falling back to robust local storage.", err.message);
+  // 1. Duplicate check (Atomic against existing documents)
+  if (reg.email) {
+    const emailQuery = query(registrationsRef, where('email', '==', reg.email.toLowerCase().trim()));
+    const emailSnap = await getDocs(emailQuery);
+    if (!emailSnap.empty) throw new Error("Already registered with this email.");
   }
+  
+  const mobileQuery = query(registrationsRef, where('mobileNumber', '==', reg.mobileNumber));
+  const mobileSnap = await getDocs(mobileQuery);
+  if (!mobileSnap.empty) throw new Error("Already registered with this mobile number.");
 
-  // Persist locally instantly
-  const updated = [...list, optimisticReg];
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-  return optimisticReg;
+  // 2. Generate ID and save using a Transaction to prevent race conditions
+  const counterRef = doc(db, 'settings', 'counters');
+  
+  const newReg = await runTransaction(db, async (transaction) => {
+    const counterDoc = await transaction.get(counterRef);
+    let currentCount = 0;
+    if (counterDoc.exists() && counterDoc.data().registrationCount !== undefined) {
+      currentCount = counterDoc.data().registrationCount;
+    }
+    
+    // Generate new ID securely
+    const newId = generateCustomID(currentCount);
+    
+    // Check if ID strangely exists already (extreme edge case)
+    const newRegRef = doc(db, 'registrations', newId);
+    const existingDoc = await transaction.get(newRegRef);
+    if (existingDoc.exists()) {
+       throw new Error("ID generation collision. Please try again.");
+    }
+    
+    const ticketNumber = generateTicketNumber();
+    const verificationToken = generateVerificationToken(newId, reg.email || reg.mobileNumber);
+    const createdAt = new Date().toISOString();
+    
+    const completeReg: AttendeeRegistration = {
+      ...reg,
+      id: newId,
+      ticketNumber,
+      verificationToken,
+      createdAt,
+      checkedIn: false,
+      checkInTime: null
+    };
+    
+    // Write new document and increment counter
+    transaction.set(newRegRef, completeReg);
+    transaction.set(counterRef, { registrationCount: currentCount + 1 }, { merge: true });
+    
+    return completeReg;
+  });
+
+  // 3. Update local cache
+  const list = getRegistrations();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify([...list, newReg]));
+
+  // 4. Background Sync to Google Sheets (Backup only, fire-and-forget)
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ action: 'register', ...reg, id: newReg.id, email: reg.email, mobileNumber: reg.mobileNumber, fullName: reg.fullName })
+  }).catch(err => console.warn("Google Sheets backup sync failed", err));
+
+  return newReg;
 };
 
 export const checkInAttendee = async (ticketNumberOrId: string, password: string, sessionName?: string): Promise<AttendeeRegistration> => {
@@ -136,33 +149,45 @@ export const checkInAttendee = async (ticketNumberOrId: string, password: string
     throw new Error(`No attendee found with ID, Ticket, or Token "${ticketNumberOrId}".`);
   }
 
+  const attendee = list[index];
+  const regRef = doc(db, 'registrations', attendee.id);
+  
   if (sessionName) {
-    if (!list[index].sessionCheckIns) {
-      list[index].sessionCheckIns = {};
+    if (attendee.sessionCheckIns && attendee.sessionCheckIns[sessionName]) {
+      throw new Error(`Attendee ${attendee.fullName} is ALREADY checked in for ${sessionName}.`);
     }
-    if (list[index].sessionCheckIns[sessionName]) {
-      throw new Error(`Attendee ${list[index].fullName} is ALREADY checked in for ${sessionName}.`);
-    }
-    list[index].sessionCheckIns[sessionName] = new Date().toISOString();
+    const checkInTime = new Date().toISOString();
+    
+    await updateDoc(regRef, {
+      [`sessionCheckIns.${sessionName}`]: checkInTime
+    });
+    
+    if (!list[index].sessionCheckIns) list[index].sessionCheckIns = {};
+    list[index].sessionCheckIns[sessionName] = checkInTime;
+    
   } else {
-    if (list[index].checkedIn) {
-      throw new Error(`Attendee ${list[index].fullName} is ALREADY checked in at ${new Date(list[index].checkInTime!).toLocaleTimeString()}`);
+    if (attendee.checkedIn) {
+      throw new Error(`Attendee ${attendee.fullName} is ALREADY checked in at ${new Date(attendee.checkInTime!).toLocaleTimeString()}`);
     }
+    const checkInTime = new Date().toISOString();
+    
+    await updateDoc(regRef, {
+      checkedIn: true,
+      checkInTime: checkInTime
+    });
+    
     list[index].checkedIn = true;
-    list[index].checkInTime = new Date().toISOString();
+    list[index].checkInTime = checkInTime;
   }
 
   localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
 
-  try {
-    await fetch(SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ action: 'checkin', id: list[index].id, sessionName, password })
-    });
-  } catch (err) {
-    console.error("Failed to sync check-in to Google Sheets:", err);
-  }
+  // Background Backup to Sheets
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ action: 'checkin', id: list[index].id, sessionName, password })
+  }).catch(err => console.warn("Failed to backup check-in to Google Sheets:", err));
 
   return list[index];
 };
@@ -172,24 +197,30 @@ export const revertCheckIn = async (id: string, password: string, sessionName?: 
   const index = list.findIndex(item => item.id === id);
   if (index === -1) throw new Error("Attendee not found");
   
+  const regRef = doc(db, 'registrations', id);
+
   if (sessionName && list[index].sessionCheckIns) {
-    delete list[index].sessionCheckIns[sessionName];
+    await updateDoc(regRef, {
+      [`sessionCheckIns.${sessionName}`]: deleteField()
+    });
+    delete list[index].sessionCheckIns![sessionName];
   } else {
+    await updateDoc(regRef, {
+      checkedIn: false,
+      checkInTime: null
+    });
     list[index].checkedIn = false;
     list[index].checkInTime = null;
   }
+  
   localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
   
-  // Sync revert to Google Sheets
-  try {
-    await fetch(SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ action: 'revertCheckin', id: list[index].id, sessionName, password })
-    });
-  } catch (err) {
-    console.error("Failed to sync revert check-in to Google Sheets:", err);
-  }
+  // Sync revert to Google Sheets background
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ action: 'revertCheckin', id: list[index].id, sessionName, password })
+  }).catch(err => console.warn("Failed to backup revert check-in to Google Sheets:", err));
 
   return list[index];
 };
@@ -400,55 +431,69 @@ export const toggleProgramSetting = async (programName: string, isOpen: boolean)
 };
 
 export const addEventToRegistration = async (id: string, mobileNumber: string, eventName: string, isSpecial: boolean = false, feeReceiptUrl?: string): Promise<AttendeeRegistration> => {
-  const list = getRegistrations();
-  const index = list.findIndex(item => item.id.toUpperCase() === id.toUpperCase() && item.mobileNumber === mobileNumber);
+  const registrationsRef = collection(db, 'registrations');
+  const q = query(registrationsRef, where('id', '==', id.toUpperCase()), where('mobileNumber', '==', mobileNumber));
+  const snap = await getDocs(q);
   
-  if (index === -1) {
+  if (snap.empty) {
     throw new Error("Invalid Registration ID or Mobile Number.");
   }
 
-  const attendee = list[index];
+  const docRef = snap.docs[0].ref;
+  const attendee = snap.docs[0].data() as AttendeeRegistration;
   
   if (isSpecial) {
     if (!attendee.specialPrograms) attendee.specialPrograms = [];
     if (attendee.specialPrograms.includes(eventName)) throw new Error("Already registered for this event.");
     attendee.specialPrograms.push(eventName);
-    if (feeReceiptUrl) attendee.feeReceiptUrl = feeReceiptUrl;
+    const updates: any = { specialPrograms: attendee.specialPrograms };
+    if (feeReceiptUrl) {
+      attendee.feeReceiptUrl = feeReceiptUrl;
+      updates.feeReceiptUrl = feeReceiptUrl;
+    }
+    await updateDoc(docRef, updates);
   } else {
     if (!attendee.sessions) attendee.sessions = [];
     if (attendee.sessions.includes(eventName)) throw new Error("Already registered for this event.");
     attendee.sessions.push(eventName);
+    await updateDoc(docRef, { sessions: attendee.sessions });
   }
 
-  // Sync with Google Sheets
-  try {
-    const res = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: JSON.stringify({ 
-        action: 'addEvent', 
-        id: attendee.id, 
-        eventName, 
-        isSpecial, 
-        feeReceiptUrl 
-      })
-    });
-    const data = await res.json();
-    if (data.status === 'error') throw new Error(data.message);
-  } catch (err: any) {
-    throw new Error(err.message || "Failed to update registration on the server.");
+  // Update local cache
+  const list = getRegistrations();
+  const index = list.findIndex(item => item.id === attendee.id);
+  if (index !== -1) {
+    list[index] = attendee;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
   }
 
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+  // Backup Sync with Google Sheets
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ 
+      action: 'addEvent', 
+      id: attendee.id, 
+      eventName, 
+      isSpecial, 
+      feeReceiptUrl 
+    })
+  }).catch(err => console.warn("Failed to backup event addition to Google Sheets:", err));
+
   return attendee;
 };
 
 export const fetchPass = async (fullName: string, mobileNumber: string): Promise<any> => {
-  const list = getRegistrations();
-  const reg = list.find(r => r.fullName.toLowerCase().trim() === fullName.toLowerCase().trim() && r.mobileNumber === mobileNumber);
+  const registrationsRef = collection(db, 'registrations');
+  const q = query(registrationsRef, where('mobileNumber', '==', mobileNumber));
+  const snap = await getDocs(q);
   
-  if (reg) {
-    return reg;
+  if (!snap.empty) {
+    // Check name client-side since Firestore doesn't support case-insensitive queries natively
+    const matches = snap.docs.map(d => d.data() as AttendeeRegistration).filter(
+      r => r.fullName.toLowerCase().trim() === fullName.toLowerCase().trim()
+    );
+    if (matches.length > 0) return matches[0];
   }
   
   throw new Error("Invalid Name or Mobile Number. Pass not found.");

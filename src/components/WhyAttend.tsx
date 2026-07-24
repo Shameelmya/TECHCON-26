@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { 
@@ -6,7 +7,7 @@ import {
 } from 'lucide-react';
 import TechLoadingModal from './TechLoadingModal';
 
-export default function WhyAttend() {
+const WhyAttend = function() {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState("");
 
@@ -297,3 +298,5 @@ export default function WhyAttend() {
     </section>
   );
 }
+
+export default memo(WhyAttend);

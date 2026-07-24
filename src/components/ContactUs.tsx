@@ -1,7 +1,8 @@
+import { memo } from 'react';
 import { motion } from 'motion/react';
 import { Phone, MessageCircle, Instagram, Linkedin, Mail, User, ArrowUpRight } from 'lucide-react';
 
-export default function ContactUs() {
+const ContactUs = function() {
   return (
     <section id="contact-us" className="py-24 sm:py-32 px-6 md:px-12 relative">
       
@@ -174,3 +175,5 @@ export default function ContactUs() {
     </section>
   );
 }
+
+export default memo(ContactUs);

@@ -393,22 +393,7 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
         )}
       </div>
 
-      {/* Alert Messaging */}
-      <AnimatePresence>
-        {errorMsg && !errorMsg.includes('mobile number is already connected') && (
-          <motion.div 
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className={`mb-6 flex items-start gap-2.5 p-4 border rounded-2xl text-xs bg-red-50 border-red-100 text-red-600`}
-          >
-            <AlertCircle size={16} className="shrink-0 mt-0.5" />
-            <span className="font-sans font-medium leading-relaxed">
-              {errorMsg}
-            </span>
-          </motion.div>
-        )}
-      </AnimatePresence>
+
 
       <form onSubmit={handleSubmit} className="space-y-6" noValidate>
         
@@ -1007,6 +992,23 @@ export default function RegistrationForm({ onSuccess, onCancel, onGetPass }: Reg
             </div>
           </motion.div>
         )}
+
+        {/* Alert Messaging */}
+        <AnimatePresence>
+          {errorMsg && !errorMsg.includes('mobile number is already connected') && (
+            <motion.div 
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className={`mb-6 flex items-start gap-2.5 p-4 border rounded-2xl text-xs bg-red-50 border-red-100 text-red-600 mt-6`}
+            >
+              <AlertCircle size={16} className="shrink-0 mt-0.5" />
+              <span className="font-sans font-medium leading-relaxed">
+                {errorMsg}
+              </span>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Action Controls Footer */}
         <div className="flex items-center justify-between gap-4 border-t border-slate-100 pt-6 mt-8 select-none">

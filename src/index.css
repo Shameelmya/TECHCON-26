@@ -22,6 +22,9 @@ button, a, [role="button"], input[type="submit"] {
 }
 
 @layer base {
+  body {
+    @apply bg-slate-950 min-h-screen m-0;
+  }
   input:not([type="submit"]):not([type="checkbox"]):not([type="radio"]), textarea, select {
     color: var(--color-brand-navy);
   }

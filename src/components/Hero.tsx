@@ -1,3 +1,4 @@
+import { memo } from 'react';
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -17,7 +18,7 @@ interface HeroProps {
   onExploreEvent: () => void;
 }
 
-export default function Hero({ onOpenRegister, onOpenSponsor, onOpenVolunteer, onGetPass, onExploreEvent }: HeroProps) {
+const Hero = function({ onOpenRegister, onOpenSponsor, onOpenVolunteer, onGetPass, onExploreEvent }: HeroProps) {
   const [timeLeft, setTimeLeft] = useState({ days: 15, hours: 0, minutes: 0, seconds: 0 });
   const [gapAnim, setGapAnim] = useState(['0px', '8px', '0px']);
 
@@ -308,3 +309,5 @@ function HeroVideos() {
     </div>
   );
 }
+
+export default memo(Hero);

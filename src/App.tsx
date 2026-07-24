@@ -191,7 +191,7 @@ export default function App() {
 
   return (
     <Suspense fallback={<SuspenseFallback />}>
-        <div className="relative min-h-screen bg-brand-dark text-white overflow-x-hidden selection:bg-brand-purple selection:text-white">
+        <div className="relative min-h-screen text-white overflow-x-hidden selection:bg-brand-purple selection:text-white">
           
           {/* Subtle canvas circuit backgrounds */}
           {!isAnyModalOpen && !activeRegistration && <CircuitBackground />}
@@ -267,7 +267,7 @@ export default function App() {
               {/* <Venue /> */}
 
               {/* Footer */}
-              <footer className="py-12 mt-10 border-t border-slate-800/50 text-center text-slate-500 text-sm font-sans relative z-10">
+              <footer className="py-12 mt-10 border-t border-slate-800/50 text-center text-slate-500 text-sm font-sans relative z-10 bg-transparent">
                 <div className="flex justify-center gap-8 mb-6">
                   <a 
                     href="#privacy" 
@@ -540,7 +540,7 @@ export default function App() {
           </AnimatePresence>
 
           {/* 6. Professional Conference Footer Section */}
-          <footer className="bg-slate-950 border-t border-slate-900 text-slate-400 py-16 px-6 md:px-12 relative overflow-hidden select-none">
+          <footer className="bg-transparent border-t border-slate-900 text-slate-400 py-16 px-6 md:px-12 relative overflow-hidden select-none">
             {/* Ambient visual gradient footer node */}
             <div className="absolute w-96 h-96 rounded-full bg-purple-500/5 blur-[90px] -bottom-36 -left-36 pointer-events-none" />
 

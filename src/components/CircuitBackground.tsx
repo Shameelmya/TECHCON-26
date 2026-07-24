@@ -1,6 +1,7 @@
+import { memo } from 'react';
 import { useEffect, useRef } from 'react';
 
-export default function CircuitBackground() {
+const CircuitBackground = function() {
   const containerRef = useRef<HTMLDivElement>(null);
   const blob1Ref = useRef<HTMLDivElement>(null);
   const blob2Ref = useRef<HTMLDivElement>(null);
@@ -103,3 +104,5 @@ export default function CircuitBackground() {
     </div>
   );
 }
+
+export default memo(CircuitBackground);

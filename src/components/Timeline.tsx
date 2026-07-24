@@ -1,10 +1,11 @@
+import { memo } from 'react';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronDown, ChevronUp, Clock } from 'lucide-react';
 
 const loadingTexts = ["thinking...", "writing...", "loading..."];
 
-export default function Timeline() {
+const Timeline = function() {
   const [isScheduleOpen, setIsScheduleOpen] = useState(false);
   const [textIndex, setTextIndex] = useState(0);
   const [progress, setProgress] = useState(0);
@@ -124,3 +125,5 @@ export default function Timeline() {
     </section>
   );
 }
+
+export default memo(Timeline);

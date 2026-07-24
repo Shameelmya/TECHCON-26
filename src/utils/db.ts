@@ -5,7 +5,7 @@
 
 import { AttendeeRegistration, AdminStats, VolunteerRegistration } from '../types';
 import { db } from './firebase';
-import { doc, getDoc, setDoc, deleteDoc, collection, getDocs, query, where, getCountFromServer, updateDoc, runTransaction, deleteField } from 'firebase/firestore';
+import { doc, getDoc, setDoc, deleteDoc, collection, getDocs, query, where, getCountFromServer, updateDoc, runTransaction, deleteField, startAfter, orderBy, limit, increment } from 'firebase/firestore';
 
 const STORAGE_KEY = 'techcon26_registrations_v3'; // Bumped version to force a refresh on clients
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzpg71jCgkSvWkvF2eY7ifWGJIvhUyVt7OiFdw0UfNJYn4LRSFA9imLg-kzI8DF4WuwBg/exec';
@@ -51,32 +51,100 @@ export const getRegistrations = (): AttendeeRegistration[] => {
   }
 };
 
-export const fetchAllRegistrations = async (password: string): Promise<AttendeeRegistration[]> => {
-  if (typeof window === 'undefined') return [];
+export const fetchRegistrations = async (
+  password: string,
+  pageSize = 50,
+  lastDoc: any = null,
+  searchQuery = '',
+  filterCheckIn = 'all'
+): Promise<{ data: AttendeeRegistration[], lastVisible: any }> => {
+  if (typeof window === 'undefined') return { data: [], lastVisible: null };
   try {
-    const snapshot = await getDocs(collection(db, 'registrations'));
-    const registrations = snapshot.docs.map(doc => doc.data() as AttendeeRegistration);
-    // Sort by createdAt desc
-    registrations.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(registrations));
-    return registrations;
+    const registrationsRef = collection(db, 'registrations');
+    let constraints: any[] = [];
+    
+    if (filterCheckIn === 'checked-in') constraints.push(where('checkedIn', '==', true));
+    else if (filterCheckIn === 'not-checked-in') constraints.push(where('checkedIn', '==', false));
+
+    if (searchQuery) {
+       const q = searchQuery.trim();
+       if (q.startsWith('TC26')) {
+         constraints.push(where('id', '==', q.toUpperCase()));
+       } else if (/^\d+$/.test(q)) {
+         constraints.push(where('mobileNumber', '==', q));
+       } else {
+         constraints.push(where('fullName', '>=', q));
+         constraints.push(where('fullName', '<=', q + '\uf8ff'));
+       }
+    } else {
+       constraints.push(orderBy('createdAt', 'desc'));
+    }
+
+    constraints.push(limit(pageSize));
+    if (lastDoc) {
+      constraints.push(startAfter(lastDoc));
+    }
+
+    const q = query(registrationsRef, ...constraints);
+    const snapshot = await getDocs(q);
+    
+    const data = snapshot.docs.map(doc => doc.data() as AttendeeRegistration);
+    const lastVisible = snapshot.docs[snapshot.docs.length - 1];
+    
+    return { data, lastVisible };
   } catch (e) {
-    console.error("Failed to fetch all registrations from Firestore:", e);
+    console.error("Failed to fetch registrations from Firestore:", e);
   }
-  return getRegistrations();
+  return { data: [], lastVisible: null };
 };
 
 export const saveRegistration = async (reg: Omit<AttendeeRegistration, 'id' | 'ticketNumber' | 'verificationToken' | 'checkedIn' | 'checkInTime' | 'createdAt'>): Promise<AttendeeRegistration> => {
-  const registrationsRef = collection(db, 'registrations');
+  // --- STRICT PAYLOAD VALIDATION & SANITIZATION ---
+  const sanitize = (str: string | undefined) => (str ? str.replace(/</g, "&lt;").replace(/>/g, "&gt;").trim() : "");
   
-  // 1. Duplicate check (Atomic against existing documents)
-  if (reg.email) {
-    const emailQuery = query(registrationsRef, where('email', '==', reg.email.toLowerCase().trim()));
-    const emailSnap = await getDocs(emailQuery);
-    if (!emailSnap.empty) throw new Error("Already registered with this email.");
+  if (!reg.fullName || reg.fullName.length > 100) throw new Error("Invalid full name");
+  if (!reg.mobileNumber || !/^\d{10,15}$/.test(reg.mobileNumber.replace(/\D/g, ''))) throw new Error("Invalid mobile number format");
+  
+  const cleanReg = {
+    fullName: sanitize(reg.fullName),
+    email: sanitize(reg.email).toLowerCase(),
+    mobileNumber: sanitize(reg.mobileNumber),
+    whatsAppNumber: sanitize(reg.whatsAppNumber),
+    age: Number(reg.age) || 0,
+    gender: sanitize(reg.gender),
+    district: sanitize(reg.district),
+    place: sanitize(reg.place),
+    country: sanitize(reg.country),
+    occupation: sanitize(reg.occupation),
+    institution: sanitize(reg.institution),
+    institutionDistrict: sanitize(reg.institutionDistrict),
+    studentLevel: sanitize((reg as any).studentLevel),
+    customCourse: sanitize((reg as any).customCourse),
+    linkedIn: sanitize((reg as any).linkedIn),
+    technologyInterests: Array.isArray(reg.technologyInterests) ? reg.technologyInterests.map(sanitize).slice(0, 10) : [],
+    sessions: Array.isArray(reg.sessions) ? reg.sessions.map(sanitize).slice(0, 10) : [],
+    specialPrograms: Array.isArray(reg.specialPrograms) ? reg.specialPrograms.map(sanitize).slice(0, 10) : [],
+    paymentStatus: 'pending' // Enforce pending status securely
+  } as any;
+
+  // --- IDEMPOTENCY LOCK (Duplicate Prevention) ---
+  const idempotencyKey = `reg_lock_${cleanReg.mobileNumber}`;
+  if (typeof window !== 'undefined') {
+    if (localStorage.getItem(idempotencyKey)) throw new Error("Registration already processing or completed. Please wait.");
+    localStorage.setItem(idempotencyKey, "locked");
   }
+
+  try {
+    const registrationsRef = collection(db, 'registrations');
+    
+    // 1. Duplicate check (Atomic against existing documents)
+    if (cleanReg.email) {
+      const emailQuery = query(registrationsRef, where('email', '==', cleanReg.email));
+      const emailSnap = await getDocs(emailQuery);
+      if (!emailSnap.empty) throw new Error("Already registered with this email.");
+    }
   
-  const mobileQuery = query(registrationsRef, where('mobileNumber', '==', reg.mobileNumber));
+  const mobileQuery = query(registrationsRef, where('mobileNumber', '==', cleanReg.mobileNumber));
   const mobileSnap = await getDocs(mobileQuery);
   if (!mobileSnap.empty) throw new Error("Already registered with this mobile number.");
 
@@ -101,23 +169,33 @@ export const saveRegistration = async (reg: Omit<AttendeeRegistration, 'id' | 't
     }
     
     const ticketNumber = generateTicketNumber();
-    const verificationToken = generateVerificationToken(newId, reg.email || reg.mobileNumber);
+    const verificationToken = generateVerificationToken(newId, cleanReg.email || cleanReg.mobileNumber);
     const createdAt = new Date().toISOString();
     
-    const completeReg: AttendeeRegistration = {
-      ...reg,
+    const completeReg = {
+      ...cleanReg,
       id: newId,
       ticketNumber,
       verificationToken,
       createdAt,
       checkedIn: false,
       checkInTime: null
-    };
+    } as AttendeeRegistration;
     
-    // Write new document and increment counter
+    // Write new document and increment counter securely
     transaction.set(newRegRef, completeReg);
     transaction.set(counterRef, { registrationCount: currentCount + 1 }, { merge: true });
     
+    // Update global stats counter atomically
+    const statsRef = doc(db, 'settings', 'stats');
+    const statsUpdate: any = {
+       totalRegistrations: increment(1),
+       todaysRegistrations: increment(1),
+    };
+    if (cleanReg.district) statsUpdate[`districtReport.${cleanReg.district}`] = increment(1);
+    if (cleanReg.occupation) statsUpdate[`occupationReport.${cleanReg.occupation}`] = increment(1);
+    transaction.set(statsRef, statsUpdate, { merge: true });
+
     return completeReg;
   });
 
@@ -129,10 +207,16 @@ export const saveRegistration = async (reg: Omit<AttendeeRegistration, 'id' | 't
   fetch(SCRIPT_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain' },
-    body: JSON.stringify({ action: 'register', ...reg, id: newReg.id, email: reg.email, mobileNumber: reg.mobileNumber, fullName: reg.fullName })
-  }).catch(err => console.warn("Google Sheets backup sync failed", err));
+    body: JSON.stringify({ action: 'register', ...cleanReg, id: newReg.id, email: cleanReg.email, mobileNumber: cleanReg.mobileNumber, fullName: cleanReg.fullName })
+  }).catch(err => console.warn("Google Sheets backup sync failed"));
 
   return newReg;
+  } finally {
+    if (typeof window !== 'undefined') {
+       // Clear lock after 10 seconds to allow retry if it somehow failed
+       setTimeout(() => localStorage.removeItem(idempotencyKey), 10000);
+    }
+  }
 };
 
 export const checkInAttendee = async (ticketNumberOrId: string, password: string, sessionName?: string): Promise<AttendeeRegistration> => {
@@ -366,6 +450,18 @@ export const exportToCSV = (data: AttendeeRegistration[]) => {
 };
 
 export const loginAdmin = async (password: string): Promise<boolean> => {
+  // 1. Securely authenticate with Firebase Auth to receive a JWT for Firestore access
+  let firebaseAuthSuccess = false;
+  try {
+    const { signInWithEmailAndPassword } = await import('firebase/auth');
+    const { auth } = await import('./firebase');
+    await signInWithEmailAndPassword(auth, "admin@msftech26.com", password);
+    firebaseAuthSuccess = true;
+  } catch (authErr: any) {
+    console.warn("Firebase Auth failed (Ensure Admin account exists and Email Auth is enabled):", authErr.message);
+  }
+
+  // 2. Validate against legacy Google Apps Script for backward compatibility
   try {
     const res = await fetch(SCRIPT_URL, {
       method: 'POST',
@@ -373,10 +469,10 @@ export const loginAdmin = async (password: string): Promise<boolean> => {
       body: JSON.stringify({ action: 'login', password })
     });
     const data = await res.json();
-    return data.status === 'success';
+    return data.status === 'success' || firebaseAuthSuccess;
   } catch (e) {
-    console.error("Login failed due to network error", e);
-    return false;
+    console.error("Legacy login failed due to network error", e);
+    return firebaseAuthSuccess;
   }
 };
 
@@ -396,14 +492,14 @@ export const getSettings = async (): Promise<boolean> => {
 };
 
 // FIREBASE: Toggle Registration Status (instant write)
-export const toggleRegistrationStatus = async (isOpen: boolean, password: string = 'admin'): Promise<boolean> => {
+export const toggleRegistrationStatus = async (isOpen: boolean, password: string = 'admin'): Promise<{success: boolean, message?: string}> => {
   try {
     const docRef = doc(db, "settings", "registration");
     await setDoc(docRef, { isOpen });
-    return true;
-  } catch (err) {
+    return { success: true };
+  } catch (err: any) {
     console.error("Failed to toggle registration:", err);
-    return false;
+    return { success: false, message: err.code === 'permission-denied' ? "Permission Denied: Please copy the updated firestore.rules file contents and publish them in your Firebase Console -> Firestore -> Rules." : "Database error occurred." };
   }
 };
 
@@ -416,16 +512,69 @@ export const getProgramSettings = async (): Promise<{ [key: string]: boolean }> 
     }
     return {};
   } catch (err) {
+    console.error("Failed to get programs:", err);
     return {};
   }
 };
 
-export const toggleProgramSetting = async (programName: string, isOpen: boolean): Promise<boolean> => {
+export const toggleProgramSetting = async (programName: string, isOpen: boolean): Promise<{success: boolean, message?: string}> => {
   try {
     const docRef = doc(db, "settings", "programs");
     await setDoc(docRef, { [programName]: isOpen }, { merge: true });
+    return { success: true };
+  } catch (err: any) {
+    console.error("Failed to toggle program:", err);
+    return { success: false, message: err.code === 'permission-denied' ? "Permission Denied: Please copy the updated firestore.rules file contents and publish them in your Firebase Console -> Firestore -> Rules." : "Database error occurred." };
+  }
+};
+
+export const toggleVolunteerRegistrationStatus = async (isOpen: boolean): Promise<{success: boolean, message?: string}> => {
+  try {
+    const docRef = doc(db, "settings", "volunteer");
+    await setDoc(docRef, { isRegistrationOpen: isOpen }, { merge: true });
+    return { success: true };
+  } catch (err: any) {
+    return { success: false, message: err.code === 'permission-denied' ? "Permission Denied: Update firestore.rules in Firebase Console." : "Database error occurred." };
+  }
+};
+
+export const toggleVolunteerIDDownloadStatus = async (isOpen: boolean): Promise<{success: boolean, message?: string}> => {
+  try {
+    const docRef = doc(db, "settings", "volunteer");
+    await setDoc(docRef, { isIDDownloadOpen: isOpen }, { merge: true });
+    return { success: true };
+  } catch (err: any) {
+    return { success: false, message: err.code === 'permission-denied' ? "Permission Denied: Update firestore.rules in Firebase Console." : "Database error occurred." };
+  }
+};
+
+
+
+export const deleteRegistration = async (id: string, mobileNumber: string): Promise<boolean> => {
+  try {
+    const registrationsRef = collection(db, 'registrations');
+    const q = query(registrationsRef, where('id', '==', id.toUpperCase()), where('mobileNumber', '==', mobileNumber));
+    const snap = await getDocs(q);
+    
+    if (snap.empty) {
+      throw new Error("Registration not found.");
+    }
+    
+    const docRef = snap.docs[0].ref;
+    await deleteDoc(docRef);
+
+    // Update local cache
+    const list = getRegistrations();
+    const index = list.findIndex(item => item.id === id.toUpperCase());
+    if (index !== -1) {
+      list.splice(index, 1);
+    }
+    
+    // Fallback sync to GAS (optional, if your GAS has a delete action)
+    // fetch(SCRIPT_URL, { ... body: JSON.stringify({ action: 'delete', id: id.toUpperCase(), mobileNumber }) })
     return true;
-  } catch (err) {
+  } catch (e) {
+    console.error("Failed to delete registration:", e);
     return false;
   }
 };
@@ -569,13 +718,7 @@ export const getVolunteerSettings = async (): Promise<{isOpen: boolean, isIDCard
   }
 };
 
-export const toggleVolunteerRegistrationStatus = async (isOpen: boolean, password: string): Promise<void> => {
-  await setDoc(doc(db, 'settings', 'volunteer-registration'), { isOpen }, { merge: true });
-};
 
-export const toggleVolunteerIDDownloadStatus = async (isIDCardDownloadEnabled: boolean, password: string): Promise<void> => {
-  await setDoc(doc(db, 'settings', 'volunteer-registration'), { isIDCardDownloadEnabled }, { merge: true });
-};
 
 export const verifyVolunteer = async (id: string, mobileNumber: string): Promise<VolunteerRegistration> => {
   const vDoc = await getDoc(doc(db, 'volunteers', id));

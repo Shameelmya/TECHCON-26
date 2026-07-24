@@ -10,8 +10,8 @@ import {
   Send, Users, QrCode, ClipboardList, Shield, RefreshCw, BarChart3, 
   FileSpreadsheet, FileText, Check, AlertCircle, Copy, HelpCircle, User, Trash2, FileSearch, Settings, Network, X, Eye, EyeOff
 } from 'lucide-react';
-import { AttendeeRegistration, AdminStats, VolunteerRegistration } from '../types';
-import { getRegistrations, fetchAllRegistrations, getStats, checkInAttendee, revertCheckIn, exportToCSV, loginAdmin, getSettings, toggleRegistrationStatus, fetchVolunteers, getVolunteerSettings, toggleVolunteerRegistrationStatus, toggleVolunteerIDDownloadStatus, deleteVolunteer, updateVolunteer, getProgramSettings, toggleProgramSetting, getCampusAmbassadors, updateCampusAmbassadorStatus, deleteCampusAmbassador } from '../utils/db';
+import { AttendeeRegistration, AdminStats, VolunteerRegistration, CampusAmbassador } from '../types';
+import { getRegistrations, fetchRegistrations, getStats, checkInAttendee, revertCheckIn, exportToCSV, loginAdmin, getSettings, toggleRegistrationStatus, fetchVolunteers, getVolunteerSettings, toggleVolunteerRegistrationStatus, toggleVolunteerIDDownloadStatus, deleteVolunteer, updateVolunteer, getProgramSettings, toggleProgramSetting, getCampusAmbassadors, updateCampusAmbassadorStatus, deleteCampusAmbassador, deleteRegistration } from '../utils/db';
 import { Html5QrcodeScanner, Html5Qrcode } from 'html5-qrcode';
 import VolunteerIDCard from './VolunteerIDCard';
 import VolunteerEditModal from './VolunteerEditModal';
@@ -28,7 +28,8 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [isRegOpen, setIsRegOpen] = useState(true);
   const [isTogglingReg, setIsTogglingReg] = useState(false);
-  const [displayCount, setDisplayCount] = useState(50);
+  const [lastVisibleDoc, setLastVisibleDoc] = useState<any>(null);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [programSettings, setProgramSettings] = useState<{ [key: string]: boolean }>({});
 
   // Dashboard Stats
@@ -40,6 +41,7 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
   const [filterSession, setFilterSession] = useState<'all' | string>('all');
   const [filterProgram, setFilterProgram] = useState<'all' | string>('all');
   const [activeTab, setActiveTab] = useState<'analytics' | 'checkin' | 'directory' | 'appscript' | 'volunteers' | 'ambassadors' | 'settings'>('analytics');
+  const [displayCount, setDisplayCount] = useState(50);
 
   // Volunteer State
   const [volunteers, setVolunteers] = useState<VolunteerRegistration[]>([]);
@@ -72,10 +74,20 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
     }
   }, [isAuthenticated]);
 
-  const loadData = async () => {
-    const list = await fetchAllRegistrations(password);
-    setAttendees(list);
-    setStats(getStats());
+  const loadData = async (isLoadMore = false) => {
+    if (!isLoadMore) setLastVisibleDoc(null);
+    const currentLastVisible = isLoadMore ? lastVisibleDoc : null;
+    
+    const result = await fetchRegistrations(password, 50, currentLastVisible, searchQuery, filterCheckIn);
+    
+    if (isLoadMore) {
+      setAttendees(prev => [...prev, ...result.data]);
+    } else {
+      setAttendees(result.data);
+    }
+    setLastVisibleDoc(result.lastVisible);
+    
+    setStats(await getStats());
     const regState = await getSettings();
     setIsRegOpen(regState);
     
@@ -186,6 +198,30 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
       setScannerResult({ success: false, msg: `FAILED: ${e.message || 'Revert Error'}` });
     } finally {
       setIsProcessingAttendance(false);
+    }
+  };
+
+  const handleDeleteAttendee = async (attendee: AttendeeRegistration) => {
+    if (!window.confirm(`Are you absolutely sure you want to completely delete the registration for ${attendee.fullName} (${attendee.id})? This cannot be undone.`)) {
+      return;
+    }
+    
+    // Prompt for password if needed, or we just pass the stored password
+    const pwd = prompt("Enter admin passcode to confirm deletion:");
+    if (pwd !== password) {
+      alert("Incorrect passcode. Deletion aborted.");
+      return;
+    }
+
+    try {
+      const success = await deleteRegistration(attendee.id, attendee.mobileNumber);
+      if (success) {
+        setAttendees(prev => prev.filter(a => a.id !== attendee.id));
+      } else {
+        alert("Failed to delete attendee from database.");
+      }
+    } catch (e: any) {
+      alert("Error: " + e.message);
     }
   };
 
@@ -332,8 +368,12 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
     setIsTogglingVolReg(true);
     const newState = !isVolRegOpen;
     try {
-      await toggleVolunteerRegistrationStatus(newState, password);
-      setIsVolRegOpen(newState);
+      const res = await toggleVolunteerRegistrationStatus(newState);
+      if (res.success) {
+        setIsVolRegOpen(newState);
+      } else {
+        alert(res.message || "Failed to toggle volunteer registration.");
+      }
     } catch (e: any) {
       alert(e.message || "Failed to toggle volunteer registration.");
     } finally {
@@ -346,8 +386,12 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
     setIsTogglingIDCard(true);
     try {
       const newState = !isIDCardDownloadEnabled;
-      await toggleVolunteerIDDownloadStatus(newState, password);
-      setIsIDCardDownloadEnabled(newState);
+      const res = await toggleVolunteerIDDownloadStatus(newState);
+      if (res.success) {
+        setIsIDCardDownloadEnabled(newState);
+      } else {
+        alert(res.message || "Failed to toggle ID card download status.");
+      }
     } catch (e: any) {
       alert(e.message || "Failed to toggle ID card download status.");
     } finally {
@@ -528,9 +572,16 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
     return attendees.filter(a => {
       if (filterCheckIn === 'checked-in' && !a.checkedIn) return false;
       if (filterCheckIn === 'not-checked-in' && a.checkedIn) return false;
-      if (filterRole !== 'all' && a.occupation.toLowerCase() !== filterRole.toLowerCase()) return false;
-      if (filterSession !== 'all' && (!a.sessions || !a.sessions.includes(filterSession))) return false;
-      if (filterProgram !== 'all' && (!a.specialPrograms || !a.specialPrograms.includes(filterProgram))) return false;
+      if (filterRole !== 'all' && filterRole) {
+        if (filterRole === 'student' && a.occupation !== 'Student') return false;
+        if (filterRole === 'professional' && a.occupation !== 'Professional') return false;
+      }
+      if (filterSession !== 'all' && filterSession) {
+        if (!a.sessions || !a.sessions.includes(filterSession)) return false;
+      }
+      if (filterProgram !== 'all' && filterProgram) {
+        if (!a.specialPrograms || !a.specialPrograms.includes(filterProgram)) return false;
+      }
 
       const query = searchQuery.toLowerCase();
       if (!query) return true;
@@ -554,7 +605,7 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
     setDisplayCount(50);
   }, [searchQuery, activeTab, filterCheckIn, filterRole, filterSession, filterProgram]);
 
-  const displayedAttendees = filteredAttendees.slice(0, displayCount);
+  const displayedAttendees = filteredAttendees;
 
   return (
     <div id="admin-dashboard-root" className="w-full min-h-screen bg-[#f8fafc] text-slate-900 font-sans p-4 sm:p-8 md:p-12 relative overflow-hidden">
@@ -890,8 +941,8 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                   {Object.entries(stats.sessionRegistrations || {}).map(([session, regCount]) => {
-                    const checkCount = stats.sessionCheckIns?.[session] || 0;
-                    const pct = Math.round((checkCount / regCount) * 100) || 0;
+                    const checkCount = Number(stats.sessionCheckIns?.[session]) || 0;
+                    const pct = Math.round((checkCount / Number(regCount)) * 100) || 0;
                     return (
                       <div key={session} className="space-y-1 p-4 rounded-xl border border-slate-100 bg-slate-50/50">
                         <div className="flex justify-between items-start text-xs font-sans">
@@ -1129,11 +1180,7 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
                   >
                     <option value="all">All Roles</option>
                     <option value="student">Student</option>
-                    <option value="working professional">Working Professional</option>
-                    <option value="entrepreneur">Entrepreneur</option>
-                    <option value="faculty">Faculty</option>
-                    <option value="research scholar">Research Scholar</option>
-                    <option value="other">Other</option>
+                    <option value="professional">Professional</option>
                   </select>
 
                   <select
@@ -1197,8 +1244,7 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 text-xs text-slate-700">
-                      {displayedAttendees.length > 0 ? (
-                        displayedAttendees.map((a) => (
+                      {displayedAttendees.slice(0, displayCount).map((a) => (
                           <tr key={a.id} className="hover:bg-slate-50/50 transition-colors">
                             <td className="p-4 font-mono font-bold text-purple-700">{a.id}</td>
                             <td className="p-4">
@@ -1234,7 +1280,7 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
                                 )}
                               </div>
                             </td>
-                            <td className="p-4 text-center select-none">
+                            <td className="p-4 text-center select-none flex items-center justify-center gap-2 h-full min-h-[70px]">
                               <button
                                 onClick={() => handleToggleCheckInTable(a)}
                                 className={`px-4 py-1.5 rounded-full text-[10px] font-bold tracking-wide transition-all border ${
@@ -1245,16 +1291,16 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
                               >
                                 {a.checkedIn ? 'ATTENDED' : 'NOT ATTENDED'}
                               </button>
+                              <button
+                                onClick={() => handleDeleteAttendee(a)}
+                                className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                title="Delete Registration"
+                              >
+                                <Trash2 size={16} />
+                              </button>
                             </td>
                           </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan={6} className="p-8 text-center text-slate-400 font-sans italic">
-                            No registration records found matching the search criteria.
-                          </td>
-                        </tr>
-                      )}
+                        ))}
                     </tbody>
                   </table>
                 </div>
@@ -1501,9 +1547,12 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
                       onClick={async () => {
                         setIsTogglingReg(true);
                         const newState = !isRegOpen;
-                        const success = await toggleRegistrationStatus(newState, password);
-                        if (success) setIsRegOpen(newState);
-                        else alert("Failed to change registration status. Please try again.");
+                        const res = await toggleRegistrationStatus(newState, password);
+                        if (res.success) {
+                          setIsRegOpen(newState);
+                        } else {
+                          alert(res.message || "Failed to change registration status. Please try again.");
+                        }
                         setIsTogglingReg(false);
                       }}
                       disabled={isTogglingReg}
@@ -1570,8 +1619,12 @@ export default function AdminDashboard({ onClose }: AdminDashboardProps) {
                         <button 
                           onClick={async () => {
                             const newState = !isOpen;
-                            setProgramSettings(prev => ({...prev, [prog]: newState}));
-                            await toggleProgramSetting(prog, newState);
+                            const res = await toggleProgramSetting(prog, newState);
+                            if (res.success) {
+                              setProgramSettings(prev => ({...prev, [prog]: newState}));
+                            } else {
+                              alert(res.message || "Failed to change program status.");
+                            }
                           }}
                           className={`relative inline-flex h-8 w-14 shrink-0 items-center rounded-full transition-colors ${isOpen ? 'bg-emerald-500' : 'bg-slate-600'}`}
                         >

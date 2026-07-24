@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronDown, MessageSquare } from 'lucide-react';
@@ -54,7 +55,7 @@ const faqs: { question: string; answer: React.ReactNode }[] = [
   }
 ];
 
-export default function FAQ() {
+const FAQ = function() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
@@ -120,3 +121,5 @@ export default function FAQ() {
     </section>
   );
 }
+
+export default memo(FAQ);

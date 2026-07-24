@@ -1,6 +1,7 @@
+import { memo } from 'react';
 import { motion } from 'motion/react';
 
-export default function Collaborators() {
+const Collaborators = function() {
   const dummyLogos = Array.from({ length: 8 }).map((_, i) => `LOGO ${i + 1}`);
 
   return (
@@ -27,3 +28,5 @@ export default function Collaborators() {
     </section>
   );
 }
+
+export default memo(Collaborators);

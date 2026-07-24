@@ -1,3 +1,4 @@
+import { memo } from 'react';
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -8,7 +9,7 @@ import {
   Target, Eye, Sparkles, Network, BookOpen, Cpu, Layers, Award, Terminal, CheckCircle2 
 } from 'lucide-react';
 
-export default function About() {
+const About = function() {
   const pillars = [
     {
       icon: <Target className="text-brand-purple" size={20} />,
@@ -142,3 +143,5 @@ export default function About() {
     </section>
   );
 }
+
+export default memo(About);

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
@@ -9,7 +10,7 @@ import {
   Map, Info, Users, Cpu, Code
 } from 'lucide-react';
 
-export default function Venue() {
+const Venue = function() {
   const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=Cochin+University+of+Science+and+Technology,+Kochi,+Kerala,+India`;
 
   return (
@@ -138,3 +139,5 @@ export default function Venue() {
     </section>
   );
 }
+
+export default memo(Venue);

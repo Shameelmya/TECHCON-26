@@ -47,7 +47,7 @@ service cloud.firestore {
       allow read, update, delete: if isAdmin();
     }
 
-    match /ambassadors/{ambassadorId} {
+    match /campus_ambassadors/{ambassadorId} {
       allow create: if isAnonymousUser();
       allow read, update, delete: if isAdmin();
     }
